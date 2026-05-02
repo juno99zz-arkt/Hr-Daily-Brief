@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>삼성디스플레이 HR 데일리 뉴스 브리핑 | 2026.05.02</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:#EDEAE3;min-height:100vh;padding:48px 32px 80px;}
+.page-header{max-width:860px;margin:0 auto 44px;display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:18px;border-bottom:3px solid #1A1A1A;}
+.page-label{font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#999;margin-bottom:7px;}
+.page-title{font-size:34px;font-weight:900;color:#1A1A1A;}
+.page-date{font-size:15px;font-weight:500;color:#555;text-align:right;}
+.page-period{font-size:12px;color:#AAA;margin-top:4px;text-align:right;}
+.cards-grid{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:32px;}
+.card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);}
+.card-header{padding:28px 36px 24px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.header-eyebrow{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:7px;}
+.header-title{font-size:28px;font-weight:900;color:#fff;line-height:1.2;}
+.header-sub{font-size:13.5px;color:rgba(255,255,255,0.5);margin-top:6px;line-height:1.5;}
+.badge{flex-shrink:0;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:5px 14px;border-radius:24px;margin-top:4px;white-space:nowrap;}
+.card-body{padding:20px 32px 8px;}
+.news-list{display:flex;flex-direction:column;gap:14px;}
+.news-item{display:flex;flex-direction:row;gap:20px;align-items:flex-start;padding:20px 22px;border-radius:14px;background:#F7F6F2;text-decoration:none;transition:background 0.15s,transform 0.12s;}
+.news-item:hover{background:#EEECEA;transform:translateY(-2px);}
+.news-item.highlight{border-left:4px solid #E24B4A;background:#FFF8F8;}
+.news-item.highlight:hover{background:#FFE8E8;}
+.news-num{font-family:'Bebas Neue',sans-serif;font-size:44px;line-height:1;flex-shrink:0;min-width:36px;margin-top:2px;}
+.news-content{flex:1;min-width:0;}
+.news-tag-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:5px;}
+.source-badge{font-size:11.5px;color:#BBB;}
+.news-date{font-size:11px;color:#CCC;font-weight:500;background:#F0EEE9;padding:2px 7px;border-radius:4px;}
+.news-headline{font-size:16px;font-weight:700;color:#1A1A1A;line-height:1.5;margin-bottom:9px;}
+.news-summary{font-size:13.5px;color:#555;line-height:1.8;margin-bottom:10px;}
+.accent-line{font-size:13px;color:#555;line-height:1.6;padding-left:12px;border-left:3px solid;font-weight:600;}
+.card-footer{padding:14px 36px 18px;border-top:2px solid;display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
+.footer-label{font-size:12px;color:#CCC;font-weight:500;letter-spacing:0.8px;}
+.footer-date{font-size:13px;font-weight:700;}
+.c1 .card-header{background:linear-gradient(135deg,#0A2342,#0D3260);}
+.c1 .badge{background:rgba(29,158,117,.25);color:#6EEFC7;border:1px solid rgba(29,158,117,.4);}
+.c1 .news-num{color:#1D9E75;}.c1 .tag{background:#E1F5EE;color:#085041;}
+.c1 .accent-line{border-color:#1D9E75;}.c1 .card-footer{border-color:#E1F5EE;}.c1 .footer-date{color:#1D9E75;}
+.c2 .card-header{background:linear-gradient(135deg,#2D0A0A,#4A1515);}
+.c2 .badge{background:rgba(226,75,74,.25);color:#FF9898;border:1px solid rgba(226,75,74,.4);}
+.c2 .news-num{color:#E24B4A;}.c2 .tag{background:#FCEBEB;color:#A32D2D;}
+.c2 .accent-line{border-color:#E24B4A;}.c2 .card-footer{border-color:#FCEBEB;}.c2 .footer-date{color:#A32D2D;}
+.c3 .card-header{background:linear-gradient(135deg,#2C1800,#4A2D00);}
+.c3 .badge{background:rgba(186,117,23,.3);color:#FAC775;border:1px solid rgba(186,117,23,.4);}
+.c3 .news-num{color:#BA7517;}.c3 .tag{background:#FAEEDA;color:#633806;}
+.c3 .accent-line{border-color:#BA7517;}.c3 .card-footer{border-color:#FAEEDA;}.c3 .footer-date{color:#BA7517;}
+.c4 .card-header{background:linear-gradient(135deg,#0F2E1A,#17472A);}
+.c4 .badge{background:rgba(99,153,34,.25);color:#AADF6A;border:1px solid rgba(99,153,34,.4);}
+.c4 .news-num{color:#639922;}.c4 .tag{background:#EAF3DE;color:#3B6D11;}
+.c4 .accent-line{border-color:#639922;}.c4 .card-footer{border-color:#EAF3DE;}.c4 .footer-date{color:#639922;}
+.c5 .card-header{background:linear-gradient(135deg,#0C1E3B,#162E58);}
+.c5 .badge{background:rgba(55,138,221,.25);color:#7EC3FF;border:1px solid rgba(55,138,221,.4);}
+.c5 .news-num{color:#378ADD;}.c5 .tag{background:#E6F1FB;color:#0C447C;}
+.c5 .accent-line{border-color:#378ADD;}.c5 .card-footer{border-color:#E6F1FB;}.c5 .footer-date{color:#185FA5;}
+.c6 .card-header{background:linear-gradient(135deg,#1A0A30,#2E1555);}
+.c6 .badge{background:rgba(127,119,221,.3);color:#CECBF6;border:1px solid rgba(127,119,221,.4);}
+.c6 .news-num{color:#7F77DD;}.c6 .tag{background:#EEEDFE;color:#3C3489;}
+.c6 .accent-line{border-color:#7F77DD;}.c6 .card-footer{border-color:#EEEDFE;}.c6 .footer-date{color:#534AB7;}
+.c7 .card-header{background:linear-gradient(135deg,#1A1A2E,#16213E);}
+.c7 .badge{background:rgba(229,57,53,.25);color:#FF8A80;border:1px solid rgba(229,57,53,.4);}
+.c7 .news-num{color:#E53935;}.c7 .tag{background:#FEEBEE;color:#B71C1C;}
+.c7 .accent-line{border-color:#E53935;}.c7 .card-footer{border-color:#FEEBEE;}.c7 .footer-date{color:#C62828;}
+.page-footer{max-width:860px;margin:36px auto 0;display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid #CCC;}
+.footer-note{font-size:12px;color:#AAA;}
+.footer-tag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#BBB;}
+@media(max-width:600px){body{padding:28px 16px 60px;}.page-header{flex-direction:column;align-items:flex-start;gap:10px;}.card-header{padding:20px 20px 18px;}.card-body{padding:16px 16px 6px;}.news-item{padding:16px 16px;}.news-num{font-size:34px;}.card-footer{padding:12px 20px 14px;}}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div>
+    <div class="page-label">Samsung Display · HR People Team Daily</div>
+    <div class="page-title">피플팀 데일리 뉴스 브리핑</div>
+  </div>
+  <div>
+    <div class="page-date">2026년 5월 2일 (토)</div>
+    <div class="page-period">수집 기간 : 2026.05.01 – 05.02</div>
+  </div>
+</div>
+
+<div class="cards-grid">
+
+<div class="card c1">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Samsung Business</div>
+      <div class="header-title">삼성 비즈니스</div>
+      <div class="header-sub">삼성전자 실적·파운드리·메모리 수급 동향</div>
+    </div>
+    <span class="badge">Business</span>
+  </div>
+  <div class="card-body">
+    <div class="news-list">
+      <a class="news-item highlight" href="https://news.google.com/rss/articles/CBMiW0FVX3lxTE9PSWdzWUQzdXFYcF9NMjJkMzZnTUhkeXotSl9rWnFTQ2s3dU9PQVNfZXlUNTFmYnh0QVV3akQyRWlRcGdpb2NNRF9GbzNuQjhFdlRtWFdoNDJ5SGPSAWBBVV95cUxOWUpZY0VoWkFkWFNTazJGSVczRjZIWDJ3NVdETVhXV1E2Z2thSnBudVJEMmVzMjZYTDBFbk5YbTFGdEo1T1pBT2VhYXZHUFh4OXI5QWQ2a1UyaDBfVlJ1R3Y?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">01</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">실적호황</span>
+            <span class="source-badge">연합뉴스 ↗</span>
+            <span class="news-date">2026.04.30</span>
+          </div>
+          <div class="news-headline">삼성전자 1Q 반도체 영업이익 53.7조 — 메모리 이익률 73%, 최대 실적 경신</div>
+          <div class="news-summary">삼성전자가 2026년 1분기 반도체 부문에서만 영업이익 53.7조원을 달성하며 사상 최대 실적을 기록했다. 메모리 부문 이익률이 73%에 달하며 전체 실적을 견인했고, 영업이익은 전년 동기 대비 93.9% 증가했다. 컨퍼런스콜에서는 2분기에도 빅테크의 AI 투자 확대에 따른 메모리 품귀 심화로 80조원 이상의 영업이익을 전망했다. 삼성디스플레이의 모회사인 삼성전자 그룹 전체의 호황이 이어지고 있어 인력 운영 및 보상 전략에 긍정적 환경이 조성됐다.</div>
+          <div class="accent-line">→ 그룹 역대급 실적 기반으로 2026년 하반기 성과급·보상 체계 재검토 및 인재 유치 전략 강화 시점으로 적극 활용 필요</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiWkFVX3lxTFBwcVExeGptOUNzTmNCLWc3UjE1TUp1SUVCbG52WmpGR05zQklwZ1hmbzMzd29fRnl3V214T1BZel93TEJ3X2VDcUMxeDI5TlFGcXpYT1FMOVRBUdIBVEFVX3lxTE9waGQwSkhpTkl0eWhiOUYwaHRQalB5UEhPbDhsQ1F0WUw1WUVQdTZrb1FJcTNQdUExWjU5ZVJZTEVYRE9OdHFwMU5wZDRXRWZib0RjeA?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">02</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">지분매각</span>
+            <span class="source-badge">한국경제 ↗</span>
+            <span class="news-date">2026.04.28</span>
+          </div>
+          <div class="news-headline">삼성디스플레이 지분 매각 — 삼성SDI, 연내 마무리 목표 공식화</div>
+          <div class="news-summary">삼성SDI 김윤태 부사장이 컨퍼런스콜에서 삼성디스플레이 지분 매각을 연내 마무리하는 것을 목표로 한다고 공식 발표했다. 별도 기사에서는 삼성디스플레이의 하반기 턴어라운드와 지분 매각이 핵심 과제로 지목됐다. 지분 구조 변화는 삼성디스플레이의 경영 전략과 투자 방향, 나아가 조직 운영 방식에도 영향을 미칠 수 있는 중요한 이슈다. HR 관점에서는 대주주 변경에 따른 조직문화·인사제도 변화 가능성을 선제적으로 모니터링할 필요가 있다.</div>
+          <div class="accent-line">→ 지분 매각 완료 시 경영 주체 변화에 대비한 조직 안정화 커뮤니케이션 플랜 및 리텐션 전략을 사전 준비할 것</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMigwFBVV95cUxQZzh6UzlSaGRGQnFJZjlILTJMeWhScFlNTllWVDBhYldBQWhRVWhodUhER2htNmZDSXFYMXZDb2FSR2VkVGpkNnUwX0pVUzFwUXpjQ1NvYnF6Y0dkajNXU0w3T2t1TkxqTmw5cHZjSFRSNHJQWTR5RlRSSjFpSDVHaHc5NA?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">03</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">보상형평성</span>
+            <span class="source-badge">인베스트조선 ↗</span>
+            <span class="news-date">2026.04.09</span>
+          </div>
+          <div class="news-headline">삼성 파운드리 직원 처우 불만 — "메모리 대비 낮은 보상에 헌신 강요" 내부 불만</div>
+          <div class="news-summary">삼성전자 파운드리 사업부 직원들 사이에서 메모리 부문 대비 상대적으로 낮은 보상에도 동일한 헌신을 요구받는다는 불만이 표출되고 있다고 인베스트조선이 보도했다. 메모리 이익률 73%, 반도체 영업이익 53.7조라는 사상 최대 실적이 나온 상황에서 파운드리 부문의 상대적 박탈감이 커질 수 있다. 삼성디스플레이 역시 하반기 IT 8세대 OLED 양산을 앞두고 있어 사업부 간 성과 격차에 따른 보상 형평성 이슈가 그룹 전반에서 민감하게 부각될 수 있다. HR 실무에서는 부문 간 보상 격차로 인한 핵심 인재 이탈 리스크를 사전에 관리해야 한다.</div>
+          <div class="accent-line">→ 사업부 실적 격차 구간에서 발생하는 보상 형평성 이슈를 선제적으로 파악하고, 비금전적 리텐션 프로그램(경력개발·기술인정 등) 병행 검토 필요</div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="footer-label">Daily Briefing</span>
+    <span class="footer-date">2026.05.01 – 05.02</span>
+  </div>
+</div>
+<div class="card c2">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Samsung Labor Relations</div>
+      <div class="header-title">삼성 노사관계 이슈</div>
+      <div class="header-sub">파업·노조·법적 대응·단체교섭</div>
+    </div>
+    <span class="badge">Labor</span>
+  </div>
+  <div class="card-body">
+    <div class="news-list">
+      <a class="news-item highlight" href="https://news.google.com/rss/articles/CBMiW0FVX3lxTE9IREtlU3pLREwzUmQwN1Q1Q1ZIQ2Z5TTRkc2d4MUZYYW9aN0RkR0xOeGh6cENSTUZqN1ByeHRqaUs4ZnNEOTM2Q0ZZLU5HbjBKLTMxc3RNR0NUYzjSAWBBVV95cUxNS09ZaVRWSHN5T3c2emc0RzZYYzhqM04tRDNjRDRaUzAwU3BvTHVDOGJoeTVNaGkzdHFLb2JCZWxzV0VWUHRkdWttdWJYVGhleWZYSUN3TUgwSHhLNXAybWc?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">01</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">파업갈등</span>
+            <span class="source-badge">연합뉴스 ↗</span>
+            <span class="news-date">2026.05.01</span>
+          </div>
+          <div class="news-headline">삼성전자 노조, 대통령 경고 반발·LG유플러스 책임 전가 논란 — 파업 긴장 고조</div>
+          <div class="news-summary">이재명 대통령이 '노조도 책임 의식을 가져야 한다'고 경고하자 삼성전자 노조는 '우리 얘기가 아니다', 'LG유플러스 얘기'라며 강하게 반발했다. 노조는 산업부 장관에게도 '노동자 악마화'에 대한 엄중 항의 서한을 발송하는 등 대외 갈등이 확산되고 있다. 청와대가 삼성 파업 관련 보고서를 별도 작성하며 '삼성 성과는 사회 전체의 결실'이라는 시각을 표명, 정부 차원의 개입 가능성이 높아지고 있다. 삼성전자 사측은 '대화로 풀겠다'는 입장이지만 노조는 '공식 대화 요청이 없었다'고 맞서며 노사 간 불신이 깊어지는 상황이다.</div>
+          <div class="accent-line">→ 정부·여론·노조 3자 갈등이 동시에 점화된 상황으로, 삼성디스플레이 노사 교섭 전략 및 대외 커뮤니케이션 방향 점검 필요</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiUkFVX3lxTE96cTJfOVNkOFpEN0IyWjktOGE4anF2dWtpQ0hUMjV2TmFfWERLbTRmNnNUQlJGRlU4MzBIb3g0ckxnbEJ5aGVnTHM1ZjEtaW5vaEHSAVNBVV95cUxPWVpFTWZnaGtlcnkzZnFybFNob08teVNfZTBkV3FBaTZOOTBVSVhtb2RwMzY3UjRDY3J4SjE4MHhLNTZxZDBqeWxHVzEzRl9ZSUIxOA?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">02</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">과반노조</span>
+            <span class="source-badge">서울경제 ↗</span>
+            <span class="news-date">2026.04.30</span>
+          </div>
+          <div class="news-headline">삼성전자 과반노조 공식 인정 — 노사관계 구조적 전환 분기점</div>
+          <div class="news-summary">삼성전자 노조가 창사 이래 처음으로 과반 조합원 지위를 법적으로 인정받으면서 노사관계의 구조적 전환이 현실화됐다. 과반 노조 지위 획득으로 교섭 대표 노조 지위가 확고해져 단체협약 체결 및 쟁의행위 시 노조의 법적 권한이 대폭 강화된다. 반면 체크오프(조합비 자동 공제) 결의 이후 DX부문 직원들의 노조 탈퇴 행렬이 이어지는 등 내부 분열 조짐도 동시에 나타나고 있다. 초기업 노조의 급성장이 임단협 협상 구도에 변수로 작용하며 교섭 난이도가 높아지고 있다.</div>
+          <div class="accent-line">→ 과반 노조 체제 전환 시 교섭 구조·협약 효력 범위가 달라지므로, 삼성디스플레이 내 유사 상황 발생 시 대응 시나리오 선제 수립 권고</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiT0FVX3lxTFBJSHZrMG5DU0tLY0h6RnRjX1BBSDM2RHVjb2tLaTE5OEstd1VmV1NONktYRklXZ3o3VzFQT3BpOFc0SEpFOHlydnVXT2pYMlE?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">03</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">법원판결</span>
+            <span class="source-badge">v.daum.net ↗</span>
+            <span class="news-date">2026.05.02</span>
+          </div>
+          <div class="news-headline">법원 '파업 불참 조합원 제명 부당' 판결 — 노조 내부통제 한계 확인</div>
+          <div class="news-summary">삼성 노조가 파업 불참 조합원을 제명한 것에 대해 법원이 '내부통제권이 있어도 부당하다'는 판결을 내렸다. 이번 판결은 노조의 조직 강제 수단에 사법적 제동이 걸린 사례로, 노조 제명 처분의 법적 한계를 명확히 한 선례가 된다. 국민 69.3%가 삼성전자 노조 파업을 '부적절하다'고 응답한 여론조사 결과(리얼미터)와 맞물려 노조의 파업 명분이 약화되는 흐름이다. HR 실무 관점에서는 쟁의 국면에서 조합원 제명·징계 관련 분쟁 가능성을 사전에 모니터링해야 할 필요성이 높아졌다.</div>
+          <div class="accent-line">→ 노조의 내부 강제 조치에 대한 법적 기준이 정립되는 추세이므로, 단체협약 내 조합원 징계 조항의 적법성 검토 및 법무팀 협업 필요</div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="footer-label">Daily Briefing</span>
+    <span class="footer-date">2026.05.01 – 05.02</span>
+  </div>
+</div>
+<div class="card c3">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Korea Labor Trend</div>
+      <div class="header-title">대한민국 노동 관련</div>
+      <div class="header-sub">고용부 정책·노동시장·AI 고용 영향</div>
+    </div>
+    <span class="badge">KR Labor</span>
+  </div>
+  <div class="card-body">
+    <div class="news-list">
+      <a class="news-item highlight" href="https://news.google.com/rss/articles/CBMijgFBVV95cUxQTVJoS1pFckItOEpiT0Z0WTFXZUNBUkNiLVRjTXZONDZZVTJiRXJDcGZZbTBaNGJHaGMwUkJReU1jZjVSd2RSUFRsXzNCYnFxNzdXZjhlR0ZmcjZ4QmZ0a2pOZmZSNmJwckViekdteDh6M2RmblNnSmJfVFoweE5LV3cwcF91LXMzTE1QajFB?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">01</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">AI고용충격</span>
+            <span class="source-badge">조선일보 / 한겨레 ↗</span>
+            <span class="news-date">2026.04.20</span>
+          </div>
+          <div class="news-headline">AI가 채용문 닫는다 — IT·전문직 2030 취업자 13.1만명 급감</div>
+          <div class="news-summary">AI 도입 가속화로 IT·전문직 분야 20~30대 취업자가 전년 대비 13.1만명 급감하며 AI발 청년 일자리 충격이 현실화되고 있다. 한겨레 보도에 따르면 기업들이 AI로 업무를 자동화하면서 신입·초급 직무부터 채용을 줄이는 경향이 뚜렷해지고 있다. 영국 기업의 절반도 AI로 인한 일자리 감소를 우려하며 신입직 타격이 집중되고 있다고 보고했다. 삼성디스플레이와 같은 첨단 제조·기술 기업도 향후 신입 채용 규모 및 직무 설계 전략 재검토가 불가피한 상황이다.</div>
+          <div class="accent-line">→ 신입 채용 JD 재설계 및 AI 협업 역량 중심의 채용 기준 재정립 검토 필요</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiTkFVX3lxTE5SeW5ySTZySEFJdkNIbEJZLTd3MERSTWJKclhseW1UUUFzMzByMWxoemhIYkNLb0RUWEh4N1ZxVUs4czFiRDlBRmkxS3ZmQQ?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">02</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">AI노동재편</span>
+            <span class="source-badge">전자신문 / 뉴시스 ↗</span>
+            <span class="news-date">2026.04.13</span>
+          </div>
+          <div class="news-headline">피지컬 AI '일자리 대체 아닌 재편' — 당정, 노동 공존 전략 공론화</div>
+          <div class="news-summary">당정은 피지컬 AI(로봇·자동화)가 일자리를 단순 대체하는 것이 아니라 직무 구조를 재편하는 방향으로 전개될 것이라며 '노동 공존 전략'을 공론화하기 시작했다. AI로 인한 일자리 대체 비율이 현재 약 10% 수준이나 청년 신규 고용 증가에는 악영향을 미친다는 연구 결과도 제시됐다. 조국혁신당은 'AI 일자리안심제' 등 노동권 9대 공약을 발표하며 정치권 차원의 제도화 논의도 본격화되고 있다. 기업 HR 부서는 향후 AI 관련 노동 규제 및 정책 변화에 선제적으로 대응해야 할 시점이다.</div>
+          <div class="accent-line">→ AI 전환에 따른 직무 재설계·재배치 로드맵 수립 및 사내 재교육 프로그램 조기 준비 필요</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiZkFVX3lxTE5HN04tRUg5QXduQl9HbnB2WFctVU1RZ1FrVmFWYjNTb25DZzB4VVN2OFdVTDFFNG8tTzV4MUJwQWlOYmJIZzA4UnF1NzdhR182NXlXLVhXNDFsTEc5MmpDQ1hrMUszdw?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">03</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">청년고용위기</span>
+            <span class="source-badge">한국대학신문 / technovalue.com ↗</span>
+            <span class="news-date">2026.04.21</span>
+          </div>
+          <div class="news-headline">청년 첫 취업 소요기간 증가 — '쉬었음' 278만명, 노동시장 구조 변화 신호</div>
+          <div class="news-summary">청년층의 첫 취업까지 소요 기간이 길어지고 '쉬었음' 상태의 청년이 278만명에 달하는 등 청년 노동시장 진입 구조가 악화되고 있다. 경직된 고용 시장과 함께 AI로 인한 신입직 감소가 청년 취업난을 더욱 심화시키는 복합 요인으로 작용하고 있다. 정년 연장 논의까지 맞물려 신입 채용 공간이 추가로 축소될 수 있다는 우려도 제기된다. 삼성디스플레이는 우수 청년 인재 확보 경쟁이 장기적으로 더욱 치열해질 수 있음을 감안해 채용 브랜딩 전략을 재점검할 필요가 있다.</div>
+          <div class="accent-line">→ 신입 채용 파이프라인 다변화 및 고용 브랜드 강화를 통한 인재 유입 전략 재검토 권고</div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="footer-label">Daily Briefing</span>
+    <span class="footer-date">2026.05.01 – 05.02</span>
+  </div>
+</div>
+<div class="card c4">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Safety & Mental Health</div>
+      <div class="header-title">삼성 마음건강 · 산재</div>
+      <div class="header-sub">산재 행정·직업병·정신건강</div>
+    </div>
+    <span class="badge">Safety</span>
+  </div>
+  <div class="card-body">
+    <div class="news-list">
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="footer-label">Daily Briefing</span>
+    <span class="footer-date">2026.05.01 – 05.02</span>
+  </div>
+</div>
+<div class="card c5">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Global AI Trend</div>
+      <div class="header-title">최근 핫한 AI 이슈</div>
+      <div class="header-sub">빅테크 AI 투자·에이전트·모델 경쟁</div>
+    </div>
+    <span class="badge">AI Trend</span>
+  </div>
+  <div class="card-body">
+    <div class="news-list">
+      <a class="news-item highlight" href="https://news.google.com/rss/articles/CBMiT0FVX3lxTE5jTTkwc3ZfcG1oNkZsTnNlU1NzYk1uTUdqTnZOZk5CSHRUS3VHaGNRaFZCZ0ZIQTQ1MUdDQlozLWFuRHRXYWNjOUllOEg2MzA?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">01</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">AI투자경쟁</span>
+            <span class="source-badge">v.daum.net ↗</span>
+            <span class="news-date">2026.04.30</span>
+          </div>
+          <div class="news-headline">앤스로픽, 1,338조원 투자 유치 논의 — OpenAI 추격전 본격화</div>
+          <div class="news-summary">앤스로픽이 약 1,338조원(약 1조 달러) 규모의 투자 유치를 논의 중인 것으로 알려지며 AI 빅테크 간 자본 경쟁이 극단적으로 가열되고 있다. OpenAI·Google Gemini·Anthropic Claude 3사 간 모델 성능 및 투자 규모 경쟁이 동시에 진행되며 AI 인재 확보 전쟁도 함께 심화되는 양상이다. 이는 곧 AI 역량을 갖춘 엔지니어·연구자에 대한 시장 수요를 폭발적으로 끌어올리는 요인으로 작용한다. 삼성디스플레이 내 AI·데이터 직군 인재의 이탈 리스크와 채용 경쟁력 점검이 시급한 시점이다.</div>
+          <div class="accent-line">→ AI 빅테크의 대규모 투자 확대로 AI 전문 인재 시장 경쟁이 급등하는 만큼, 사내 AI 역량 인재 리텐션 전략 및 보상 체계 재검토를 즉시 착수할 것</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiZEFVX3lxTFA3anJqcHZlUUVEcFJiM3pRVlZNTElxbzctU1FISXdxUF82ejlIYUtpdFpvOXdOdGhpUXRoN2VtWU5vY0N6aUpaWHlGQnJ3WGRIcEFMMDlOZC1nQzloaTNYOGVDd2g?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">02</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">에이전틱AI</span>
+            <span class="source-badge">디지털데일리 ↗</span>
+            <span class="news-date">2026.04.29</span>
+          </div>
+          <div class="news-headline">에이전틱 AI 성공 조건 — 'LLM만으로는 비즈니스 문제 해결 불가'</div>
+          <div class="news-summary">업계 전문가 인터뷰에서 'LLM 단독 활용은 한계가 명확하며, 도메인 특화 데이터·프로세스 연계 없이는 실질적인 비즈니스 문제 해결이 어렵다'는 분석이 제기됐다. AI 에이전트의 실질적 도입을 위해서는 조직 내 업무 프로세스 재설계와 전담 운영 역량이 필수적이라는 점도 강조됐다. 네이버가 LLM 자체 실험을 종료하고 쇼핑 에이전트 강화로 전략을 전환한 사례가 이를 뒷받침한다. HR 부문도 AI 에이전트를 채용·교육·평가 프로세스에 실제 적용하려면 단순 툴 도입을 넘어 업무 재설계와 담당 인력 육성이 선행되어야 한다.</div>
+          <div class="accent-line">→ HR 프로세스 내 AI 에이전트 도입 시 '툴 선택'보다 '업무 재설계 및 내부 운영 역량 확보'를 우선 과제로 설정할 것</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMic0FVX3lxTE5manBTeXRka2RwNGhVOEs5Y1JtQ2xicGN0VDRyWTlUbVdTSThKS2dVTTc0cG54bWJocEZlWGZVc2s3aUx2MFdtUHlCb2ZjVHkzRnhXZ0FHZ2I2THM3aFJwU1JCdmI2ZHJXRndINDhjTW41ZXc?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">03</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">AI도입비용</span>
+            <span class="source-badge">디지털투데이 ↗</span>
+            <span class="news-date">2026.04.20</span>
+          </div>
+          <div class="news-headline">AI 에이전트 '비용 폭탄' 실체 — 기업 도입 현장의 숨겨진 함정</div>
+          <div class="news-summary">젠슨 황 등 빅테크 리더들이 AI 에이전트를 차세대 핵심 기술로 띄우고 있지만, 실제 기업 도입 현장에서는 예상을 초과하는 운영 비용 문제로 비명을 지르는 사례가 속출하고 있다. 특히 'LLM이 LLM을 평가'하는 구조에서 평가 비용이 배포 비용을 초과하는 역설적 상황도 보고된다. 카카오톡의 AI 에이전트 '오픈클로' 연동 등 일상 플랫폼 내 에이전트 확산도 가속화되며 임직원의 AI 리터러시 격차 문제가 부각된다. HR 관점에서는 AI 도구 도입 예산 책정 시 초기 구축비용 외 운영·평가 비용까지 포함한 TCO(총소유비용) 분석이 필수적이다.</div>
+          <div class="accent-line">→ HR 디지털 전환 투자 계획 수립 시 AI 에이전트 운영 비용(평가·모니터링 포함) TCO를 반드시 사전 검토하고, 임직원 AI 활용 교육 로드맵을 병행 기획할 것</div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="footer-label">Daily Briefing</span>
+    <span class="footer-date">2026.05.01 – 05.02</span>
+  </div>
+</div>
+<div class="card c6">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">US Big Tech</div>
+      <div class="header-title">미국 빅테크 이슈</div>
+      <div class="header-sub">구글·MS·메타·아마존·애플 동향</div>
+    </div>
+    <span class="badge">Big Tech</span>
+  </div>
+  <div class="card-body">
+    <div class="news-list">
+      <a class="news-item highlight" href="https://news.google.com/rss/articles/CBMidkFVX3lxTE1vT1pzOGVDVEwxSmNKb3lsb0tuMXFfWkdjWFpEMnZwQTI4eHlUQUFjXzR2YldkUEVVUVFkSERJeE5KUmU2MUxnSzdQbmlyWXZjWW5UNlpFdWlDNzE4akluZWNWcVBpTzhpOU1INXV0NkxzdWhRZkHSAWZBVV95cUxNLXhURG16d3BQZnh2SllyVUVxUlh1RHNnOHBiTFNfajV6ZnJMbmlLRTMyTW1mQ0x5VFdEWDdXUlFDS05JR282amNVVF9jVDJldmR5SEI4OHZ1am1KSjlrRFZfUms5NFE?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">01</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">AI투자급증</span>
+            <span class="source-badge">동아일보 ↗</span>
+            <span class="news-date">2026.04.30</span>
+          </div>
+          <div class="news-headline">빅테크 AI 투자 1000조 돌파 — 구글·MS·아마존·메타 1Q 어닝 서프라이즈</div>
+          <div class="news-summary">구글·MS·아마존·메타 4개사가 2026년 1분기 일제히 시장 예상을 웃도는 실적을 발표했으며, 합산 AI 인프라 투자액이 1000조 원을 돌파했다. AI·클라우드 부문이 성장을 견인했고, 각사는 2026년에도 설비투자를 대폭 확대할 계획을 밝혔다. 이는 AI 가속기·HBM 등 고대역폭 메모리 수요 급증으로 이어져 삼성전자·SK하이닉스의 수혜가 예상된다. 디스플레이 업계 입장에서도 데이터센터향 디스플레이 및 온디바이스 AI 기기 수요 확대로 중장기 사업 기회가 가시화되고 있다.</div>
+          <div class="accent-line">→ AI 투자 확대에 따른 기술 인재 확보 경쟁 심화 예상 — 반도체·디스플레이 핵심 인력 리텐션 전략 및 보상 경쟁력 점검 필요</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE9KdUIxRURleFhmdVpBczE0WkJEVjRDVFA3Y3B5dzZKTmdrZlh1OEE5U2pqWUg0S0U4cjlheWVzZXY1WHRZUUN3M215QktWVWNzX1NqV2J3?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">02</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">AI수익화</span>
+            <span class="source-badge">중앙일보 ↗</span>
+            <span class="news-date">2026.04.30</span>
+          </div>
+          <div class="news-headline">'돈 버는 AI'만 웃었다 — 구글·아마존 급등 vs 메타 급락, 실적 희비</div>
+          <div class="news-summary">같은 어닝 서프라이즈임에도 구글(알파벳)은 시간 외 거래에서 7% 급등, 메타는 7% 급락하는 극과 극 반응이 나타났다. 시장은 AI 투자 대비 '수익화 가시성'을 핵심 기준으로 평가하고 있으며, 실질 매출로 연결되는 AI 서비스(클라우드·광고)를 보유한 기업이 높은 평가를 받았다. 메타는 AI 지출 증가에 비해 단기 수익 기여가 불명확하다는 우려로 주가가 하락했다. HR 관점에서는 AI R&D 투자 성과를 어떻게 측정·평가하느냐가 조직 내 성과관리 기준 설정의 핵심 과제로 부상하고 있음을 시사한다.</div>
+          <div class="accent-line">→ AI 관련 직무의 성과지표(KPI) 재설계 시 '투자 대비 수익 기여도' 측정 체계 반영 검토 필요</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMic0FVX3lxTE4ydHBkNEI0c19XcGRzcVp3TXh5VjM1T2wwaEJzRTFLQWZLSnF2cHVicWROUnlkckFIOVo2dVRCcW5yWE5EeDhpX0owdDU3TldVdDkyOXRfWFpfZW5QNG5zRXBhVEFoVTBPbXFPaWFkR0ZTY0k?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">03</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">반도체수혜</span>
+            <span class="source-badge">비즈니스포스트 ↗</span>
+            <span class="news-date">2026.04.30</span>
+          </div>
+          <div class="news-headline">빅테크 AI 투자 확대 — 삼성전자·SK하이닉스 메모리 품귀·투심 개선 전망</div>
+          <div class="news-summary">하나증권은 미국 빅테크의 AI 투자 전망치 상향 조정이 삼성전자·SK하이닉스에 대한 투자심리를 직접 개선시킬 것으로 분석했다. 빅테크 AI 인프라 확충으로 HBM 등 고부가 메모리 수요가 급증, 삼성전자 2분기 영업이익이 80조 원을 넘볼 수 있다는 전망도 나왔다. 이는 삼성 계열사 전반의 사업 환경 개선 신호로, 디스플레이 부문에도 AI 기기·데이터센터 연동 디스플레이 수요 확대라는 긍정적 파급효과가 기대된다. 그룹 차원의 성장 모멘텀이 강화되는 시점에서 우수 인재 유치·유지를 위한 고용 브랜드 전략 강화가 요구된다.</div>
+          <div class="accent-line">→ 반도체·디스플레이 업황 개선 국면에서 경쟁사 인재 이탈 방어 및 AI 전문 인력 채용 파이프라인 점검 시점</div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="footer-label">Daily Briefing</span>
+    <span class="footer-date">2026.05.01 – 05.02</span>
+  </div>
+</div>
+<div class="card c7">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Korea Hot News</div>
+      <div class="header-title">대한민국 핫뉴스</div>
+      <div class="header-sub">오늘의 인기 키워드·경제·정치·스포츠</div>
+    </div>
+    <span class="badge">Hot News</span>
+  </div>
+  <div class="card-body">
+    <div class="news-list">
+      <a class="news-item highlight" href="https://news.google.com/rss/articles/CBMiZEFVX3lxTE5nSEpIdm1zUUdtb0RXb0lheUExcVE5aHNVU0ZjQklBTV82ZHJ5UU1uQ0RFUDNIQ0xIMDN6aWhiQzFrMzZ3ZVR1dlF1QTR2RzFhaS1VQ1RfalliSkpTYUItdkVSaGnSAWhBVV95cUxONmsyTnR6b3FXMDNpMThGSDljaFFCTWtCeFhsb240dXZWS1hXZUJ2bXYxczk0Z25sVUU0SGtVU1dUaVg2YTJuWU5oazBZV2lXQllVSGlLQ2UxelVIN2hjVEx1TlFnRTFtLQ?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">01</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">코스피신고가</span>
+            <span class="source-badge">경인방송 뉴스 / 위클리오늘 ↗</span>
+            <span class="news-date">2026.04.30</span>
+          </div>
+          <div class="news-headline">코스피 신고가 행진 후 숨 고르기 — 6,740선 돌파 후 매크로 부담 하락</div>
+          <div class="news-summary">4월 말 코스피는 6,740선을 장중 돌파하며 사상 최고치를 경신했으나, 연휴를 앞두고 매크로 부담(환율 1,470~1,486원대)으로 하락 마감했다. 삼성전자 반등이 지수를 일시 지지했으나 AI 호재에도 불구하고 글로벌 불확실성이 상승 동력을 제한했다. 개인 투자자들은 미국·한국 모두에서 '하락 베팅'을 이어가며 상승장에 대한 불신을 드러냈다. 5월 가정의 달 이후 추가 랠리 여부가 주목된다.</div>
+          <div class="accent-line">→ 주가 상승기 임직원 스톡옵션·우리사주 관련 문의 증가 대비, HR 보상팀 내 주식보상제도 안내 커뮤니케이션 선제 준비 필요</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE1JUjVlNG9US2YwV3lhNnRlQ3pWbXc0SGNPaHljTzlvR2RVaTNLeDF0bUp5OWFoMkVSempyUHNJMkhSOUM3QjdJN3V0OU1URzI1cXFXdkNn?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">02</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">정치양극화</span>
+            <span class="source-badge">중앙일보 ↗</span>
+            <span class="news-date">2025.11.30</span>
+          </div>
+          <div class="news-headline">계엄 1년 — 정치 양극화 심화 77% 응답, 사회 분열 심각</div>
+          <div class="news-summary">2025년 12월 계엄 사태 1주년을 맞아 실시된 여론조사에서 응답자의 77%가 한국의 정치 양극화가 더 심해졌다고 답했다. 사회 전반의 갈등 심화는 기업 내 구성원 간 정치적 의견 충돌 리스크를 높이는 환경을 조성한다. 직장 내 정치 이슈 관련 갈등이 조직문화 및 심리적 안전감에 영향을 미칠 수 있어 기업 HR의 선제적 대응이 요구된다.</div>
+          <div class="accent-line">→ 직장 내 정치·사회적 갈등 예방을 위한 구성원 행동강령 재점검 및 다양성·포용성(D&I) 프로그램 운영 방향 검토 권고</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiZkFVX3lxTFBZTVFNTk9aR2tqWEQyM3Q2VHUyNGxKQkpXVmhIMGR2dWlROEpBazU5Ni1MS2k2NklOS1JpeUtnN0FVaVM5Qm9TbDRFRUJ5XzZhNC1XTXUyU2t3bmZpckhlV2oxcENQdw?oc=5" target="_blank" rel="noopener">
+        <div class="news-num">03</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">직원웰빙</span>
+            <span class="source-badge">이로운넷 ↗</span>
+            <span class="news-date">2026.02.06</span>
+          </div>
+          <div class="news-headline">고독사 예방은 사회 구조의 문제 — 1인 가구·고립 근로자 리스크 부각</div>
+          <div class="news-summary">고독사 문제가 개인의 의지나 선택이 아닌 사회적 고립 구조에서 비롯된다는 분석이 제기됐다. 1인 가구 비중이 높아지는 가운데, 직장 내 고립·번아웃·심리적 단절이 구성원 웰빙에 직접적 위협이 되고 있다. 삼성디스플레이와 같은 대규모 제조업 사업장에서 교대근무·장시간 근로 등 고립 유발 요인을 HR 차원에서 관리할 필요성이 높아졌다.</div>
+          <div class="accent-line">→ EAP(Employee Assistance Program) 활성화 및 고립 취약 직군(야간조·1인 기숙사 거주자 등) 대상 멘탈 헬스 모니터링 체계 강화 검토</div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="footer-label">Daily Briefing</span>
+    <span class="footer-date">2026.05.01 – 05.02</span>
+  </div>
+</div>
+</div>
+
+<div class="page-footer">
+  <span class="footer-note">※ 발행일시: 2026.05.02 (토) | 수집기간: 2026.05.01 – 05.02 | 내부 정보 공유 목적으로만 활용</span>
+  <span class="footer-tag">Samsung Display · HR People Team</span>
+</div>
+
+</body>
+</html>
