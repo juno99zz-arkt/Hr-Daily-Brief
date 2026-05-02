@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>디스플레이 Weekly News Brief | 2026 18주차</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:#E8EDF2;min-height:100vh;padding:48px 32px 80px;}
+.page-header{max-width:900px;margin:0 auto 44px;display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:18px;border-bottom:3px solid #1A1A1A;}
+.page-label{font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#888;margin-bottom:7px;}
+.page-title{font-size:34px;font-weight:900;color:#1A1A1A;}
+.page-sub{font-size:14px;font-weight:500;color:#666;margin-top:5px;}
+.page-date{font-size:15px;font-weight:500;color:#555;text-align:right;}
+.page-period{font-size:12px;color:#AAA;margin-top:4px;text-align:right;}
+.cards-grid{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:36px;}
+.card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.09);}
+.card-header{padding:28px 36px 24px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.header-eyebrow{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:7px;}
+.header-title{font-size:28px;font-weight:900;color:#fff;line-height:1.2;}
+.header-sub{font-size:13px;color:rgba(255,255,255,0.5);margin-top:6px;line-height:1.5;}
+.badge{flex-shrink:0;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:5px 14px;border-radius:24px;margin-top:4px;white-space:nowrap;}
+.card-body{padding:20px 32px 8px;}
+.news-list{display:flex;flex-direction:column;gap:12px;}
+.news-item-wrap{border-radius:14px;overflow:hidden;}
+.news-item{display:flex;flex-direction:row;gap:20px;align-items:flex-start;padding:20px 22px;background:#F5F7FA;text-decoration:none;transition:background 0.15s,transform 0.12s;border-radius:14px 14px 0 0;}
+.news-item:hover{background:#EAECF0;transform:translateY(-1px);}
+.news-item.highlight{border-left:4px solid #0057FF;background:#F0F5FF;}
+.news-item.highlight:hover{background:#E4EDFF;}
+.news-num{font-family:'Bebas Neue',sans-serif;font-size:44px;line-height:1;flex-shrink:0;min-width:36px;margin-top:2px;}
+.news-content{flex:1;min-width:0;}
+.news-tag-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:5px;}
+.source-badge{font-size:11.5px;color:#BBB;}
+.news-date{font-size:11px;color:#CCC;font-weight:500;background:#EAECF0;padding:2px 7px;border-radius:4px;}
+.news-headline{font-size:16px;font-weight:700;color:#1A1A1A;line-height:1.5;margin-bottom:9px;}
+.news-summary{font-size:13.5px;color:#555;line-height:1.8;margin-bottom:10px;}
+.accent-line{font-size:13px;color:#555;line-height:1.6;padding-left:12px;border-left:3px solid;font-weight:600;}
+.card-footer{padding:14px 36px 18px;border-top:2px solid;display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
+.footer-label{font-size:12px;color:#CCC;font-weight:500;letter-spacing:0.8px;}
+.footer-date{font-size:13px;font-weight:700;}
+/* 펼치기 */
+.detail-toggle{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:8px 22px;background:#EAECF0;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:700;color:#888;letter-spacing:0.5px;transition:background 0.15s,color 0.15s;}
+.detail-toggle:hover{background:#DDE1E7;color:#555;}
+.detail-toggle .arrow{display:inline-block;transition:transform 0.25s;}
+.detail-toggle.open .arrow{transform:rotate(180deg);}
+.detail-box{display:none;padding:20px 22px 20px 78px;background:#F5F7FA;border-top:1px solid #DDE1E7;font-size:13.5px;color:#444;line-height:1.9;white-space:pre-wrap;word-break:keep-all;}
+.detail-box a{color:#0057FF;text-decoration:underline;}
+.news-item-wrap.highlight-wrap .detail-toggle{background:#E8EFFF;}
+.news-item-wrap.highlight-wrap .detail-toggle:hover{background:#D8E4FF;}
+.news-item-wrap.highlight-wrap .detail-box{background:#F0F5FF;border-top:1px solid #C8D9FF;}
+/* 카드 색상 */
+.w1 .card-header{background:linear-gradient(135deg,#0A2342,#0D3260);}
+.w1 .badge{background:rgba(29,158,117,.25);color:#6EEFC7;border:1px solid rgba(29,158,117,.4);}
+.w1 .news-num{color:#1D9E75;}.w1 .tag{background:#E1F5EE;color:#085041;}
+.w1 .accent-line{border-color:#1D9E75;}.w1 .card-footer{border-color:#E1F5EE;}.w1 .footer-date{color:#1D9E75;}
+.w2 .card-header{background:linear-gradient(135deg,#003366,#005599);}
+.w2 .badge{background:rgba(0,120,220,.3);color:#7ECFFF;border:1px solid rgba(0,120,220,.4);}
+.w2 .news-num{color:#0078DC;}.w2 .tag{background:#E0F2FF;color:#004C8C;}
+.w2 .accent-line{border-color:#0078DC;}.w2 .card-footer{border-color:#E0F2FF;}.w2 .footer-date{color:#0057B3;}
+.w3 .card-header{background:linear-gradient(135deg,#1A0A30,#2E1555);}
+.w3 .badge{background:rgba(127,119,221,.3);color:#CECBF6;border:1px solid rgba(127,119,221,.4);}
+.w3 .news-num{color:#7F77DD;}.w3 .tag{background:#EEEDFE;color:#3C3489;}
+.w3 .accent-line{border-color:#7F77DD;}.w3 .card-footer{border-color:#EEEDFE;}.w3 .footer-date{color:#534AB7;}
+/* 헤더 주간 배지 */
+.weekly-badge{display:inline-flex;align-items:center;gap:6px;background:#0057FF;color:#fff;font-size:11px;font-weight:700;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;margin-bottom:10px;}
+.page-footer{max-width:900px;margin:36px auto 0;display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid #CCC;}
+.footer-note{font-size:12px;color:#AAA;}
+.footer-tag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#BBB;}
+@media(max-width:600px){body{padding:28px 16px 60px;}.page-header{flex-direction:column;align-items:flex-start;gap:10px;}.card-header{padding:20px 20px 18px;}.card-body{padding:16px 16px 6px;}.news-item{padding:16px 14px;}.news-num{font-size:34px;}.card-footer{padding:12px 20px 14px;}.detail-box{padding:16px;}}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div>
+    <div class="page-label">Samsung Display · Weekly Intelligence</div>
+    <div class="weekly-badge">📺 WEEKLY</div>
+    <div class="page-title">디스플레이 Weekly News Brief</div>
+    <div class="page-sub">삼성 비즈니스 · 디스플레이 기술동향 · 경쟁사 동향</div>
+  </div>
+  <div>
+    <div class="page-date">2026년 18주차</div>
+    <div class="page-period">수집 기간 : 2026.04.25 – 05.02 (18주차)</div>
+  </div>
+</div>
+
+<div class="cards-grid">
+
+<div class="card w1">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Samsung Business</div>
+      <div class="header-title">삼성 비즈니스</div>
+      <div class="header-sub">삼성디스플레이·삼성전자 실적·투자·전략·M&A 주간 동향</div>
+    </div>
+    <span class="badge">Business</span>
+  </div>
+  <div class="card-body">
+    <div class="news-list">
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="footer-label">Weekly Briefing</span>
+    <span class="footer-date">2026.04.25 – 05.02</span>
+  </div>
+</div>
+<div class="card w2">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Display Technology</div>
+      <div class="header-title">디스플레이 기술동향</div>
+      <div class="header-sub">OLED·MicroLED·폴더블·차세대 디스플레이 기술 트렌드</div>
+    </div>
+    <span class="badge">Tech</span>
+  </div>
+  <div class="card-body">
+    <div class="news-list">
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="footer-label">Weekly Briefing</span>
+    <span class="footer-date">2026.04.25 – 05.02</span>
+  </div>
+</div>
+<div class="card w3">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Competitor Watch</div>
+      <div class="header-title">삼성디스플레이 경쟁사 동향</div>
+      <div class="header-sub">LG디스플레이·BOE·CSOT·AUO 등 글로벌 패널 업체 동향</div>
+    </div>
+    <span class="badge">Competitor</span>
+  </div>
+  <div class="card-body">
+    <div class="news-list">
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="footer-label">Weekly Briefing</span>
+    <span class="footer-date">2026.04.25 – 05.02</span>
+  </div>
+</div>
+</div>
+
+<div class="page-footer">
+  <span class="footer-note">※ 발행일시: 2026.05.02 (토) | 수집기간: 2026.04.25 ~ 05.02 | 내부 정보 공유 목적으로만 활용</span>
+  <span class="footer-tag">Samsung Display · Display Intelligence</span>
+</div>
+
+<script>
+function toggleDetail(id, btn) {
+  var box = document.getElementById(id);
+  var wrap = btn.parentElement;
+  var isOpen = box.style.display === 'block';
+  box.style.display = isOpen ? 'none' : 'block';
+  btn.classList.toggle('open', !isOpen);
+  btn.setAttribute('aria-expanded', !isOpen);
+  btn.innerHTML = isOpen
+    ? '자세히 보기 <span class="arrow">▼</span>'
+    : '접기 <span class="arrow">▼</span>';
+  if (!isOpen) wrap.querySelector('.news-item').style.borderRadius = '14px 14px 0 0';
+  else wrap.querySelector('.news-item').style.borderRadius = '';
+}
+</script>
+
+</body>
+</html>
