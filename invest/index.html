@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>준오의 위클리 AI 인베스트 브리프 | 2026 18주차</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:#0B0E14;color:#E8EDF2;min-height:100vh;padding:48px 32px 80px;}
+.bg-glow{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(212,175,55,0.12),transparent 60%),radial-gradient(ellipse 50% 50% at 100% 100%,rgba(64,128,255,0.08),transparent 60%);z-index:0;}
+.container{position:relative;z-index:1;max-width:960px;margin:0 auto;}
+.page-header{display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:22px;border-bottom:2px solid #D4AF37;margin-bottom:36px;}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.brand-mark{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:#D4AF37;background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.3);padding:4px 14px;border-radius:6px;}
+.page-label{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#888;}
+.page-title{font-size:34px;font-weight:900;color:#fff;line-height:1.2;letter-spacing:-0.5px;margin-top:4px;}
+.page-sub{font-size:13.5px;font-weight:500;color:#9AA5B5;margin-top:8px;}
+.page-meta{text-align:right;}
+.page-week{font-family:'Bebas Neue',sans-serif;font-size:42px;color:#D4AF37;letter-spacing:2px;line-height:1;}
+.page-date{font-size:13px;font-weight:500;color:#B8C2CF;margin-top:4px;}
+.page-period{font-size:11px;color:#6B7585;margin-top:3px;}
+
+.summary-bar{display:flex;gap:12px;margin-bottom:32px;padding:18px 24px;background:rgba(212,175,55,0.05);border:1px solid rgba(212,175,55,0.18);border-radius:14px;}
+.summary-stat{flex:1;text-align:center;}
+.summary-num{font-family:'Bebas Neue',sans-serif;font-size:34px;color:#D4AF37;line-height:1;}
+.summary-lbl{font-size:11px;color:#9AA5B5;letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;}
+
+.card-list{display:flex;flex-direction:column;gap:18px;}
+.card{background:#141823;border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;transition:transform 0.15s,border-color 0.15s,box-shadow 0.15s;}
+.card:hover{transform:translateY(-2px);border-color:rgba(212,175,55,0.35);box-shadow:0 8px 28px rgba(212,175,55,0.08);}
+.card.tier-5{border-left:4px solid #FF4D4D;}
+.card.tier-4{border-left:4px solid #FF9933;}
+.card.tier-3{border-left:4px solid #D4AF37;}
+.card.tier-2{border-left:4px solid #4080FF;}
+.card.tier-1, .card.tier-0{border-left:4px solid #555;}
+
+.card-top{display:flex;align-items:center;gap:14px;padding:18px 26px 12px;border-bottom:1px solid rgba(255,255,255,0.05);}
+.rank-num{font-family:'Bebas Neue',sans-serif;font-size:38px;color:#D4AF37;line-height:1;min-width:46px;}
+.stars{font-size:20px;letter-spacing:2px;color:#D4AF37;}
+.stars .empty{color:rgba(212,175,55,0.22);}
+.imp-label{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:4px 12px;border-radius:20px;}
+.tier-5 .imp-label{background:rgba(255,77,77,0.12);color:#FF7777;border:1px solid rgba(255,77,77,0.4);}
+.tier-4 .imp-label{background:rgba(255,153,51,0.12);color:#FFB366;border:1px solid rgba(255,153,51,0.4);}
+.tier-3 .imp-label{background:rgba(212,175,55,0.12);color:#E6C76A;border:1px solid rgba(212,175,55,0.4);}
+.tier-2 .imp-label{background:rgba(64,128,255,0.12);color:#7AABFF;border:1px solid rgba(64,128,255,0.4);}
+.tier-1 .imp-label, .tier-0 .imp-label{background:rgba(150,150,150,0.12);color:#AAA;border:1px solid rgba(150,150,150,0.3);}
+
+.card-body{padding:18px 26px 22px;}
+.tag-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.tag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:5px;background:rgba(212,175,55,0.1);color:#D4AF37;letter-spacing:0.3px;}
+.source{font-size:11.5px;color:#7A8595;}
+.date{font-size:11px;color:#6B7585;background:rgba(255,255,255,0.04);padding:2px 8px;border-radius:4px;}
+
+.headline{font-size:17px;font-weight:700;color:#fff;line-height:1.5;margin-bottom:12px;display:block;text-decoration:none;}
+.headline:hover{color:#D4AF37;}
+.headline .arrow{display:inline-block;color:#D4AF37;margin-left:4px;transition:transform 0.15s;}
+.headline:hover .arrow{transform:translate(2px,-2px);}
+
+.summary{font-size:13.5px;color:#B8C2CF;line-height:1.85;margin-bottom:16px;}
+
+.insight{background:linear-gradient(135deg,rgba(212,175,55,0.06),rgba(64,128,255,0.04));border:1px solid rgba(212,175,55,0.18);border-radius:10px;padding:14px 16px;}
+.insight-label{font-size:10.5px;font-weight:700;color:#D4AF37;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.insight-label::before{content:"💡";font-size:13px;}
+.insight-text{font-size:13.5px;color:#E0E6F0;line-height:1.75;font-weight:500;}
+
+.page-footer{margin-top:48px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.footer-note{font-size:11.5px;color:#6B7585;}
+.footer-tag{font-size:10.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#D4AF37;}
+
+@media(max-width:640px){
+  body{padding:28px 14px 60px;}
+  .page-header{flex-direction:column;align-items:flex-start;gap:16px;}
+  .page-meta{text-align:left;}
+  .summary-bar{flex-wrap:wrap;}
+  .summary-stat{min-width:33%;}
+  .card-top{padding:14px 18px 10px;flex-wrap:wrap;}
+  .rank-num{font-size:30px;min-width:34px;}
+  .stars{font-size:17px;}
+  .card-body{padding:14px 18px 18px;}
+  .headline{font-size:16px;}
+  .summary{font-size:13px;}
+  .insight-text{font-size:13px;}
+}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="container">
+
+  <div class="page-header">
+    <div>
+      <div class="brand">
+        <span class="brand-mark">JUNO · AI INVEST</span>
+      </div>
+      <div class="page-label">Weekly AI Investment Intelligence</div>
+      <div class="page-title">준오의 위클리 AI 인베스트 브리프</div>
+      <div class="page-sub">AI · 반도체 · 빅테크 투자 시그널을 중요도순으로 큐레이션</div>
+    </div>
+    <div class="page-meta">
+      <div class="page-week">W18</div>
+      <div class="page-date">2026.05.03 (일)</div>
+      <div class="page-period">수집기간 : 2026.04.26 – 05.03</div>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="summary-stat">
+      <div class="summary-num">12</div>
+      <div class="summary-lbl">선별 기사</div>
+    </div>
+    <div class="summary-stat">
+      <div class="summary-num">8</div>
+      <div class="summary-lbl">High Priority (★4↑)</div>
+    </div>
+    <div class="summary-stat">
+      <div class="summary-num">3.9</div>
+      <div class="summary-lbl">평균 중요도</div>
+    </div>
+  </div>
+
+  <div class="card-list">
+    
+<div class="card tier-5">
+  <div class="card-top">
+    <div class="rank-num">01</div>
+    <span class="stars">★★★★★<span class="empty"></span></span>
+    <span class="imp-label">중요도 5/5</span>
+  </div>
+  <div class="card-body">
+    <div class="tag-row">
+      <span class="tag">MS실적</span>
+      <span class="source">지디넷코리아 ↗</span>
+      <span class="date">2026.04.30</span>
+    </div>
+    <a class="headline" href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE1Cb2lxZW9uTkhNTEdDQUhWVEJLUmlrUWNkWEpyWjZmaEZmUnZDRTJFYXI5cmpEV2h4VmxOT3RqN01vandjR1JWR1doMm9sNWM4TWVLNmV3?oc=5" target="_blank" rel="noopener">
+      MS 분기 매출 123조·AI 연매출 54조 돌파, 애저 40% 성장<span class="arrow">↗</span>
+    </a>
+    <div class="summary">마이크로소프트가 2026년 1분기 분기 매출 123조원을 기록하며 시장 기대치를 상회했다. AI 관련 연매출은 54조원을 돌파했으며, 클라우드 서비스 애저는 전년 대비 40% 성장했다. 다만 AI 인프라 투자 부담 지속으로 시간외 주가는 하락세를 보였다. 오픈AI 관련 비용 및 설비투자 확대는 단기 수익성 압박 요인으로 지목됐다.</div>
+    <div class="insight">
+      <div class="insight-label">투자 인사이트</div>
+      <div class="insight-text">애저 40% 성장은 AWS, GCP와의 클라우드 경쟁에서 MS가 AI 수요를 실질 매출로 전환하고 있음을 입증한다. 단기 주가 하락은 AI Capex 우려 때문이나, AI 매출 성장 가속이 확인된 만큼 MS 주식 및 AI 클라우드 수혜주(엔비디아, SK하이닉스)에 대한 중장기 매수 기회로 볼 수 있다. 국내에서는 AI 서버용 HBM 공급사인 SK하이닉스의 수혜가 직접적이다.</div>
+    </div>
+  </div>
+</div>
+<div class="card tier-5">
+  <div class="card-top">
+    <div class="rank-num">02</div>
+    <span class="stars">★★★★★<span class="empty"></span></span>
+    <span class="imp-label">중요도 5/5</span>
+  </div>
+  <div class="card-body">
+    <div class="tag-row">
+      <span class="tag">AI인프라</span>
+      <span class="source">v.daum.net ↗</span>
+      <span class="date">2026.05.03</span>
+    </div>
+    <a class="headline" href="https://news.google.com/rss/articles/CBMiT0FVX3lxTE9EOFVXMENqWU0tc0VMWU50dEZNWHhwdDR3QnVWQVZncC1DbHpOQ0MxcUlyQzdOSHF0Z1BJdnh2eFFfOTlpNzAxakNuYjBzczg?oc=5" target="_blank" rel="noopener">
+      빅테크 AI 투자 700조 베팅, AI 인프라 전쟁 반도체로 확전<span class="arrow">↗</span>
+    </a>
+    <div class="summary">구글·아마존·MS·메타 등 글로벌 빅테크가 2026년 AI 인프라에 약 700조원 규모의 자본지출(Capex)을 투입할 계획임이 확인됐다. 빅테크 실적 발표에서 AI 투자 규모 우려로 주가가 엇갈리는 반응을 보였다. AI 인프라 수요가 반도체 공급망 전반으로 확산되며 HBM·파운드리·전력 인프라까지 수혜 범위가 넓어지고 있다. 글로벌 CSP들은 투자 규모를 재차 상향 조정하며 AI 메모리 호황을 지속 견인하고 있다.</div>
+    <div class="insight">
+      <div class="insight-label">투자 인사이트</div>
+      <div class="insight-text">700조원 규모의 AI Capex는 엔비디아 GPU뿐 아니라 HBM(SK하이닉스·삼성전자), TSMC 파운드리, 전력 인프라 전 밸류체인에 걸친 수요를 뒷받침한다. 글로벌 CSP 투자 상향은 AI 메모리 슈퍼사이클 지속을 시사하며, 삼성전자 2분기 영업이익 80조원 돌파 전망도 현실화 가능성이 높다. 국내 HBM 관련주 및 전력 인프라 ETF의 비중 확대를 고려할 시점이다.</div>
+    </div>
+  </div>
+</div>
+<div class="card tier-5">
+  <div class="card-top">
+    <div class="rank-num">03</div>
+    <span class="stars">★★★★★<span class="empty"></span></span>
+    <span class="imp-label">중요도 5/5</span>
+  </div>
+  <div class="card-body">
+    <div class="tag-row">
+      <span class="tag">삼성실적</span>
+      <span class="source">Chosunbiz ↗</span>
+      <span class="date">2026.04.30</span>
+    </div>
+    <a class="headline" href="https://news.google.com/rss/articles/CBMiggFBVV95cUxOQUtxcjQ0NHhtRDVvNXladGp1YXI1cEROQUw1bVdUbXotWXJpVUxueHdwU09VbE9mZTNvb2xLam9kMlBYYWR4RGFLeDhBV3U3cVNjOFJaRkY4MGZOOXRaYmtZazB6ZU01SjB2d0xFU0RiUG5DMFY2MENacnh1eUJ0QTJ30gGWAUFVX3lxTE5TUnZxN3ByZFpncGpnVmdKUnE1blJJTkI2WnBMamRremJ3Y2ZqQzltT2RrSlBPaUpoMFJyRWVkQzRjWHVHbXY3WEpOMy1TNEJzWXl3NGt3aVl6ZjFoM2dHY3ZEV0hLelVOS3RIWWVlNVZUNkhSUHdyeG1YVGVuV0?oc=5" target="_blank" rel="noopener">
+      삼성전자 1Q 반도체 수익 48배 급증, CAPEX 2분기 본격화 선언<span class="arrow">↗</span>
+    </a>
+    <div class="summary">삼성전자는 AI 투자 열풍에 힘입어 1분기 반도체 부문 수익이 전년 동기 대비 48배 급증했다. 컨퍼런스콜에서 AI 수요 대응을 위해 올해 시설투자(Capex)를 전년 대비 '상당히 증가'시킬 것이라고 밝혔으며, 메모리·파운드리 투자가 2분기부터 본격화된다. 다만 SK하이닉스와 달리 범용 D램에서 실적 차별화가 발생했다. 빅테크 AI 투자 증가로 메모리 품귀가 심화되며 2분기 영업이익 80조원 돌파 전망도 제기됐다.</div>
+    <div class="insight">
+      <div class="insight-label">투자 인사이트</div>
+      <div class="insight-text">삼성전자의 Capex 확대 공식화는 HBM4 및 첨단 패키징 경쟁력 회복 의지를 시사하며, 단기 비용 증가보다 중장기 AI 메모리 수혜가 클 것으로 판단된다. 범용 D램 부진은 HBM 집중 투자를 가속화할 요인이며, 삼성전자 주가의 HBM 생산 정상화 여부가 핵심 모멘텀이다. SK하이닉스와의 HBM 점유율 격차 축소 시점을 주목해야 한다.</div>
+    </div>
+  </div>
+</div>
+<div class="card tier-4">
+  <div class="card-top">
+    <div class="rank-num">04</div>
+    <span class="stars">★★★★<span class="empty">☆</span></span>
+    <span class="imp-label">중요도 4/5</span>
+  </div>
+  <div class="card-body">
+    <div class="tag-row">
+      <span class="tag">앤트로픽</span>
+      <span class="source">Unite.AI ↗</span>
+      <span class="date">2026.04.30</span>
+    </div>
+    <a class="headline" href="https://news.google.com/rss/articles/CBMiiwFBVV95cUxQakFkMEU2M2lhd2ROajM1ZVlCQ3R5cjdkXzdRRW9wcFJCY2R0TEhaMDJhT2tuREVVZnU4aEdTblRmY1kzS2JIa1RWeDNIMFlUODY1MU9KNVlQTjlKR3c1SFpDTHQwMzA1MGtpSk5GOUVVMkZxLUFybk5ndks4WGlGQmpkVzVlYWwtYmw0?oc=5" target="_blank" rel="noopener">
+      앤트로픽, 기업가치 9,000억달러·500억달러 투자 유치 검토<span class="arrow">↗</span>
+    </a>
+    <div class="summary">AI 스타트업 앤트로픽이 기업가치 9,000억 달러(약 1,260조원) 평가를 전제로 500억 달러(약 70조원) 규모의 신규 투자 유치를 검토 중인 것으로 알려졌다. 구글의 앤트로픽 400억 달러 투자 파트너십 발표도 이 시기에 함께 부각됐다. 이는 AI 모델 기업에 대한 밸류에이션 프리미엄이 지속 확대되고 있음을 보여준다. 앤트로픽의 자금 조달 성공 시 OpenAI와의 프론티어 AI 경쟁이 더욱 격화될 전망이다.</div>
+    <div class="insight">
+      <div class="insight-label">투자 인사이트</div>
+      <div class="insight-text">앤트로픽의 9,000억달러 밸류는 AI 모델 기업 밸류에이션이 여전히 상승 궤도에 있음을 보여주며, 투자자로 참여 중인 구글(Alphabet) 및 아마존의 AI 전략 자산 가치 상승을 의미한다. 국내 AI 유니콘 상장 준비 기업(업스테이지 등)의 프리 IPO 투자 기회와 밸류에이션 참고 지표로 활용 가능하다. AI 파운데이션 모델 섹터 전반의 투자 수요 지속을 확인하는 시그널이다.</div>
+    </div>
+  </div>
+</div>
+<div class="card tier-4">
+  <div class="card-top">
+    <div class="rank-num">05</div>
+    <span class="stars">★★★★<span class="empty">☆</span></span>
+    <span class="imp-label">중요도 4/5</span>
+  </div>
+  <div class="card-body">
+    <div class="tag-row">
+      <span class="tag">업스테이지</span>
+      <span class="source">조선일보 ↗</span>
+      <span class="date">2026.05.03</span>
+    </div>
+    <a class="headline" href="https://news.google.com/rss/articles/CBMiiwFBVV95cUxPQUs0UVFTRzFBMkEyQWFaTTlVTlRIdVpCVEZMSk1rVjhRYWlBVldrNXh4TmdoV2NNQ3NXVDNHUndMWFZWWlEydkRRdzJlWF9IUjdMa3h2RlFWSHRCUWlNb0ZuSWtOSkVJaHZVdkJrYnIteEd2QnpMTDk4cHlZaGlBQnNXQjJ3ZHpXd2s4?oc=5" target="_blank" rel="noopener">
+      국민성장펀드, 업스테이지에 5,600억원 직접 투자·소버린AI 2호 선정<span class="arrow">↗</span>
+    </a>
+    <div class="summary">국민성장펀드가 국내 AI 기업 업스테이지를 소버린AI 투자 2호 기업으로 선정하고 5,600억원을 직접 투자하기로 결정했다. 정책금융 기관이 단순 자금 공급을 넘어 AI·공급망 주권 확보를 위한 전략 투자로 방향을 전환하는 흐름의 일환이다. 업스테이지는 한국어 특화 거대언어모델(LLM)을 보유한 기업으로, 이번 투자로 소버린AI 인프라 구축에 박차를 가할 전망이다. 민간투자 방식의 AI 데이터센터 구축 방안도 함께 윤곽을 드러내고 있다.</div>
+    <div class="insight">
+      <div class="insight-label">투자 인사이트</div>
+      <div class="insight-text">5,600억원 규모의 정책 자금 투입은 국내 AI 스타트업 생태계에 대한 정부 의지를 확인해주며, 업스테이지의 프리 IPO 및 향후 상장 시 높은 밸류에이션 기준점이 될 수 있다. AI 유니콘의 상장 준비 활황 흐름과 맞물려 국내 AI 소프트웨어 및 인프라 기업 전반의 투자 심리 개선으로 이어질 수 있다. 벤처·성장주 ETF 및 AI 관련 코스닥 종목에 긍정적 촉매제로 작용할 전망이다.</div>
+    </div>
+  </div>
+</div>
+<div class="card tier-4">
+  <div class="card-top">
+    <div class="rank-num">06</div>
+    <span class="stars">★★★★<span class="empty">☆</span></span>
+    <span class="imp-label">중요도 4/5</span>
+  </div>
+  <div class="card-body">
+    <div class="tag-row">
+      <span class="tag">HBM공급</span>
+      <span class="source">스페셜경제 ↗</span>
+      <span class="date">2026.05.03</span>
+    </div>
+    <a class="headline" href="https://news.google.com/rss/articles/CBMibEFVX3lxTE94X0NqOTJoVFBuLXJBTk5qa2hkYWZhZ0dWaVBvS1BEV2t1SDEySTEyaUM0MXFEZnJkX3oxMEVteG9PYU1xa05weVNWaGRxYi1CSUotS2s2RUdsS1EzSWxibHRRSi05aEh0bmFaMA?oc=5" target="_blank" rel="noopener">
+      HBM 공급난 심화, 삼성·SK 생산능력 확대 총력전 돌입<span class="arrow">↗</span>
+    </a>
+    <div class="summary">AI 서버 수요 급증으로 HBM(고대역폭메모리) 공급 부족이 심화되면서 삼성전자와 SK하이닉스가 생산능력 확대를 위한 총력전에 돌입했다. TSMC도 AI 칩 수요 급증으로 3나노 공정이 품귀 현상을 보이며 생산 라인을 풀가동 중이다. 빅테크들의 AI Capex 확대가 메모리 및 파운드리 업황 전반을 끌어올리고 있다. 반도체 주가도 HBM·AI 수요에 힘입어 새로운 상승 사이클에 진입했다는 분석이 나온다.</div>
+    <div class="insight">
+      <div class="insight-label">투자 인사이트</div>
+      <div class="insight-text">HBM 공급난 심화는 SK하이닉스(HBM 시장 점유율 50%+)에 가장 직접적인 수혜이며, 삼성전자도 HBM3E 양산 확대 시 추가 업사이드가 기대된다. TSMC 3나노 품귀는 엔비디아 Blackwell 칩 공급 병목으로 연결될 수 있어 AI 반도체 슈퍼사이클의 지속 기간에 주목해야 한다. 국내 반도체 소부장(한미반도체, HPSP 등) 및 HBM 검사 장비 업체까지 수혜 범위가 확대될 전망이다.</div>
+    </div>
+  </div>
+</div>
+<div class="card tier-4">
+  <div class="card-top">
+    <div class="rank-num">07</div>
+    <span class="stars">★★★★<span class="empty">☆</span></span>
+    <span class="imp-label">중요도 4/5</span>
+  </div>
+  <div class="card-body">
+    <div class="tag-row">
+      <span class="tag">AWS실적</span>
+      <span class="source">글로벌이코노믹 ↗</span>
+      <span class="date">2026.04.29</span>
+    </div>
+    <a class="headline" href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxQS05KWHNPd2pGck9tUHZLNGkyZzVZVml5TWI0Tkl5T1dTMGIteFEwdWxKWTNFay1wd0YwQ1pjaVN0N2EyTnBlY3d1bE1RcTE0VzBiZXFqd1Q2N3hiMVh5Nk9lbVhRZEtubkZON253c2IyaFdLMHlPbkRoT2dUcUQwNDJOT04zemwz?oc=5" target="_blank" rel="noopener">
+      아마존 AWS, AI 동맹 파죽지세…매출·영업이익 예상치 압도<span class="arrow">↗</span>
+    </a>
+    <div class="summary">아마존 AWS가 AI 수요에 힘입어 분기 매출과 영업이익 모두 시장 예상치를 상회하는 호실적을 기록했다. AI 파트너십 생태계 확대 전략이 클라우드 매출 성장을 견인하고 있으며, 앤트로픽 투자를 포함한 AI 모델 동맹이 AWS 경쟁력의 핵심 차별화 요소로 작동하고 있다. 글로벌 CSP 중 AWS의 AI 전환 수익화 속도가 가장 빠르다는 평가가 나온다.</div>
+    <div class="insight">
+      <div class="insight-label">투자 인사이트</div>
+      <div class="insight-text">AWS 실적 서프라이즈는 아마존 주가의 단기 상승 모멘텀으로 직결되며, AI 클라우드 3강(AWS·애저·GCP) 모두의 실적이 예상치를 상회함에 따라 AI 인프라 투자 ROI에 대한 시장 우려가 일부 해소되는 국면이다. 국내에서는 AWS 데이터센터 냉각·전력 장비 수출 기업(삼화전기, 제룡전기 등)의 수혜를 점검할 필요가 있다. AI 클라우드 ETF(CLOU, SKYY 등) 비중 확대 시점으로 판단된다.</div>
+    </div>
+  </div>
+</div>
+<div class="card tier-4">
+  <div class="card-top">
+    <div class="rank-num">08</div>
+    <span class="stars">★★★★<span class="empty">☆</span></span>
+    <span class="imp-label">중요도 4/5</span>
+  </div>
+  <div class="card-body">
+    <div class="tag-row">
+      <span class="tag">구글TPU</span>
+      <span class="source">초이스스탁 ↗</span>
+      <span class="date">2026.04.29</span>
+    </div>
+    <a class="headline" href="https://news.google.com/rss/articles/CBMiZ0FVX3lxTE5GdHgta0dvWlhGcnl1VGlJa2QtQVphSWh4clBDVUZpVnNoX3VURDFvNThOWFR0Q2pWSGxFLWZLNnd5U1c2S3U2VHdtUXY4ejQ2X0liVHFiT3hiWm05WGl5eDZTU0tEaDA?oc=5" target="_blank" rel="noopener">
+      구글, AI칩 TPU 직접 판매 전략 전환…엔비디아 의존 탈피 가속<span class="arrow">↗</span>
+    </a>
+    <div class="summary">구글이 자체 개발 AI 칩(TPU)을 클라우드 서비스 내부 활용에서 외부 직접 판매 방식으로 전략을 전환하기로 했다. 이는 엔비디아 GPU에 대한 의존도를 줄이고 AI 칩 시장에서 독자적인 수익원을 창출하려는 시도로 해석된다. Alphabet은 앤트로픽과 400억 달러 규모의 투자 파트너십도 발표하며 AI 생태계 확장에 박차를 가하고 있다.</div>
+    <div class="insight">
+      <div class="insight-label">투자 인사이트</div>
+      <div class="insight-text">구글의 TPU 직판 전략은 엔비디아의 AI 칩 시장 독점 구도에 균열을 낼 수 있는 중장기 위협 요인이다. 단기적으로는 엔비디아 주가에 노이즈를 줄 수 있으나, TPU의 범용 AI 칩 대체 능력은 아직 제한적이므로 엔비디아의 지배력은 유지될 전망이다. 구글 클라우드(GCP)의 AI 칩 독립성 강화는 GCP 경쟁력 개선 요인으로 Alphabet 주식의 중장기 매수 포인트로 작용한다.</div>
+    </div>
+  </div>
+</div>
+<div class="card tier-3">
+  <div class="card-top">
+    <div class="rank-num">09</div>
+    <span class="stars">★★★<span class="empty">☆☆</span></span>
+    <span class="imp-label">중요도 3/5</span>
+  </div>
+  <div class="card-body">
+    <div class="tag-row">
+      <span class="tag">전력인프라</span>
+      <span class="source">마켓인 ↗</span>
+      <span class="date">2026.05.03</span>
+    </div>
+    <a class="headline" href="https://news.google.com/rss/articles/CBMic0FVX3lxTE1JQTN0T2VveTFyUHRUbHRkclEyeDVPQWVJdENSUDhSaktpZlYtZGxkLWRIYlFBNExfR2hSTGNLUzNPcmFGVHBHeFNtUElvUnBMUnREM1JQNGNnVlNCNGJJa0taYjNES1l6R0ZzUmowTDVwRDg?oc=5" target="_blank" rel="noopener">
+      전력 ETF 수익률 반도체 상회…AI 데이터센터 전력 인프라 투자 붐<span class="arrow">↗</span>
+    </a>
+    <div class="summary">AI 데이터센터 전력 수요 급증으로 전력 인프라 관련 ETF의 수익률이 반도체 ETF를 상회하는 현상이 나타났다. 빅테크들이 데이터센터 배터리 시장에 직접 러브콜을 보내며 에너지 저장 시스템 수요도 급증하고 있다. 한전 망 밖에서 직접 전력을 조달하는 '전력 직구' 방식의 AI 데이터센터가 확산되며 전력 인프라 구조가 재편되고 있다. 미국 데이터센터 냉각·전력 인프라 재편으로 한국 관련 장비 수출 확대도 기대된다.</div>
+    <div class="insight">
+      <div class="insight-label">투자 인사이트</div>
+      <div class="insight-text">전력 ETF의 반도체 초과 수익은 AI 인프라 투자의 수혜가 칩 섹터를 넘어 전력·에너지 인프라로 확산되고 있음을 명확히 보여준다. 국내에서는 변압기(효성중공업, HD현대일렉트릭), 배터리 ESS(삼성SDI, LG에너지솔루션), 냉각 장비 관련주의 추가 상승 여력을 점검해야 한다. 미국 전력 인프라 ETF(GRID, AMPS 등)의 비중 확대도 유효한 전략이다.</div>
+    </div>
+  </div>
+</div>
+<div class="card tier-3">
+  <div class="card-top">
+    <div class="rank-num">10</div>
+    <span class="stars">★★★<span class="empty">☆☆</span></span>
+    <span class="imp-label">중요도 3/5</span>
+  </div>
+  <div class="card-body">
+    <div class="tag-row">
+      <span class="tag">데이터센터</span>
+      <span class="source">에너지경제신문 ↗</span>
+      <span class="date">2026.05.02</span>
+    </div>
+    <a class="headline" href="https://news.google.com/rss/articles/CBMiW0FVX3lxTE56M1ZpYnlYN2hPWHphLXZnbERwS1N5Umo5WVRBcjRPLVEydnJCLVAyclpoWTdiMV84R2RLVFp3TnFuRkpWcE5Ea1dRRW9mNXlFcWFXck5rQ3AtZTQ?oc=5" target="_blank" rel="noopener">
+      AI 데이터센터, 사모자본이 짓고 빌려주는 구조로 전환 가속<span class="arrow">↗</span>
+    </a>
+    <div class="summary">글로벌 빅테크들이 AI 데이터센터를 자체 장부 밖에서 사모자본을 통해 구축하고 임차하는 방식이 확산되고 있다. 이는 빅테크의 Capex 부담을 줄이면서도 AI 인프라를 빠르게 확충하는 전략으로, 사모펀드·인프라 펀드에 새로운 투자 기회를 열어주고 있다. 버지니아州의 데이터센터 100조원 투자 중단 사례처럼 인허가·절차적 리스크도 부각되고 있다.</div>
+    <div class="insight">
+      <div class="insight-label">투자 인사이트</div>
+      <div class="insight-text">데이터센터의 사모자본 조달 구조 확산은 블랙스톤·브룩필드 등 대형 인프라 펀드의 AI 인프라 투자 확대를 시사하며, 리츠(REIT) 형태의 데이터센터 주식(Equinix, Digital Realty)의 중장기 수요 기반이 강화된다. 국내에서는 데이터센터 리츠 및 관련 건설·설비 기업의 수주 기회 확대를 점검할 필요가 있다. 인허가 리스크는 데이터센터 공급 지연을 통해 기존 운영 사업자의 임대료 상승 요인으로 작용할 수 있다.</div>
+    </div>
+  </div>
+</div>
+<div class="card tier-3">
+  <div class="card-top">
+    <div class="rank-num">11</div>
+    <span class="stars">★★★<span class="empty">☆☆</span></span>
+    <span class="imp-label">중요도 3/5</span>
+  </div>
+  <div class="card-body">
+    <div class="tag-row">
+      <span class="tag">AI에이전트</span>
+      <span class="source">이데일리 ↗</span>
+      <span class="date">2026.05.03</span>
+    </div>
+    <a class="headline" href="https://news.google.com/rss/articles/CBMigAFBVV95cUxPcDJWU3VabDBmSmotQ0ZadDAtYzRLNUFONEhiZ1puQ00yb1hRSC1tU1Q5MmF5alFFNDhYUTZnTjVYdFA2aWpmams1bnBacjkzRDh4VzZNbXV4aUctN3UweTFpNGRYejdzZzl5QnJCVk9lU0pyV2FfUnlKWFQ0WmM0MA?oc=5" target="_blank" rel="noopener">
+      카카오 외부 확장 vs 네이버 내부 통합, AI 에이전트 전략 분수령<span class="arrow">↗</span>
+    </a>
+    <div class="summary">카카오와 네이버가 AI 에이전트 전략에서 '외부 확장'과 '내부 통합'으로 상반된 방향을 택하며 경쟁이 본격화되고 있다. 카카오는 외부 파트너십과 플랫폼 개방을 통한 AI 에이전트 생태계 확장을 추진하는 반면, 네이버는 자체 서비스와의 긴밀한 통합을 통한 내재화 전략을 선택했다. 양사의 AI 에이전트 경쟁력이 검색·커머스·광고 수익 모델과 직결되는 만큼 2026년 하반기 실적 향방의 핵심 변수가 될 전망이다.</div>
+    <div class="insight">
+      <div class="insight-label">투자 인사이트</div>
+      <div class="insight-text">네이버의 AI 내부 통합 전략은 기존 검색·쇼핑 광고 수익의 AI 전환 효율을 높여 단기 수익성에 유리할 수 있으며, 카카오의 외부 확장 전략은 플랫폼 MAU 확대를 통한 중장기 광고 수익 성장을 노린다. 두 전략의 실질 성과는 2026년 2~3분기 실적 시즌에서 확인될 것이므로, 현 시점에서는 AI 에이전트 도입 속도가 빠른 네이버의 단기 모멘텀이 더 명확하다. 네이버(NAVER) 주식의 AI 전환 프리미엄 재평가 가능성에 주목할 필요가 있다.</div>
+    </div>
+  </div>
+</div>
+<div class="card tier-3">
+  <div class="card-top">
+    <div class="rank-num">12</div>
+    <span class="stars">★★★<span class="empty">☆☆</span></span>
+    <span class="imp-label">중요도 3/5</span>
+  </div>
+  <div class="card-body">
+    <div class="tag-row">
+      <span class="tag">엔비디아투자</span>
+      <span class="source">TradingKey ↗</span>
+      <span class="date">2026.05.01</span>
+    </div>
+    <a class="headline" href="https://news.google.com/rss/articles/CBMiowFBVV95cUxNaWJwc1NQME9IM0VwZjJMVUtlQlNSb1U1S1BQb2NfbHRwMG9uOUNOLWROMGNHYm8xTkFZUHZwV3FVWFRfeE12Y2xhd0dabTNjMnoxcXJnWU1DLUdIalAtcGFaZGNrb2tKTmpYNG1DbVZHSHppTVV1MWdoMWJOb1E5RXVBR192dzFxUEVjdUdRTEd6NTA0QWxoWFJ2ZVA5OVRHbThz?oc=5" target="_blank" rel="noopener">
+      엔비디아, 리걸 AI 기업 레고라에 5,000만달러 첫 투자<span class="arrow">↗</span>
+    </a>
+    <div class="summary">엔비디아가 법률 특화 AI 기업 레고라(Legora)에 5,000만 달러(약 700억원)를 투자하며 버티컬 AI 시장에 처음으로 베팅했다. 이는 엔비디아가 칩 판매를 넘어 AI 애플리케이션 레이어까지 생태계를 확장하는 전략의 일환으로 해석된다. 리걸 AI 시장은 대형 로펌과 법무팀의 디지털 전환 수요를 기반으로 빠르게 성장하고 있다.</div>
+    <div class="insight">
+      <div class="insight-label">투자 인사이트</div>
+      <div class="insight-text">엔비디아의 버티컬 AI 스타트업 투자 확대는 엔비디아 GPU 수요 생태계를 법률·의료·금융 등 전문 분야로 넓히는 전략으로, 중장기 GPU 수요 기반 강화에 기여한다. 리걸 AI 섹터의 성장은 Thomson Reuters, LexisNexis 등 법률 정보 서비스 기업에도 위협이자 기회가 되며, 국내 리걸테크 스타트업 투자 심리에도 긍정적 영향을 미칠 수 있다. 엔비디아의 스타트업 투자 포트폴리오 확대는 AI 생태계 전반의 네트워크 효과를 강화해 엔비디아의 플랫폼 프리미엄 유지에 기여한다.</div>
+    </div>
+  </div>
+</div>
+  </div>
+
+  <div class="page-footer">
+    <span class="footer-note">※ 발행 : 2026.05.03 (일) 19:23 · 매주 월요일 07:50 자동 업데이트 · 개인 투자 참고용</span>
+    <span class="footer-tag">JUNO · AI INVEST · WEEKLY</span>
+  </div>
+
+</div>
+</body>
+</html>
