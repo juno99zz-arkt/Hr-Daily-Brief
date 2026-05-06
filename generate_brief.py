@@ -347,7 +347,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:#EDEAE3;min-height:100vh;p
 .c1 .badge{background:rgba(29,158,117,.25);color:#6EEFC7;border:1px solid rgba(29,158,117,.4);}
 .c1 .news-num,.c1 .accent-line{color:#1D9E75;}.c1 .tag{background:#E1F5EE;color:#085041;}
 .c1 .accent-line{border-color:#1D9E75;}.c1 .card-footer{border-color:#E1F5EE;}.c1 .footer-date{color:#1D9E75;}
-.c1 
+
 .c2 .card-header{background:linear-gradient(135deg,#2D0A0A,#4A1515);}
 .c2 .badge{background:rgba(226,75,74,.25);color:#FF9898;border:1px solid rgba(226,75,74,.4);}
 .c2 .news-num{color:#E24B4A;}.c2 .tag{background:#FCEBEB;color:#A32D2D;}
