@@ -1,0 +1,104 @@
+name: HR Daily Brief
+
+on:
+  # 07:00 KST = 22:00 UTC (전날) / 월-금 기준 → UTC 일-목
+  schedule:
+    - cron: '0 22 * * 0,1,2,3,4'   # 07:00 KST (Mon–Fri)
+    - cron: '0 8 * * 1,2,3,4,5'    # 17:00 KST (Mon–Fri)
+
+  # 모바일/웹에서 수동 실행
+  workflow_dispatch:
+    inputs:
+      session:
+        description: '실행 세션'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - morning
+          - afternoon
+      force:
+        description: '공휴일에도 강제 실행'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write   # gh-pages push에 필요
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      # main 브랜치 (Python 코드)
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      # gh-pages 브랜치를 public/ 서브디렉토리로 체크아웃
+      - name: Checkout gh-pages into public/
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: public
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Determine session
+        id: session
+        run: |
+          INPUT="${{ github.event.inputs.session }}"
+          if [ "$INPUT" = "morning" ]; then
+            echo "label=morning" >> $GITHUB_OUTPUT
+          elif [ "$INPUT" = "afternoon" ]; then
+            echo "label=afternoon" >> $GITHUB_OUTPUT
+          else
+            HOUR=$(date -u +%H)
+            if [ "$HOUR" -ge 20 ] || [ "$HOUR" -lt 10 ]; then
+              echo "label=morning" >> $GITHUB_OUTPUT
+            else
+              echo "label=afternoon" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Generate briefing
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          EMAIL_SENDER:      ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD:    ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_RECIPIENT:   ${{ secrets.EMAIL_RECIPIENT }}
+          GITHUB_ACTIONS:    "true"
+        run: |
+          FORCE=""
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then
+            FORCE="--force"
+          fi
+          python generate_brief.py --session ${{ steps.session.outputs.label }} $FORCE
+
+      - name: Deploy to GitHub Pages
+        run: |
+          cd public
+          git config user.name  "GitHub Actions"
+          git config user.email "actions@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "변경 없음, 배포 생략."
+            exit 0
+          fi
+
+          git commit -m "브리핑 업데이트: $(TZ='Asia/Seoul' date '+%Y-%m-%d %H:%M') KST (${{ steps.session.outputs.label }})"
+          git push origin gh-pages
+          echo "배포 완료 → https://juno99zz-arkt.github.io/Hr-Daily-Brief/"
