@@ -327,7 +327,6 @@ body{font-family:'Noto Sans KR',sans-serif;background:#EDEAE3;min-height:100vh;p
 .news-list{display:flex;flex-direction:column;gap:14px;}
 .news-item{display:flex;flex-direction:row;gap:20px;align-items:flex-start;padding:20px 22px;border-radius:14px;background:#F7F6F2;text-decoration:none;transition:background 0.15s,transform 0.12s;}
 .news-item:hover{background:#EEECEA;transform:translateY(-2px);}
-.news-item.highlight{border-left:4px solid currentColor;background:#FFF8F8;}
 .news-num{font-family:'Bebas Neue',sans-serif;font-size:44px;line-height:1;flex-shrink:0;min-width:36px;margin-top:2px;}
 .news-content{flex:1;min-width:0;}
 .news-tag-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
@@ -348,49 +347,41 @@ body{font-family:'Noto Sans KR',sans-serif;background:#EDEAE3;min-height:100vh;p
 .c1 .badge{background:rgba(29,158,117,.25);color:#6EEFC7;border:1px solid rgba(29,158,117,.4);}
 .c1 .news-num,.c1 .accent-line{color:#1D9E75;}.c1 .tag{background:#E1F5EE;color:#085041;}
 .c1 .accent-line{border-color:#1D9E75;}.c1 .card-footer{border-color:#E1F5EE;}.c1 .footer-date{color:#1D9E75;}
-.c1 .news-item.highlight{border-color:#1D9E75;background:#F0FBF7;}
-
+.c1 
 .c2 .card-header{background:linear-gradient(135deg,#2D0A0A,#4A1515);}
 .c2 .badge{background:rgba(226,75,74,.25);color:#FF9898;border:1px solid rgba(226,75,74,.4);}
 .c2 .news-num{color:#E24B4A;}.c2 .tag{background:#FCEBEB;color:#A32D2D;}
 .c2 .accent-line{border-color:#E24B4A;}.c2 .card-footer{border-color:#FCEBEB;}.c2 .footer-date{color:#A32D2D;}
-.c2 .news-item.highlight{border-color:#E24B4A;background:#FFF5F5;}
 
 .c3 .card-header{background:linear-gradient(135deg,#2C1800,#4A2D00);}
 .c3 .badge{background:rgba(186,117,23,.3);color:#FAC775;border:1px solid rgba(186,117,23,.4);}
 .c3 .news-num{color:#BA7517;}.c3 .tag{background:#FAEEDA;color:#633806;}
 .c3 .accent-line{border-color:#BA7517;}.c3 .card-footer{border-color:#FAEEDA;}.c3 .footer-date{color:#BA7517;}
-.c3 .news-item.highlight{border-color:#BA7517;background:#FBF5E6;}
 
 .c4 .card-header{background:linear-gradient(135deg,#0F2E1A,#17472A);}
 .c4 .badge{background:rgba(99,153,34,.25);color:#AADF6A;border:1px solid rgba(99,153,34,.4);}
 .c4 .news-num{color:#639922;}.c4 .tag{background:#EAF3DE;color:#3B6D11;}
 .c4 .accent-line{border-color:#639922;}.c4 .card-footer{border-color:#EAF3DE;}.c4 .footer-date{color:#639922;}
-.c4 .news-item.highlight{border-color:#639922;background:#F4FAE8;}
 
 .c5 .card-header{background:linear-gradient(135deg,#0C1E3B,#162E58);}
 .c5 .badge{background:rgba(55,138,221,.25);color:#7EC3FF;border:1px solid rgba(55,138,221,.4);}
 .c5 .news-num{color:#378ADD;}.c5 .tag{background:#E6F1FB;color:#0C447C;}
 .c5 .accent-line{border-color:#378ADD;}.c5 .card-footer{border-color:#E6F1FB;}.c5 .footer-date{color:#185FA5;}
-.c5 .news-item.highlight{border-color:#378ADD;background:#EDF5FE;}
 
 .c6 .card-header{background:linear-gradient(135deg,#1A0A30,#2E1555);}
 .c6 .badge{background:rgba(127,119,221,.3);color:#CECBF6;border:1px solid rgba(127,119,221,.4);}
 .c6 .news-num{color:#7F77DD;}.c6 .tag{background:#EEEDFE;color:#3C3489;}
 .c6 .accent-line{border-color:#7F77DD;}.c6 .card-footer{border-color:#EEEDFE;}.c6 .footer-date{color:#534AB7;}
-.c6 .news-item.highlight{border-color:#7F77DD;background:#F4F3FE;}
 
 .c7 .card-header{background:linear-gradient(135deg,#003366,#005599);}
 .c7 .badge{background:rgba(0,120,220,.3);color:#7ECFFF;border:1px solid rgba(0,120,220,.4);}
 .c7 .news-num{color:#0078DC;}.c7 .tag{background:#E0F2FF;color:#004C8C;}
 .c7 .accent-line{border-color:#0078DC;}.c7 .card-footer{border-color:#E0F2FF;}.c7 .footer-date{color:#0057B3;}
-.c7 .news-item.highlight{border-color:#0078DC;background:#E8F4FD;}
 
 .c8 .card-header{background:linear-gradient(135deg,#1A1A2E,#16213E);}
 .c8 .badge{background:rgba(229,57,53,.25);color:#FF8A80;border:1px solid rgba(229,57,53,.4);}
 .c8 .news-num{color:#E53935;}.c8 .tag{background:#FEEBEE;color:#B71C1C;}
 .c8 .accent-line{border-color:#E53935;}.c8 .card-footer{border-color:#FEEBEE;}.c8 .footer-date{color:#C62828;}
-.c8 .news-item.highlight{border-color:#E53935;background:#FEF0EF;}
 
 /* 체크박스 칩 */
 .chip-c1{background:#E1F5EE;color:#085041;}.chip-c2{background:#FCEBEB;color:#A32D2D;}
@@ -480,10 +471,9 @@ def render_card(category, data, period):
     else:
         items_html = ""
         for i, art in enumerate(arts, 1):
-            hl_class = " highlight" if art.get("highlight") else ""
-            summary  = art.get("summary", "").replace("\n", " ")
+            summary = art.get("summary", "").replace("\n", " ")
             items_html += f"""
-      <a class="news-item{hl_class}" href="{art.get('link','#')}" target="_blank" rel="noopener">
+      <a class="news-item" href="{art.get('link','#')}" target="_blank" rel="noopener">
         <div class="news-num">{i:02d}</div>
         <div class="news-content">
           <div class="news-tag-row">
