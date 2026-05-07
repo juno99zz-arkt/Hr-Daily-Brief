@@ -1,12 +1,8 @@
 name: HR Daily Brief
 
 on:
-  # 07:00 KST = 22:00 UTC (전날) / 월-금 기준 → UTC 일-목
-  schedule:
-    - cron: '0 22 * * 0,1,2,3,4'   # 07:00 KST (Mon–Fri)
-    - cron: '0 8 * * 1,2,3,4,5'    # 17:00 KST (Mon–Fri)
-
-  # 모바일/웹에서 수동 실행
+  # cron-job.org 에서 정확한 시간에 workflow_dispatch로 트리거
+  # Morning: 06:30 KST (Mon–Fri) / Afternoon: 17:00 KST (Mon–Fri)
   workflow_dispatch:
     inputs:
       session:
