@@ -7,9 +7,14 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
-from datetime import datetime, timedelta, date as _date
+from datetime import datetime, timedelta, date as _date, timezone
 from pathlib import Path
 from urllib.parse import quote
+
+KST = timezone(timedelta(hours=9))
+def now_kst():
+    """현재 KST 시각 반환 (GitHub Actions UTC 환경 대응)"""
+    return datetime.now(KST).replace(tzinfo=None)
 
 try:
     import holidays
@@ -164,7 +169,7 @@ def last_working_day(ref: datetime) -> datetime:
 # ── 뉴스 수집 ──────────────────────────────────────────────────────────────────
 
 def fetch_news(queries, max_per_query=20):
-    today = datetime.now()
+    today = now_kst()
     # KST 기준 전일 워킹데이 자정 → UTC 변환 (KST = UTC+9)
     cutoff_kst = last_working_day(today)
     cutoff_utc = cutoff_kst - timedelta(hours=9)
@@ -507,7 +512,7 @@ def render_card(category, data, period):
 
 
 def render_html(all_data, session_label="morning"):
-    today = datetime.now()
+    today = now_kst()
     days  = ["월","화","수","목","금","토","일"]
     period_start = last_working_day(today)
     period = f"{period_start.strftime('%Y.%m.%d')} – {today.strftime('%m.%d')}"
@@ -675,7 +680,7 @@ def main():
     parser.add_argument("--force",   action="store_true", help="공휴일에도 강제 실행")
     args = parser.parse_args()
 
-    today = datetime.now()
+    today = now_kst()
     hour  = today.hour
 
     # 세션 결정
