@@ -168,8 +168,7 @@ def last_working_day(ref: datetime) -> datetime:
 
 # ── 뉴스 수집 ──────────────────────────────────────────────────────────────────
 
-def fetch_news(queries, max_per_query=20):
-    today = now_kst()
+def fetch_news(queries, today, max_per_query=20):
     # KST 기준 전일 워킹데이 자정 → UTC 변환 (KST = UTC+9)
     cutoff_kst = last_working_day(today)
     cutoff_utc = cutoff_kst - timedelta(hours=9)
@@ -511,8 +510,7 @@ def render_card(category, data, period):
 </div>"""
 
 
-def render_html(all_data, session_label="morning"):
-    today = now_kst()
+def render_html(all_data, today, session_label="morning"):
     days  = ["월","화","수","목","금","토","일"]
     period_start = last_working_day(today)
     period = f"{period_start.strftime('%Y.%m.%d')} – {today.strftime('%m.%d')}"
@@ -705,7 +703,7 @@ def main():
         print(f"[{cat['title']}]")
         # c8 핫뉴스는 쿼리가 많으므로 쿼리당 수집량을 줄여 속도 확보
         mpq = 10 if cat["id"] == "c8" else 20
-        articles = fetch_news(cat["queries"], max_per_query=mpq)
+        articles = fetch_news(cat["queries"], today, max_per_query=mpq)
         print(f"  수집: {len(articles)}건 → Claude 분석 중...")
         try:
             data = generate_category(cat, articles)
@@ -716,7 +714,7 @@ def main():
             data = {"articles": []}
         all_data.append(data)
 
-    html = render_html(all_data, session)
+    html = render_html(all_data, today, session)
     out  = OUTPUT_DIR / "index.html"
     out.write_text(html, encoding="utf-8")
     print(f"  HTML 저장 완료 → {out}\n")
