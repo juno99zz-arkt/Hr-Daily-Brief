@@ -1,19 +1,10 @@
 name: HR Daily Brief
 
 on:
-  # cron-job.org 에서 정확한 시간에 workflow_dispatch로 트리거
-  # Morning: 06:30 KST (Mon–Fri) / Afternoon: 17:00 KST (Mon–Fri)
+  schedule:
+    - cron: '0 22 * * 0-4'   # 매일 07:00 KST (월~금) = UTC 전날 22:00
   workflow_dispatch:
     inputs:
-      session:
-        description: '실행 세션'
-        required: false
-        default: 'auto'
-        type: choice
-        options:
-          - auto
-          - morning
-          - afternoon
       force:
         description: '공휴일에도 강제 실행'
         required: false
@@ -29,13 +20,11 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      # main 브랜치 (Python 코드)
       - name: Checkout main
         uses: actions/checkout@v4
         with:
           ref: main
 
-      # gh-pages 브랜치를 public/ 서브디렉토리로 체크아웃
       - name: Checkout gh-pages into public/
         uses: actions/checkout@v4
         with:
@@ -51,23 +40,6 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Determine session
-        id: session
-        run: |
-          INPUT="${{ github.event.inputs.session }}"
-          if [ "$INPUT" = "morning" ]; then
-            echo "label=morning" >> $GITHUB_OUTPUT
-          elif [ "$INPUT" = "afternoon" ]; then
-            echo "label=afternoon" >> $GITHUB_OUTPUT
-          else
-            HOUR=$(date -u +%H)
-            if [ "$HOUR" -ge 20 ] || [ "$HOUR" -lt 10 ]; then
-              echo "label=morning" >> $GITHUB_OUTPUT
-            else
-              echo "label=afternoon" >> $GITHUB_OUTPUT
-            fi
-          fi
-
       - name: Generate briefing
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -80,7 +52,7 @@ jobs:
           if [ "${{ github.event.inputs.force }}" = "true" ]; then
             FORCE="--force"
           fi
-          python generate_brief.py --session ${{ steps.session.outputs.label }} $FORCE
+          python generate_brief.py --session morning $FORCE
 
       - name: Deploy to GitHub Pages
         run: |
@@ -95,6 +67,6 @@ jobs:
             exit 0
           fi
 
-          git commit -m "브리핑 업데이트: $(TZ='Asia/Seoul' date '+%Y-%m-%d %H:%M') KST (${{ steps.session.outputs.label }})"
+          git commit -m "브리핑 업데이트: $(TZ='Asia/Seoul' date '+%Y-%m-%d %H:%M') KST"
           git push origin gh-pages
           echo "배포 완료 → https://juno99zz-arkt.github.io/Hr-Daily-Brief/"
