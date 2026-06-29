@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>디스플레이 Weekly News Brief | 2026 27주차</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:#E8EDF2;min-height:100vh;padding:48px 32px 80px;}
+.page-header{max-width:900px;margin:0 auto 44px;display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:18px;border-bottom:3px solid #1A1A1A;}
+.page-label{font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#888;margin-bottom:7px;}
+.page-title{font-size:34px;font-weight:900;color:#1A1A1A;}
+.page-sub{font-size:14px;font-weight:500;color:#666;margin-top:5px;}
+.page-date{font-size:15px;font-weight:500;color:#555;text-align:right;}
+.page-period{font-size:12px;color:#AAA;margin-top:4px;text-align:right;}
+.cards-grid{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:36px;}
+.card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.09);}
+.card-header{padding:28px 36px 24px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.header-eyebrow{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:7px;}
+.header-title{font-size:28px;font-weight:900;color:#fff;line-height:1.2;}
+.header-sub{font-size:13px;color:rgba(255,255,255,0.5);margin-top:6px;line-height:1.5;}
+.badge{flex-shrink:0;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:5px 14px;border-radius:24px;margin-top:4px;white-space:nowrap;}
+.card-body{padding:20px 32px 8px;}
+.news-list{display:flex;flex-direction:column;gap:12px;}
+.news-item-wrap{border-radius:14px;overflow:hidden;}
+.news-item{display:flex;flex-direction:row;gap:20px;align-items:flex-start;padding:20px 22px;background:#F5F7FA;text-decoration:none;transition:background 0.15s,transform 0.12s;border-radius:14px 14px 0 0;}
+.news-item:hover{background:#EAECF0;transform:translateY(-1px);}
+.news-item.highlight{border-left:4px solid #0057FF;background:#F0F5FF;}
+.news-item.highlight:hover{background:#E4EDFF;}
+.news-num{font-family:'Bebas Neue',sans-serif;font-size:44px;line-height:1;flex-shrink:0;min-width:36px;margin-top:2px;}
+.news-content{flex:1;min-width:0;}
+.news-tag-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:5px;}
+.source-badge{font-size:11.5px;color:#BBB;}
+.news-date{font-size:11px;color:#CCC;font-weight:500;background:#EAECF0;padding:2px 7px;border-radius:4px;}
+.news-headline{font-size:16px;font-weight:700;color:#1A1A1A;line-height:1.5;margin-bottom:9px;}
+.news-summary{font-size:13.5px;color:#555;line-height:1.8;margin-bottom:10px;}
+.accent-line{font-size:13px;color:#555;line-height:1.6;padding-left:12px;border-left:3px solid;font-weight:600;}
+.card-footer{padding:14px 36px 18px;border-top:2px solid;display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
+.footer-label{font-size:12px;color:#CCC;font-weight:500;letter-spacing:0.8px;}
+.footer-date{font-size:13px;font-weight:700;}
+/* 펼치기 */
+.detail-toggle{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:8px 22px;background:#EAECF0;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:700;color:#888;letter-spacing:0.5px;transition:background 0.15s,color 0.15s;}
+.detail-toggle:hover{background:#DDE1E7;color:#555;}
+.detail-toggle .arrow{display:inline-block;transition:transform 0.25s;}
+.detail-toggle.open .arrow{transform:rotate(180deg);}
+.detail-box{display:none;padding:20px 22px 20px 78px;background:#F5F7FA;border-top:1px solid #DDE1E7;font-size:13.5px;color:#444;line-height:1.9;white-space:pre-wrap;word-break:keep-all;}
+.detail-box a{color:#0057FF;text-decoration:underline;}
+.news-item-wrap.highlight-wrap .detail-toggle{background:#E8EFFF;}
+.news-item-wrap.highlight-wrap .detail-toggle:hover{background:#D8E4FF;}
+.news-item-wrap.highlight-wrap .detail-box{background:#F0F5FF;border-top:1px solid #C8D9FF;}
+/* 카드 색상 */
+.w1 .card-header{background:linear-gradient(135deg,#0A2342,#0D3260);}
+.w1 .badge{background:rgba(29,158,117,.25);color:#6EEFC7;border:1px solid rgba(29,158,117,.4);}
+.w1 .news-num{color:#1D9E75;}.w1 .tag{background:#E1F5EE;color:#085041;}
+.w1 .accent-line{border-color:#1D9E75;}.w1 .card-footer{border-color:#E1F5EE;}.w1 .footer-date{color:#1D9E75;}
+.w2 .card-header{background:linear-gradient(135deg,#003366,#005599);}
+.w2 .badge{background:rgba(0,120,220,.3);color:#7ECFFF;border:1px solid rgba(0,120,220,.4);}
+.w2 .news-num{color:#0078DC;}.w2 .tag{background:#E0F2FF;color:#004C8C;}
+.w2 .accent-line{border-color:#0078DC;}.w2 .card-footer{border-color:#E0F2FF;}.w2 .footer-date{color:#0057B3;}
+.w3 .card-header{background:linear-gradient(135deg,#1A0A30,#2E1555);}
+.w3 .badge{background:rgba(127,119,221,.3);color:#CECBF6;border:1px solid rgba(127,119,221,.4);}
+.w3 .news-num{color:#7F77DD;}.w3 .tag{background:#EEEDFE;color:#3C3489;}
+.w3 .accent-line{border-color:#7F77DD;}.w3 .card-footer{border-color:#EEEDFE;}.w3 .footer-date{color:#534AB7;}
+/* 헤더 주간 배지 */
+.weekly-badge{display:inline-flex;align-items:center;gap:6px;background:#0057FF;color:#fff;font-size:11px;font-weight:700;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;margin-bottom:10px;}
+.page-footer{max-width:900px;margin:36px auto 0;display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid #CCC;}
+.footer-note{font-size:12px;color:#AAA;}
+.footer-tag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#BBB;}
+@media(max-width:600px){body{padding:28px 16px 60px;}.page-header{flex-direction:column;align-items:flex-start;gap:10px;}.card-header{padding:20px 20px 18px;}.card-body{padding:16px 16px 6px;}.news-item{padding:16px 14px;}.news-num{font-size:34px;}.card-footer{padding:12px 20px 14px;}.detail-box{padding:16px;}}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div>
+    <div class="page-label">Samsung Display · Weekly Intelligence</div>
+    <div class="weekly-badge">📺 WEEKLY</div>
+    <div class="page-title">디스플레이 Weekly News Brief</div>
+    <div class="page-sub">삼성 비즈니스 · 디스플레이 기술동향 · 경쟁사 동향</div>
+  </div>
+  <div>
+    <div class="page-date">2026년 27주차</div>
+    <div class="page-period">수집 기간 : 2026.06.22 – 06.29 (27주차)</div>
+  </div>
+</div>
+
+<div class="cards-grid">
+
+<div class="card w1">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Samsung Business</div>
+      <div class="header-title">삼성 비즈니스</div>
+      <div class="header-sub">삼성디스플레이·삼성전자 실적·투자·전략·M&A 주간 동향</div>
+    </div>
+    <span class="badge">Business</span>
+  </div>
+  <div class="card-body">
+    <div class="news-list">
+      <div class="news-item-wrap">
+        <a class="news-item" href="https://news.google.com/rss/articles/CBMiaEFVX3lxTE9uNVVKTmExQmxBLWd6ZlJOLUpTaXdmWWJwaHdGMklqdVdwU0hMZDhpQU9KN2tPZTFrcktoVEVEWHdDQ1hSbVhMdnBRV1RmcVZHWk9Ta1BwZFY5VGZzWUJIVkJXNVN0QS1z0gFsQVVfeXFMTzFpVG9DVjN4RXN1TndQbkZ2TVMyczdESkpUSGNHUVluemJ6cVVXb2Y2aGh0XzJaTkVUSWtlN3doMGNpSmpyRHJPQWxiZkFPV0drcEV1R0FWTEY4UUV5RFpGcUdFVjZHSlpBeVFv?oc=5" target="_blank" rel="noopener">
+          <div class="news-num">01</div>
+          <div class="news-content">
+            <div class="news-tag-row">
+              <span class="tag">삼성M&A</span>
+              <span class="source-badge">블로터 ↗</span>
+              <span class="news-date">2026.06.15</span>
+            </div>
+            <div class="news-headline">삼성생명, 中·태국법인 호실적 기반 해외 M&A 검토 — 삼성전자 초과자본 활용 가능성</div>
+            <div class="news-summary">삼성생명이 중국·태국 법인 호실적을 바탕으로 해외 M&A 및 시니어 사업 확장을 검토 중이다. 삼성전자 주주환원 확대로 유입된 초과자본을 해외 인수합병 재원으로 활용하는 방안이 거론되고 있다. 삼성그룹 전반의 자본 재배치 움직임이 가속화되는 가운데, 삼성디스플레이와의 지분 구조 변화도 간접적 영향권에 놓인다.</div>
+            <div class="accent-line">→ 삼성그룹 자본 재배치 가속화, 삼성디스플레이 투자 재원 구조 변화 촉각</div>
+          </div>
+        </a>
+        <button class="detail-toggle" onclick="toggleDetail('detail-w1-1', this)" aria-expanded="false">
+          자세히 보기 <span class="arrow">▼</span>
+        </button>
+        <div class="detail-box" id="detail-w1-1">📌 핵심 요약
+삼성생명이 해외 M&A 및 시니어 사업 진출을 공식적으로 검토하겠다고 밝혔다. 삼성전자 배당 확대로 축적된 초과자본을 전략적으로 활용하겠다는 의도다.
+
+📋 상세 내용
+삼성생명은 2026년 6월 15일 중국·태국 법인이 호실적을 기록했다고 발표하며, 이를 기반으로 해외 M&A 카드를 만지작거리고 있다고 밝혔다. 앞서 5월 14일 컨퍼런스콜에서 삼성생명 측은 '배당 우상향 기조를 지속하는 동시에 해외 M&A 및 시니어 사업도 검토 중'이라고 언급했다. 삼성전자가 1분기 역대 최대 영업이익(57.2조 원)을 기록하면서 계열사로의 배당 흐름이 강화되었고, 이 과정에서 삼성생명에 유입된 초과자본 활용처가 시장의 관심사로 떠올랐다. 한편 삼성SDI가 삼성디스플레이 지분(약 10조 원 규모) 매각을 추진하고 삼성전자가 SDC로부터 빌린 10조 원을 조기 상환하는 등, 그룹 내부 자본 흐름이 대규모로 재편되는 국면이다. 삼성생명의 M&A 재원이 디스플레이 관련 지분 재편과 맞물릴 가능성도 배제할 수 없다.
+
+🔗 원문 보기: <a href="https://news.google.com/rss/articles/CBMiaEFVX3lxTE9uNVVKTmExQmxBLWd6ZlJOLUpTaXdmWWJwaHdGMklqdVdwU0hMZDhpQU9KN2tPZTFrcktoVEVEWHdDQ1hSbVhMdnBRV1RmcVZHWk9Ta1BwZFY5VGZzWUJIVkJXNVN0QS1z0gFsQVVfeXFMTzFpVG9DVjN4RXN1TndQbkZ2TVMyczdESkpUSGNHUVluemJ6cVVXb2Y2aGh0XzJaTkVUSWtlN3doMGNpSmpyRHJPQWxiZkFPV0drcEV1R0FWTEY4UUV5RFpGcUdFVjZHSlpBeVFv?oc=5" target="_blank" rel="noopener">블로터</a>
+
+💡 산업 시사점
+삼성그룹 내 자본 재배치가 본격화되면서 삼성디스플레이의 지분 구조 및 투자 재원 조달 방식에도 변화가 예상된다. 삼성SDI의 SDC 지분 매각, 삼성전자의 SDC 차입금 조기 상환에 이어 삼성생명의 M&A 행보까지, 그룹 전반의 포트폴리오 최적화 흐름이 디스플레이 사업 투자 우선순위에 영향을 미칠 수 있다. 삼성디스플레이는 8.6세대 OLED 투자 등 대형 자본지출을 앞두고 있어, 그룹 내 자금 흐름 모니터링이 필요하다.</div>
+      </div>
+      <div class="news-item-wrap highlight-wrap">
+        <a class="news-item highlight" href="https://news.google.com/rss/articles/CBMiZkFVX3lxTE9nVUt2Sk9qdEFyZUZWUmRzamVzSlhWRk5jR1ROTDA2TEZac2tHdEdIRzY5U24ydms1eEVYSzlNMmVZSXdzUGhIWXAyZWpDdnJqbWZkVFFrc2VlSUpMcWdhMEwtTzhPZ9IBakFVX3lxTE9xdkFSVEtUcE1yVjY3T1l3U0NnaDZyUVE0Rm1HVDNBNlNkY2ljTFBaUGRkcmdGN3JMUjVONEMyYV8tWHJUMVpUNW9qRjA4TG5ESkF4SElIbmpzYWFScjRRTzRXbllZREI4Y1E?oc=5" target="_blank" rel="noopener">
+          <div class="news-num">02</div>
+          <div class="news-content">
+            <div class="news-tag-row">
+              <span class="tag">삼성M&A</span>
+              <span class="source-badge">테크M ↗</span>
+              <span class="news-date">2026.06.10</span>
+            </div>
+            <div class="news-headline">삼성전자, 美 DNA 분석기업 '엘리먼트 바이오사이언스' 인수 — M&A 재개 신호탄</div>
+            <div class="news-summary">삼성전자가 미국 DNA 분석 기업 '엘리먼트 바이오사이언스'를 인수하며 M&A를 본격 재개했다. 이재용 회장 체제 이후 신설된 M&A 전담팀의 첫 가시적 성과로, 바이오·헬스케어 분야로의 포트폴리오 다각화를 시사한다. 삼성전자의 투자 여력 확대는 디스플레이 부문 포함 그룹 전반의 전략적 자원 배분에도 영향을 줄 전망이다.</div>
+            <div class="accent-line">→ 삼성전자 M&A 재개, 그룹 투자 자원 배분 경쟁 속 디스플레이 부문 전략적 포지셔닝 중요</div>
+          </div>
+        </a>
+        <button class="detail-toggle" onclick="toggleDetail('detail-w1-2', this)" aria-expanded="false">
+          자세히 보기 <span class="arrow">▼</span>
+        </button>
+        <div class="detail-box" id="detail-w1-2">📌 핵심 요약
+삼성전자가 미국 DNA 분석 스타트업 엘리먼트 바이오사이언스를 인수하며 수년간 소강 상태였던 M&A 행보를 재개했다. 2025년 말 신설된 M&A 전담팀의 첫 실행 사례로 주목된다.
+
+📋 상세 내용
+삼성전자는 2026년 6월 10일 미국의 DNA 분석 기업 '엘리먼트 바이오사이언스' 인수를 발표했다. 이 기업은 차세대 시퀀싱(NGS) 기술을 보유한 바이오텍 스타트업으로, 삼성전자의 헬스케어·바이오 사업 확장 의지를 반영한다. 앞서 삼성전자는 2025년 11월 M&A 전담팀을 신설하고 '뉴 빅딜'을 예고한 바 있으며, 이번 인수는 그 첫 번째 구체적 행보다. 삼성전자는 1분기 반도체 영업이익 53.7조 원을 포함한 전사 영업이익 57.2조 원(역대 최대)을 기록하며 M&A 재원을 충분히 확보한 상태다. 한편 삼성전자는 해외 기술지분을 대거 정리하고 스타트업 투자전략도 재편하는 등 포트폴리오 최적화에 나서고 있다. 삼성SDI의 삼성디스플레이 지분 매각(10조 원 규모) 추진과 삼성전자의 SDC 차입금 조기 상환도 같은 맥락의 움직임으로 해석된다.
+
+🔗 원문 보기: <a href="https://news.google.com/rss/articles/CBMiZkFVX3lxTE9nVUt2Sk9qdEFyZUZWUmRzamVzSlhWRk5jR1ROTDA2TEZac2tHdEdIRzY5U24ydms1eEVYSzlNMmVZSXdzUGhIWXAyZWpDdnJqbWZkVFFrc2VlSUpMcWdhMEwtTzhPZ9IBakFVX3lxTE9xdkFSVEtUcE1yVjY3T1l3U0NnaDZyUVE0Rm1HVDNBNlNkY2ljTFBaUGRkcmdGN3JMUjVONEMyYV8tWHJUMVpUNW9qRjA4TG5ESkF4SElIbmpzYWFScjRRTzRXbllZREI4Y1E?oc=5" target="_blank" rel="noopener">테크M</a>
+
+💡 산업 시사점
+삼성전자의 M&A 재개와 바이오 영역 진출은 그룹 차원의 투자 우선순위 재편을 의미한다. 삼성디스플레이 입장에서는 그룹 내 투자 자원 경쟁이 심화될 수 있어, 8.6G OLED·폴더블 등 핵심 기술 투자의 당위성을 강화하는 전략이 필요하다. 동시에 삼성전자의 실적 호조는 디스플레이 패널 구매력 상승으로 이어져 SDC 공급 확대의 긍정적 요인이 된다.</div>
+      </div>
+      <div class="news-item-wrap">
+        <a class="news-item" href="https://news.google.com/rss/articles/CBMiaEFVX3lxTE1NQW9Wd2lfWlUzVVIxNVdlb01ka0wxZjktNHhBZGpmYWUtbXYzc1hLTWdxZmN3Q0ZmSUU3UVNvUXZObF9TRVJWbFFUSUo2emhfa2JsaThsTnFvSVdSZ05DclluSW1uLXRz?oc=5" target="_blank" rel="noopener">
+          <div class="news-num">03</div>
+          <div class="news-content">
+            <div class="news-tag-row">
+              <span class="tag">SDC재무</span>
+              <span class="source-badge">녹색경제신문 ↗</span>
+              <span class="news-date">2026.05.20</span>
+            </div>
+            <div class="news-headline">삼성전자, SDC서 빌린 10조 조기 상환 — 그룹 내부 차입 구조 정상화</div>
+            <div class="news-summary">삼성전자가 삼성디스플레이(SDC)로부터 차입한 10조 원을 예정보다 앞당겨 전액 상환했다. 이는 삼성전자의 반도체 호황으로 현금 창출력이 급격히 개선된 결과로, 그룹 내 계열사 간 자금 의존 관계가 정상화됨을 의미한다. 삼성디스플레이는 회수된 자금을 바탕으로 8.6세대 OLED 투자 등 신규 capex 집행에 활용할 여력을 확보했다.</div>
+            <div class="accent-line">→ SDC 10조 원 현금 회수로 OLED 대형 투자 가속화 발판 마련</div>
+          </div>
+        </a>
+        <button class="detail-toggle" onclick="toggleDetail('detail-w1-3', this)" aria-expanded="false">
+          자세히 보기 <span class="arrow">▼</span>
+        </button>
+        <div class="detail-box" id="detail-w1-3">📌 핵심 요약
+삼성전자가 삼성디스플레이에서 빌린 10조 원을 조기 상환했다. 반도체 부문의 압도적 실적이 그룹 내 자금 흐름을 정상화시킨 핵심 동력이다.
+
+📋 상세 내용
+삼성전자는 2026년 5월 20일 삼성디스플레이로부터 차입했던 10조 원 규모의 내부 차입금을 만기 이전에 전액 상환했다고 밝혔다. 해당 차입은 과거 삼성전자가 반도체 업황 부진 시기에 계열사인 삼성디스플레이의 잉여 현금을 활용한 그룹 내 유동성 지원 성격이었다. 삼성전자는 2026년 1분기 반도체(DS) 부문에서만 53.7조 원의 영업이익을 기록하고 전사 영업이익 57.2조 원으로 역대 최대 실적을 달성하면서 재무 여건이 크게 개선됐다. 조기 상환으로 삼성디스플레이는 10조 원의 현금을 회수하게 되었으며, 이는 진행 중인 8.6세대 IT OLED 투자 및 폴더블 전용 라인 구축 등에 활용 가능한 재원이다. 한편 삼성SDI도 별도로 삼성디스플레이 지분 매각을 추진 중이어서, SDC 주변의 자본 구조 변동이 동시다발적으로 진행되고 있다.
+
+🔗 원문 보기: <a href="https://news.google.com/rss/articles/CBMiaEFVX3lxTE1NQW9Wd2lfWlUzVVIxNVdlb01ka0wxZjktNHhBZGpmYWUtbXYzc1hLTWdxZmN3Q0ZmSUU3UVNvUXZObF9TRVJWbFFUSUo2emhfa2JsaThsTnFvSVdSZ05DclluSW1uLXRz?oc=5" target="_blank" rel="noopener">녹색경제신문</a>
+
+💡 산업 시사점
+삼성디스플레이는 10조 원 회수로 재무 건전성이 강화되어 대형 OLED 및 8.6G IT OLED 생산 라인 증설을 위한 자체 투자 여력이 확대됐다. 삼성전자와의 내부 자금 거래 정상화는 향후 SDC의 독립적 투자 의사결정 기반을 강화하는 효과도 있다. 그룹 전체의 재무 구조가 반도체 중심으로 재편되는 흐름 속에서, 디스플레이 부문의 전략적 투자 타이밍을 선제적으로 확보하는 것이 중요해졌다.</div>
+      </div>
+      <div class="news-item-wrap">
+        <a class="news-item" href="https://news.google.com/rss/articles/CBMiZkFVX3lxTE4xUWNCM3ZwYU5WcklyTmJLMVpzVEsyYUVoQ21za21xcUp6VW1KNWlzcm1zNERhOEl2OFJNWDZDdEdzZDBva1gtRHI4bzZGemEzdHozMDd6dGp5RU9ScnB3OVc1WVhYQQ?oc=5" target="_blank" rel="noopener">
+          <div class="news-num">04</div>
+          <div class="news-content">
+            <div class="news-tag-row">
+              <span class="tag">8.6GOLED</span>
+              <span class="source-badge">디일렉 ↗</span>
+              <span class="news-date">2026.05.21</span>
+            </div>
+            <div class="news-headline">삼성D, 8.6세대 OLED 수율 90% 돌파 — 맥북 프로 패널 양산 '청신호'</div>
+            <div class="news-summary">삼성디스플레이의 8.6세대 IT OLED 라인 수율이 90%를 돌파하며 맥북 프로용 패널 양산에 청신호가 켜졌다. 이는 애플의 주요 노트북 라인업에 OLED 패널을 공급할 수 있는 기술 완성도를 확인한 것으로, IT OLED 시장 선점을 위한 결정적 마일스톤이다. 다만 갤럭시A 등 비(非)애플 고객 확보를 병행해야 한다는 과제도 함께 부각되고 있다.</div>
+            <div class="accent-line">→ 8.6G OLED 수율 90% 확보, IT OLED 양산 경쟁에서 기술 우위 확인</div>
+          </div>
+        </a>
+        <button class="detail-toggle" onclick="toggleDetail('detail-w1-4', this)" aria-expanded="false">
+          자세히 보기 <span class="arrow">▼</span>
+        </button>
+        <div class="detail-box" id="detail-w1-4">📌 핵심 요약
+삼성디스플레이 8.6세대 OLED 수율이 90%를 넘어서며 맥북 프로 패널 양산 준비가 사실상 완료됐다. IT OLED 시장의 첫 번째 대형 수주처인 애플向 공급에 결정적 모멘텀이 형성됐다.
+
+📋 상세 내용
+2026년 5월 21일 보도에 따르면, 삼성디스플레이는 충남 아산에 구축 중인 8.6세대(2290×2620mm) IT OLED 생산 라인에서 수율 90% 달성에 성공했다. 이는 당초 업계가 예상했던 양산 초기 수율(70~80% 수준)을 크게 웃도는 결과다. 이 라인은 주로 13~15인치급 노트북 패널 생산을 겨냥하며, 애플 맥북 프로 OLED 버전에 탑재될 패널 공급을 목표로 한다. 수율 90% 돌파는 대량 양산 시 원가 경쟁력 확보가 가능한 수준으로, 실질적인 공급 계약 이행에 차질이 없을 것임을 시사한다. 다만 딜사이트 보도(4월 27일)에 따르면, 삼성디스플레이는 애플 의존도를 낮추기 위해 갤럭시A 시리즈 등 삼성전자 중저가 스마트폰 라인에도 8.6G 패널 적용을 검토하고 있어, 고객 다변화 전략이 병행 과제로 남아 있다.
+
+🔗 원문 보기: <a href="https://news.google.com/rss/articles/CBMiZkFVX3lxTE4xUWNCM3ZwYU5WcklyTmJLMVpzVEsyYUVoQ21za21xcUp6VW1KNWlzcm1zNERhOEl2OFJNWDZDdEdzZDBva1gtRHI4bzZGemEzdHozMDd6dGp5RU9ScnB3OVc1WVhYQQ?oc=5" target="_blank" rel="noopener">디일렉</a>
+
+💡 산업 시사점
+8.6G OLED 수율 90% 돌파는 삼성디스플레이가 IT OLED 패권 경쟁에서 BOE 등 중국 경쟁사 대비 기술·생산 완성도에서 앞서 있음을 입증한다. 맥북 프로 공급이 현실화되면 연간 수백만 대 규모의 안정적 물량이 확보되어 IT OLED 사업의 수익성 기반이 강화된다. 중장기적으로는 갤럭시A 등 삼성전자 내부 수요처 확대를 통해 라인 가동률을 극대화하는 투트랙 고객 전략이 필요하다.</div>
+      </div>
+      <div class="news-item-wrap">
+        <a class="news-item" href="https://news.google.com/rss/articles/CBMib0FVX3lxTFAwUnFJejVpR0VtSE0wR05vN3NwajB2NFZHWVZpVmYtNTlJNHRuSDdZdnFzTTBiOUNYa3dpcFRLa01qem5Va3l2cXdobndtamFwZ0daMUZzYjZvZUM4T1ZuSHNrRUNreEF0MmpUczF4cw?oc=5" target="_blank" rel="noopener">
+          <div class="news-num">05</div>
+          <div class="news-content">
+            <div class="news-tag-row">
+              <span class="tag">지분재편</span>
+              <span class="source-badge">리더스팩트 ↗</span>
+              <span class="news-date">2026.03.10</span>
+            </div>
+            <div class="news-headline">삼성SDI, 삼성디스플레이 지분 10조 매각 추진 — 투자재원 확보 목적</div>
+            <div class="news-summary">삼성SDI가 보유 중인 삼성디스플레이 지분을 약 10조 원 규모로 매각 추진 중이다. 배터리 사업 경쟁력 강화를 위한 투자 재원 마련이 목적으로, 삼성디스플레이의 주주 구성에 변화가 예상된다. 이번 지분 매각은 삼성전자의 SDC 차입금 조기 상환과 맞물려 삼성디스플레이 지배구조 재편의 신호탄이 될 수 있다는 점에서 주목된다.</div>
+            <div class="accent-line">→ SDC 주주구조 재편 진행 중, 삼성전자 중심 지배구조 강화 가속화 전망</div>
+          </div>
+        </a>
+        <button class="detail-toggle" onclick="toggleDetail('detail-w1-5', this)" aria-expanded="false">
+          자세히 보기 <span class="arrow">▼</span>
+        </button>
+        <div class="detail-box" id="detail-w1-5">📌 핵심 요약
+삼성SDI가 삼성디스플레이 지분을 10조 원에 매각하려는 움직임이 포착됐다. 이는 SDI의 배터리 투자 재원 확보와 그룹 전반의 포트폴리오 재편이라는 두 가지 목적이 맞물린 결과다.
+
+📋 상세 내용
+2026년 3월 10일 보도에 따르면, 삼성SDI는 삼성디스플레이 지분을 매각해 투자 실탄을 마련할 계획이다. 삼성SDI는 전기차 배터리 수요 변화에 대응한 공장 증설 및 차세대 배터리(전고체 등) 개발에 막대한 자금이 필요한 상황이다. 삼성SDI가 보유한 삼성디스플레이 지분 규모는 시장가 기준 약 10조 원에 달하는 것으로 추정된다. 이번 지분 매각이 성사될 경우, 삼성디스플레이의 2대 주주 구성에 변화가 생기며 삼성전자 중심의 지배구조가 더욱 공고해질 전망이다. 동시에 삼성전자의 SDC 차입금(10조 원) 조기 상환과 연계하면, 그룹 차원에서 삼성디스플레이 관련 자본 거래가 동시다발적으로 진행되고 있어 SDC의 재무·지배구조 재편이 상당히 진전된 상황이다. KIPOST는 이번 매각이 삼성SDI의 '투자 실탄 확보'를 위한 선택임을 명확히 했다.
+
+🔗 원문 보기: <a href="https://news.google.com/rss/articles/CBMib0FVX3lxTFAwUnFJejVpR0VtSE0wR05vN3NwajB2NFZHWVZpVmYtNTlJNHRuSDdZdnFzTTBiOUNYa3dpcFRLa01qem5Va3l2cXdobndtamFwZ0daMUZzYjZvZUM4T1ZuSHNrRUNreEF0MmpUczF4cw?oc=5" target="_blank" rel="noopener">리더스팩트</a>
+
+💡 산업 시사점
+삼성SDI의 SDC 지분 매각은 삼성디스플레이의 주주 구성 단순화와 삼성전자 지배력 강화로 이어져, SDC의 전략적 의사결정 속도가 빨라질 가능성이 있다. 삼성전자가 SDC의 최대·실질적 단독 대주주로 자리매김하게 되면, 갤럭시 시리즈 및 애플向 패널 공급 전략의 일체감이 높아질 수 있다. 다만 외부 투자자 또는 전략적 파트너가 해당 지분을 인수할 경우 SDC 경영에 새로운 변수가 발생할 수 있어 지분 매각 대상자 동향을 지속 모니터링해야 한다.</div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="footer-label">Weekly Briefing</span>
+    <span class="footer-date">2026.06.22 – 06.29</span>
+  </div>
+</div>
+<div class="card w2">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Display Technology</div>
+      <div class="header-title">디스플레이 기술동향</div>
+      <div class="header-sub">OLED·MicroLED·폴더블·차세대 디스플레이 기술 트렌드</div>
+    </div>
+    <span class="badge">Tech</span>
+  </div>
+  <div class="card-body">
+    <div class="news-list">
+      <div class="news-item-wrap highlight-wrap">
+        <a class="news-item highlight" href="https://news.google.com/rss/articles/CBMiSEFVX3lxTE5QX3gtMktSMFdhRWVLcjRVeGgwOVlEX213clVrYzE5VjNsMTFSSUVZdFdXQkJOaC1Nc2Z2RnRGaTc0QXlzSGZlbQ?oc=5" target="_blank" rel="noopener">
+          <div class="news-num">01</div>
+          <div class="news-content">
+            <div class="news-tag-row">
+              <span class="tag">QD기술</span>
+              <span class="source-badge">특허뉴스 ↗</span>
+              <span class="news-date">2026.06.23</span>
+            </div>
+            <div class="news-headline">전북대, 전압 제어 양자점 기술로 OLED 한계 극복 — 차세대 디스플레이 새 지평</div>
+            <div class="news-summary">전북대 김민수 연구교수팀이 외부 전압만으로 양자점(QD)의 발광을 정밀 제어하는 차세대 디스플레이 기술을 개발했다. 기존 OLED가 가진 번인·수명 한계를 소재 차원에서 근본적으로 극복할 수 있는 접근법으로, 전기장 기반 QD 제어는 별도의 화학적 처리 없이 발광 파장과 강도를 동적으로 조절한다. 이는 QD-OLED 등 하이브리드 구조 고도화에 직접적인 기술적 시사점을 제공하며, 삼성디스플레이가 추진 중인 QD 기반 프리미엄 디스플레이 기술 로드맵과도 맞닿아 있어 주목된다.</div>
+            <div class="accent-line">→ 전압 기반 QD 제어 기술, OLED 번인 한계 극복의 새로운 소재 해법으로 부상</div>
+          </div>
+        </a>
+        <button class="detail-toggle" onclick="toggleDetail('detail-w2-1', this)" aria-expanded="false">
+          자세히 보기 <span class="arrow">▼</span>
+        </button>
+        <div class="detail-box" id="detail-w2-1">📌 핵심 요약
+전북대 김민수 연구교수가 전압 신호만으로 양자점의 빛 파장과 강도를 실시간 제어하는 기술을 개발, 기존 OLED 구조의 번인·수명 제약을 소재·구동 원리 수준에서 돌파하는 가능성을 제시했다. 이 기술은 별도의 컬러 필터나 편광판 없이 고순도 색재현이 가능한 QD 기반 디스플레이 구현에 핵심 역할을 할 수 있다.
+
+📋 상세 내용
+연구팀은 전기장 인가 시 양자점 내 전하 분포가 변화하면서 발광 특성이 가역적으로 바뀌는 원리를 활용, 소자 구조를 단순화하면서도 색 순도와 응답 속도를 동시에 향상시켰다고 밝혔다. 해당 연구는 국내 특허 출원과 함께 국제 학술지 게재를 앞두고 있으며, 상용화 시 스마트폰·AR 글래스·차량용 디스플레이 등 다양한 폼팩터에 적용 가능성이 높다는 평가를 받고 있다.
+
+🔗 원문 보기: <a href="https://news.google.com/rss/articles/CBMiSEFVX3lxTE5QX3gtMktSMFdhRWVLcjRVeGgwOVlEX213clVrYzE5VjNsMTFSSUVZdFdXQkJOaC1Nc2Z2RnRGaTc0QXlzSGZlbQ?oc=5" target="_blank" rel="noopener">특허뉴스</a>
+
+💡 산업 시사점
+삼성디스플레이의 QD-OLED 펜타 탠덤 등 QD 기반 프리미엄 라인업에 전압 제어 QD 기술이 접목될 경우, 번인 억제와 색재현율 향상을 동시에 달성하는 차별화 포인트가 될 수 있다. 국내 대학 연구 성과를 선제적으로 기술 협력·라이선싱하는 오픈 이노베이션 전략 검토가 필요한 시점이다.</div>
+      </div>
+      <div class="news-item-wrap">
+        <a class="news-item" href="https://news.google.com/rss/articles/CBMimAFBVV95cUxQOXZ1ekxLX25COFMzdWxEU0J6aG9pd0dObnZWQm4xMEFRNW80SGlTY2lwRGFLbnlNMmNKSUhHQmRXTENzMUFBUzg2NkhfMG4wR25QZ2VWV25lTTJuX2lNVVNTRGJSSGc4UGhPWWJzeUtFSTB4NkN4QzA5RV9ubjJfR2J3NlZ2bGI4eXpUOFpOX3YtQmduY2lnVA?oc=5" target="_blank" rel="noopener">
+          <div class="news-num">02</div>
+          <div class="news-content">
+            <div class="news-tag-row">
+              <span class="tag">OLED번인</span>
+              <span class="source-badge">Vietnam.vn ↗</span>
+              <span class="news-date">2026.06.21</span>
+            </div>
+            <div class="news-headline">OLED 번인 현상 집착의 이면 — 최신 패널 수명 연장 기술 현주소 조명</div>
+            <div class="news-summary">최신 OLED 패널에서 여전히 화두인 번인(Burn-in) 현상에 대한 심층 분석 기사가 게재되며, 제조사들이 채택 중인 픽셀 쉬프팅·로고 밝기 제한·LTPO 가변 주사율 등 소프트웨어·하드웨어 복합 대응 기술이 재조명됐다. OLED 자발광 특성상 유기물 열화는 피할 수 없는 본질적 한계이나, 탠덤 구조 채택으로 동일 휘도 구현 시 각 유기층의 부담이 절반 수준으로 줄어 수명이 대폭 연장되는 추세다. 삼성디스플레이가 상용화한 탠덤 OLED 기술의 시장 설득력이 번인 우려 불식 측면에서도 강화되고 있음을 시사한다.</div>
+            <div class="accent-line">→ 탠덤 OLED 구조, 번인 불안 해소의 기술적 답안으로 시장 설득력 확보 중</div>
+          </div>
+        </a>
+        <button class="detail-toggle" onclick="toggleDetail('detail-w2-2', this)" aria-expanded="false">
+          자세히 보기 <span class="arrow">▼</span>
+        </button>
+        <div class="detail-box" id="detail-w2-2">📌 핵심 요약
+소비자들 사이에서 OLED 번인에 대한 불안감이 여전히 존재하는 가운데, 최신 패널은 픽셀 단위 발광 제어·LTPO 기반 저전력 구동·탠덤 유기층 구조 등을 통해 실사용 환경에서의 번인 가능성을 사실상 최소화하고 있다. 특히 탠덤 구조는 각 발광층의 전류 밀도를 낮춰 열화 속도 자체를 억제하는 근본 대책으로 평가된다.
+
+📋 상세 내용
+기사는 2024~2026년 출시된 플래그십 OLED 스마트폰과 TV 패널을 분석하며, 제조사별 번인 억제 알고리즘(픽셀 리프레시·스크린 세이버·적응형 밝기)의 효과와 한계를 구체적으로 서술했다. 삼성디스플레이의 QD-OLED 및 펜타 탠덤 기술이 단순 밝기 경쟁을 넘어 내구성 측면에서도 경쟁 우위를 갖추고 있다는 점이 부각됐다.
+
+🔗 원문 보기: <a href="https://news.google.com/rss/articles/CBMimAFBVV95cUxQOXZ1ekxLX25COFMzdWxEU0J6aG9pd0dObnZWQm4xMEFRNW80SGlTY2lwRGFLbnlNMmNKSUhHQmRXTENzMUFBUzg2NkhfMG4wR25QZ2VWV25lTTJuX2lNVVNTRGJSSGc4UGhPWWJzeUtFSTB4NkN4QzA5RV9ubjJfR2J3NlZ2bGI4eXpUOFpOX3YtQmduY2lnVA?oc=5" target="_blank" rel="noopener">Vietnam.vn</a>
+
+💡 산업 시사점
+번인 이슈는 OLED 채택을 망설이는 소비자·기업 고객의 핵심 우려 사항으로, 탠덤 구조의 내구성 우수성을 데이터 기반으로 적극 커뮤니케이션하는 마케팅 전략이 프리미엄 시장 점유율 확대에 유효하다. 삼성디스플레이는 펜타 탠덤 기술의 수명 데이터를 공개적으로 제시해 신뢰 기반 B2B 영업을 강화할 필요가 있다.</div>
+      </div>
+      <div class="news-item-wrap">
+        <a class="news-item" href="https://news.google.com/rss/articles/CBMiaEFVX3lxTE1SZTNVbG1wcEpLYWNVdVVOaWhKc1BycGJxQ19WSWZiX0FWNS1mUzJ4UTVSZ2NFLWNUSmJ3Nmh2ME1wbno0eFN4N1d4U29LQXRyTDhEN3FKcDdNVDdLdUlDMjJ2VmNWX1VY0gFsQVVfeXFMUFp3ei1YT1dXWWRlcl9ZR3pDMEtoNHhocVpYWnBfU1NmUDJzNDNVSXh4YTlCb0lCQW9POXRQc0pYZV9jcEpnTVhtdHh2RVZ0VGQxWVdoRksySzhtMlZwdGl3eHlBTXdnTTRzZ0dN?oc=5" target="_blank" rel="noopener">
+          <div class="news-num">03</div>
+          <div class="news-content">
+            <div class="news-tag-row">
+              <span class="tag">AI플랫폼</span>
+              <span class="source-badge">KIPOST ↗</span>
+              <span class="news-date">2026.05.19</span>
+            </div>
+            <div class="news-headline">디스플레이 산업, 패널 너머 AI·센서 시스템 플랫폼으로 패러다임 전환 가속</div>
+            <div class="news-summary">디스플레이 산업이 단순 화면 출력 장치를 넘어 AI 연산·센서 융합·로봇·미래 모빌리티 인터페이스를 포괄하는 시스템 플랫폼으로 진화하고 있다는 분석이 잇따라 제기됐다. 한국디스플레이산업협회가 SID 2026 리뷰 심포지엄을 통해 이 같은 산업 전환 방향을 공식화했으며, 온디바이스 AI와 결합한 인터랙티브 디스플레이, 차량용 대형 곡면 패널, 로봇 시각 인터페이스용 플렉서블 패널 수요가 새로운 성장 동력으로 부상하고 있다. 삼성디스플레이 입장에서는 OLED 기술력을 기반으로 폼팩터 다변화와 시스템 통합 역량을 동시에 확보해야 하는 전략적 분기점에 놓였다.</div>
+            <div class="accent-line">→ 디스플레이 경쟁력의 무게중심, 패널 성능에서 AI·센서 시스템 통합 역량으로 이동</div>
+          </div>
+        </a>
+        <button class="detail-toggle" onclick="toggleDetail('detail-w2-3', this)" aria-expanded="false">
+          자세히 보기 <span class="arrow">▼</span>
+        </button>
+        <div class="detail-box" id="detail-w2-3">📌 핵심 요약
+디스플레이가 '보여주는 기기'에서 'AI가 인지하고 반응하는 인터페이스 플랫폼'으로 역할이 확장되고 있으며, SID 2026을 계기로 업계 전반에 이 같은 패러다임 전환에 대한 공감대가 형성됐다. 로봇·자율주행차·XR 기기 등 신규 애플리케이션이 디스플레이의 새로운 수요처로 급부상 중이다.
+
+📋 상세 내용
+한국디스플레이산업협회 심포지엄에서는 SID 2026에서 발표된 주요 기술 트렌드로 ▲인셀 센서 통합 OLED ▲AI 기반 화질 최적화 ▲롤러블·슬라이더블 폼팩터의 모빌리티 적용 ▲저전력 구동 기술 등이 집중 조명됐다. 패널 단가 경쟁이 아닌 시스템 통합 가치로 경쟁 축이 이동함에 따라, 소프트웨어·센서·AI칩 업체와의 협업 생태계 구축이 핵심 과제로 제시됐다.
+
+🔗 원문 보기: <a href="https://news.google.com/rss/articles/CBMiaEFVX3lxTE1SZTNVbG1wcEpLYWNVdVVOaWhKc1BycGJxQ19WSWZiX0FWNS1mUzJ4UTVSZ2NFLWNUSmJ3Nmh2ME1wbno0eFN4N1d4U29LQXRyTDhEN3FKcDdNVDdLdUlDMjJ2VmNWX1VY0gFsQVVfeXFMUFp3ei1YT1dXWWRlcl9ZR3pDMEtoNHhocVpYWnBfU1NmUDJzNDNVSXh4YTlCb0lCQW9POXRQc0pYZV9jcEpnTVhtdHh2RVZ0VGQxWVdoRksySzhtMlZwdGl3eHlBTXdnTTRzZ0dN?oc=5" target="_blank" rel="noopener">KIPOST</a>
+
+💡 산업 시사점
+삼성디스플레이는 OLED 패널 공급자 역할에서 나아가, AI 화질 엔진·인셀 바이오 센서·차량용 플렉서블 모듈 등 고부가 시스템 솔루션 사업 영역으로 확장하는 로드맵 구체화가 시급하다. 로봇·모빌리티향 디스플레이 수요 대응을 위한 내열성·내충격성 강화 패널 기술 개발을 선제적으로 추진해야 한다.</div>
+      </div>
+      <div class="news-item-wrap">
+        <a class="news-item" href="https://news.google.com/rss/articles/CBMiggFBVV95cUxPMm1qYWRQRDB4SXJxSnFSbjJfdVFkUnRrSHVvZlVMMzNYUXdyV0piTVN0cnowQ0FadXQxMXV4UXJpMUhVc2JsT3gxOHRsUVBNRENyVWMyMFRkTXVQWHBiT1l5bE5XTFNZdzBuRHdyc2NKSVlrdkpjeTM0ZDJxR1VqekZB0gGWAUFVX3lxTE9BLW1UOHhMY0xFaVlLSWVnN3NOVERWYU1zYmxWbkFDckJQcDM5UmxJNWNwclEzSkRXWURZaXBMelpCX2RrY0RmOGdnMk03NHlTSzhXcnpIYUVtNEpiMVl1dWxaeWowY2lFMmtxNWFjQ0g0TVhLck5TSnQxbHNrYUhWUm5qWHkxbW5DcS1HVGlqT2R2OHlOQQ?oc=5" target="_blank" rel="noopener">
+          <div class="news-num">04</div>
+          <div class="news-content">
+            <div class="news-tag-row">
+              <span class="tag">QD탠덤</span>
+              <span class="source-badge">조선비즈 ↗</span>
+              <span class="news-date">2026.05.05</span>
+            </div>
+            <div class="news-headline">삼성디스플레이, SID 2026서 차세대 QD-OLED·탠덤 기술 공개 — 프리미엄 브랜드 전략 구체화</div>
+            <div class="news-summary">삼성디스플레이가 SID 2026 전시회에서 차세대 OLED 및 QD 기술을 대거 공개하며 프리미엄 기술 브랜드 전략을 본격화했다. 앞서 발표한 'QD-OLED 펜타 탠덤' 브랜드를 중심으로 5중 발광층 구조의 초고휘도·장수명 특성을 전면에 내세웠으며, 게이밍 OLED·IT용 OLED 등 애플리케이션별 특화 라인업도 함께 선보였다. 이는 중국 경쟁사의 OLED 추격에 맞서 기술 브랜드화와 프리미엄 포지셔닝을 통해 시장 주도권을 유지하려는 전략으로 해석된다.</div>
+            <div class="accent-line">→ QD-OLED 펜타 탠덤 브랜드화, 기술 초격차와 프리미엄 시장 방어의 두 마리 토끼 겨냥</div>
+          </div>
+        </a>
+        <button class="detail-toggle" onclick="toggleDetail('detail-w2-4', this)" aria-expanded="false">
+          자세히 보기 <span class="arrow">▼</span>
+        </button>
+        <div class="detail-box" id="detail-w2-4">📌 핵심 요약
+삼성디스플레이는 SID 2026에서 QD-OLED 펜타 탠덤을 비롯한 차세대 기술 포트폴리오를 공개하고, 단순 스펙 경쟁을 넘어 브랜드 가치 중심의 프리미엄 시장 전략을 천명했다. 5중 탠덤 구조는 기존 대비 휘도와 수명을 동시에 대폭 향상시키는 기술적 혁신으로, 경쟁사와의 기술 격차를 가시화하는 핵심 무기다.
+
+📋 상세 내용
+조선비즈 보도에 따르면 삼성디스플레이는 SID 2026 심포지엄 논문 발표와 전시 부스를 통해 QD 색변환층과 5단 탠덤 유기 발광층을 결합한 구조의 기술 세부사항을 공개했으며, TV·모니터·노트북용 대형 IT OLED 분야에서의 기술 우위를 집중적으로 어필했다. 컴퓨텍스 2026에서도 최신 게이밍 OLED를 별도 공개하며 고성능 게이밍 시장 공략을 위한 라인업 세분화 전략을 병행했다.
+
+🔗 원문 보기: <a href="https://news.google.com/rss/articles/CBMiggFBVV95cUxPMm1qYWRQRDB4SXJxSnFSbjJfdVFkUnRrSHVvZlVMMzNYUXdyV0piTVN0cnowQ0FadXQxMXV4UXJpMUhVc2JsT3gxOHRsUVBNRENyVWMyMFRkTXVQWHBiT1l5bE5XTFNZdzBuRHdyc2NKSVlrdkpjeTM0ZDJxR1VqekZB0gGWAUFVX3lxTE9BLW1UOHhMY0xFaVlLSWVnN3NOVERWYU1zYmxWbkFDckJQcDM5UmxJNWNwclEzSkRXWURZaXBMelpCX2RrY0RmOGdnMk03NHlTSzhXcnpIYUVtNEpiMVl1dWxaeWowY2lFMmtxNWFjQ0g0TVhLck5TSnQxbHNrYUhWUm5qWHkxbW5DcS1HVGlqT2R2OHlOQQ?oc=5" target="_blank" rel="noopener">조선비즈</a>
+
+💡 산업 시사점
+'QD-OLED 펜타 탠덤'이라는 명명 전략은 기술 브랜드를 고객사·소비자에게 각인시키는 동시에 경쟁사 모방을 어렵게 하는 이중 효과를 노린다. 게이밍·IT·TV 등 세그먼트별 맞춤형 OLED 포트폴리오 전략을 통해 중국 패널 업체의 범용 OLED와 명확한 차별화를 지속 강화해야 한다.</div>
+      </div>
+      <div class="news-item-wrap">
+        <a class="news-item" href="https://news.google.com/rss/articles/CBMiTkFVX3lxTFBVM3RITHYxcFFaa2h4cjg4cGRMTDBYNmQyLTI5RnBOMnVrcG9EdjVpVGFpdllOT3ZHQVRHT3RHRTZFc1I4UV9nSmZjN19EZw?oc=5" target="_blank" rel="noopener">
+          <div class="news-num">05</div>
+          <div class="news-content">
+            <div class="news-tag-row">
+              <span class="tag">COE무편광</span>
+              <span class="source-badge">전자신문 ↗</span>
+              <span class="news-date">2025.11.14</span>
+            </div>
+            <div class="news-headline">삼성디스플레이, COE 무편광 OLED 中 비보에 공급 — 패널 경량화 기술 상용화 본격화</div>
+            <div class="news-summary">삼성디스플레이가 중국 스마트폰 브랜드 비보(vivo)에 편광판을 제거한 COE(Color filter On Encapsulation) 구조의 OLED 패널을 공급하며 무편광 기술의 양산 적용을 확대하고 있다. COE 기술은 기존 편광판을 컬러 필터로 대체해 패널 두께와 무게를 줄이고, 편광판 광 손실 제거로 투과율을 높여 동일 밝기에서 전력 소비를 절감할 수 있다. 무편광 기술의 플래그십 스마트폰 확산은 OLED 패널의 소재·구조 혁신이 실제 제품에 빠르게 적용되고 있음을 보여주며, 삼성디스플레이의 공정 기술 경쟁력을 재확인시킨다.</div>
+            <div class="accent-line">→ 무편광 COE OLED 상용화 가속, 패널 박형화·고효율화 경쟁의 새로운 기준점 설정</div>
+          </div>
+        </a>
+        <button class="detail-toggle" onclick="toggleDetail('detail-w2-5', this)" aria-expanded="false">
+          자세히 보기 <span class="arrow">▼</span>
+        </button>
+        <div class="detail-box" id="detail-w2-5">📌 핵심 요약
+삼성디스플레이가 비보 플래그십 스마트폰에 COE 기반 무편광 OLED를 공급하며 해당 기술의 상용화 범위를 중국 주요 브랜드까지 확대했다. COE 구조는 편광판 제거로 패널 두께 감소·소비전력 절감·색재현율 향상이라는 세 가지 효과를 동시에 달성하는 구조적 혁신이다.
+
+📋 상세 내용
+전자신문 보도에 따르면, 기존 OLED의 외부광 반사 억제를 위해 필수였던 편광판을 COE 기술로 대체하면 패널 두께가 약 100~200μm 감소하고, 편광 손실 제거로 광 효율이 약 30% 이상 향상된다. 삼성디스플레이는 삼성전자 갤럭시 시리즈에 먼저 적용한 COE 기술을 비보에도 공급함으로써 중화권 프리미엄 스마트폰 시장에서의 점유율 방어와 기술 레퍼런스 확보를 동시에 추구하고 있다.
+
+🔗 원문 보기: <a href="https://news.google.com/rss/articles/CBMiTkFVX3lxTFBVM3RITHYxcFFaa2h4cjg4cGRMTDBYNmQyLTI5RnBOMnVrcG9EdjVpVGFpdllOT3ZHQVRHT3RHRTZFc1I4UV9nSmZjN19EZw?oc=5" target="_blank" rel="noopener">전자신문</a>
+
+💡 산업 시사점
+무편광 COE 기술은 폴더블 디스플레이의 힌지부 두께 최소화와도 연계되어, 차세대 폼팩터 경쟁에서 핵심 변수로 작용할 것이다. 중국 세트 업체에 대한 COE 공급 확대는 기술 종속성을 높이는 전략적 수단인 동시에, 중국 패널 업체의 COE 기술 추격 속도를 면밀히 모니터링해야 하는 양면적 과제를 안긴다.</div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="footer-label">Weekly Briefing</span>
+    <span class="footer-date">2026.06.22 – 06.29</span>
+  </div>
+</div>
+<div class="card w3">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Competitor Watch</div>
+      <div class="header-title">삼성디스플레이 경쟁사 동향</div>
+      <div class="header-sub">LG디스플레이·BOE·CSOT·AUO 등 글로벌 패널 업체 동향</div>
+    </div>
+    <span class="badge">Competitor</span>
+  </div>
+  <div class="card-body">
+    <div class="news-list">
+      <div class="news-item-wrap highlight-wrap">
+        <a class="news-item highlight" href="https://news.google.com/rss/articles/CBMia0FVX3lxTE9UeGJyZHFHOU5BeFFqS3VEXzQ5OGl5N1M1cjByanBfdUEyeEd5eG1kY1lxWGdrSGQ5Tk4xdEU0MVV2dFJ2emhNYmFYN0l1Zm5CeWdYYnc5S0pUWlBvTThoZF92VFoyRko3TS1F?oc=5" target="_blank" rel="noopener">
+          <div class="news-num">01</div>
+          <div class="news-content">
+            <div class="news-tag-row">
+              <span class="tag">LGD흑자</span>
+              <span class="source-badge">뉴스저널리즘 ↗</span>
+              <span class="news-date">2026.05.19</span>
+            </div>
+            <div class="news-headline">LG디스플레이, 'OLED 올인' 전략 3분기 연속 흑자 달성 — 수익성 중심 체질 개선 본격화</div>
+            <div class="news-summary">LG디스플레이가 OLED 집중 전략을 통해 3분기 연속 흑자를 기록하며 실적 반등에 성공했다. 정철동 대표 체제 아래 수익성 중심 성장 원년을 선언하며 대형 OLED 내 모니터 비중을 20%까지 확대하는 목표를 제시했다. 삼성디스플레이와 함께 한국 디스플레이 양대 축이 나란히 OLED 전략 효과를 입증하며 중국 추격에 맞선 기술 차별화 구도가 뚜렷해지고 있다.</div>
+            <div class="accent-line">→ LGD의 구조적 흑자 전환으로 한국 OLED 진영의 대중국 방어 체계가 한층 강화됨</div>
+          </div>
+        </a>
+        <button class="detail-toggle" onclick="toggleDetail('detail-w3-1', this)" aria-expanded="false">
+          자세히 보기 <span class="arrow">▼</span>
+        </button>
+        <div class="detail-box" id="detail-w3-1">📌 핵심 요약
+LG디스플레이는 OLED 올인 전략 추진 4년 만에 3분기 연속 흑자를 달성하며 구조적 흑자 전환을 공식화했다. 정철동 대표는 '수익성 중심 성장 원년'을 천명하고 2026년 영업익 1조 3천억 원 달성 가능성을 시사했다.
+
+📋 상세 내용
+2026년 1분기 컨퍼런스콜에서 LGD는 대형 OLED 패널 내 모니터 비중을 현재 수준에서 20%까지 끌어올리겠다고 밝혔으며, 애플워치 패널 공급 확대와 차량용 디스플레이 세계 1위 달성이 실적 개선의 주요 동력으로 작용했다. 구광모 LG그룹 회장의 OLED 전환 결단 이후 약 4년간의 구조조정 성과가 본격적으로 실적에 반영되는 구간으로 평가된다.
+
+🔗 원문 보기: <a href="https://news.google.com/rss/articles/CBMia0FVX3lxTE9UeGJyZHFHOU5BeFFqS3VEXzQ5OGl5N1M1cjByanBfdUEyeEd5eG1kY1lxWGdrSGQ5Tk4xdEU0MVV2dFJ2emhNYmFYN0l1Zm5CeWdYYnc5S0pUWlBvTThoZF92VFoyRko3TS1F?oc=5" target="_blank" rel="noopener">뉴스저널리즘</a>
+
+💡 산업 시사점
+LGD의 OLED 흑자 전환은 삼성디스플레이 입장에서 한국 OLED 진영의 대중국 방어력 강화를 의미하며, 동시에 모니터·차량용 등 응용처 확대 경쟁이 심화될 수 있음을 시사한다. 삼성디스플레이는 IT OLED 초격차 및 폴더블 선점으로 LGD와의 세그먼트 차별화를 더욱 명확히 해야 하는 국면이다.</div>
+      </div>
+      <div class="news-item-wrap">
+        <a class="news-item" href="https://news.google.com/rss/articles/CBMiggFBVV95cUxPbU1CbVJuaTNTdWNsV2JsajhlQVhYbm1qNEp2Q0gzd0pXak4zcVk0V1h3djExVllfU2FjUEhXUVBUeW1nNHl5akRNYWYzc0psSW1tdG1mUHR3TkZ5LTAwNXA1WE5nS19CcWxVb0RqLXZCQTJBckllanNPbDdQMW9pWE9B0gGWAUFVX3lxTE5hZjJ6cV9pRHppdVFVVzVPX2lyald0N01VM0p6MHlTRmE5NFdnMzVWRDllbWdIc0VpalJhYTBTV19lTU9XRzY1Zk9OUzI4OVd5OFl6YmliT0l6ek9DTElNaEFmMWd3QXl1RGtxQlRMUDNrU1NXQzVDVEFfRld5Wj?oc=5" target="_blank" rel="noopener">
+          <div class="news-num">02</div>
+          <div class="news-content">
+            <div class="news-tag-row">
+              <span class="tag">中OLED투자</span>
+              <span class="source-badge">Chosunbiz ↗</span>
+              <span class="news-date">2026.03.27</span>
+            </div>
+            <div class="news-headline">中 BOE·CSOT, 8.6세대 IT OLED 설비투자 본격화 — 韓·日 장비 발주 가속</div>
+            <div class="news-summary">중국 BOE와 CSOT가 8.6세대 IT OLED 생산라인 투자를 본격화하며 한국·일본 장비사에 대한 발주를 확대하고 있다. BOE는 8.6세대 패널의 첫 고객사로 대만 에이수스를 확보하며 IT OLED 시장 진입을 공식화했다. 삼성디스플레이·LG디스플레이가 선점한 IT OLED 시장에 중국 업체들이 빠르게 추격 태세를 갖추면서 경쟁 구도가 급변하고 있다.</div>
+            <div class="accent-line">→ 중국 8.6세대 OLED 투자 가속으로 IT OLED 시장 주도권 경쟁이 2~3년 내 본격화될 전망</div>
+          </div>
+        </a>
+        <button class="detail-toggle" onclick="toggleDetail('detail-w3-2', this)" aria-expanded="false">
+          자세히 보기 <span class="arrow">▼</span>
+        </button>
+        <div class="detail-box" id="detail-w3-2">📌 핵심 요약
+중국 BOE와 CSOT, 비전옥스 등이 8세대 및 8.6세대 OLED 라인에 대한 설비투자를 본격화하며 한국·일본 디스플레이 장비 업체에 대규모 발주를 진행 중이다. BOE는 대만 에이수스를 8.6세대 첫 고객사로 확보해 IT OLED 양산 체계에 돌입했다.
+
+📋 상세 내용
+국내 장비업체 이엘피는 삼성디스플레이·BOE에 이어 비전옥스·CSOT로부터 IT 8세대 장비 수주를 추가 확보했다고 밝혔으며, 이는 중국 전반의 OLED 투자 사이클이 빠르게 확산되고 있음을 방증한다. 조선비즈에 따르면 중국의 8세대 OLED 설비투자는 한국과 일본 장비 생태계를 활용하는 형태로 진행되어 국내 소부장 기업의 '이중 수혜·이중 딜레마' 구조가 형성되고 있다.
+
+🔗 원문 보기: <a href="https://news.google.com/rss/articles/CBMiggFBVV95cUxPbU1CbVJuaTNTdWNsV2JsajhlQVhYbm1qNEp2Q0gzd0pXak4zcVk0V1h3djExVllfU2FjUEhXUVBUeW1nNHl5akRNYWYzc0psSW1tdG1mUHR3TkZ5LTAwNXA1WE5nS19CcWxVb0RqLXZCQTJBckllanNPbDdQMW9pWE9B0gGWAUFVX3lxTE5hZjJ6cV9pRHppdVFVVzVPX2lyald0N01VM0p6MHlTRmE5NFdnMzVWRDllbWdIc0VpalJhYTBTV19lTU9XRzY1Zk9OUzI4OVd5OFl6YmliT0l6ek9DTElNaEFmMWd3QXl1RGtxQlRMUDNrU1NXQzVDVEFfRld5Wj?oc=5" target="_blank" rel="noopener">Chosunbiz</a>
+
+💡 산업 시사점
+삼성디스플레이는 8.6세대 IT OLED에서 선제적 양산·고객 확보로 중국의 추격에 대응하는 '시간 격차' 전략이 더욱 중요해지며, 핵심 소재·부품의 기술 내재화를 통한 진입장벽 구축이 시급하다. 중국 투자 확대로 국내 장비사의 대중 의존도가 심화되는 구조적 문제에 대한 중장기 대응책 마련도 필요하다.</div>
+      </div>
+      <div class="news-item-wrap">
+        <a class="news-item" href="https://news.google.com/rss/articles/CBMiT0FVX3lxTE5MSkVRU2FZeUNuWWtaS1dOMFFLekVNT0pkZ1ZGZlVrQTVBampWcWF6a3VkbVNkS2NXOXhtZjJ1bXB5cFpOYXIzUjJEUFhFcnM?oc=5" target="_blank" rel="noopener">
+          <div class="news-num">03</div>
+          <div class="news-content">
+            <div class="news-tag-row">
+              <span class="tag">中통폐합</span>
+              <span class="source-badge">딜사이트 ↗</span>
+              <span class="news-date">2026.03.27</span>
+            </div>
+            <div class="news-headline">中 BOE·CSOT 중소업체 통폐합 가속 — 규모의 경제로 삼성D·LGD 압박 강화</div>
+            <div class="news-summary">중국 정부 주도 하에 BOE·CSOT와 중소 디스플레이 업체 간 통폐합이 진행되며 중국 디스플레이 산업의 구조적 집중화가 가속화되고 있다. 이는 중국 업체들의 규모의 경제 확보와 함께 자원 집중을 통한 기술 고도화 전략의 일환으로 분석된다. 삼성디스플레이와 LG디스플레이는 중국 패널사들의 통합에 따른 가격 경쟁력·공급 물량 확대 압박에 대응해야 하는 상황이다.</div>
+            <div class="accent-line">→ 중국 디스플레이 통폐합으로 BOE·CSOT의 OLED 공세 시기가 앞당겨질 가능성 고조</div>
+          </div>
+        </a>
+        <button class="detail-toggle" onclick="toggleDetail('detail-w3-3', this)" aria-expanded="false">
+          자세히 보기 <span class="arrow">▼</span>
+        </button>
+        <div class="detail-box" id="detail-w3-3">📌 핵심 요약
+중국 BOE·CSOT를 중심으로 한 중소 디스플레이 업체 통폐합 움직임이 구체화되며 중국 디스플레이 산업의 과점화가 진행 중이다. 이는 단순 LCD 가격 경쟁을 넘어 OLED 분야에서도 강화된 중국 업체가 한국 패널사와 정면 충돌하는 시나리오를 앞당길 수 있다.
+
+📋 상세 내용
+딜사이트 보도에 따르면 중국 당국은 디스플레이 산업 경쟁력 강화를 위해 BOE·CSOT 중심의 산업 재편을 유도하고 있으며, 중소 업체들의 생산 설비가 대형 플레이어로 흡수되는 형태로 통합이 이루어지고 있다. 이로 인해 중국 내 과잉 공급 문제는 일부 해소될 수 있으나, 통합된 대형 업체의 투자 여력이 강화되어 OLED 전환 속도가 더욱 빨라질 것으로 예상된다.
+
+🔗 원문 보기: <a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTE5MSkVRU2FZeUNuWWtaS1dOMFFLekVNT0pkZ1ZGZlVrQTVBampWcWF6a3VkbVNkS2NXOXhtZjJ1bXB5cFpOYXIzUjJEUFhFcnM?oc=5" target="_blank" rel="noopener">딜사이트</a>
+
+💡 산업 시사점
+중국 디스플레이 산업의 통폐합은 BOE·CSOT의 자원 집중도와 OLED 투자 속도를 동시에 높이는 결과를 낳아 삼성디스플레이의 중소형 OLED 및 IT OLED 시장 방어 압박이 단기간에 커질 수 있다. 삼성디스플레이는 폴더블·초고해상도 등 프리미엄 세그먼트 집중 전략과 함께 핵심 고객사 lock-in을 더욱 강화해야 한다.</div>
+      </div>
+      <div class="news-item-wrap">
+        <a class="news-item" href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE53RktFVzk2YUFsNzBYMlNQa3hjSkxrQkpJV3ZBVlhUTElMV1lwOUdWdE9tQ3dheXJSV29jQkN0d1FRXzNaQzdDODBSVTVaa0ltQy1rOVl3?oc=5" target="_blank" rel="noopener">
+          <div class="news-num">04</div>
+          <div class="news-content">
+            <div class="news-tag-row">
+              <span class="tag">LGD모니터</span>
+              <span class="source-badge">지디넷코리아 ↗</span>
+              <span class="news-date">2026.04.23</span>
+            </div>
+            <div class="news-headline">LG디스플레이, 대형 OLED 모니터 비중 20% 확대 목표 — 1분기 컨퍼런스콜 전략 공개</div>
+            <div class="news-summary">LG디스플레이가 2026년 1분기 실적발표 컨퍼런스콜에서 대형 OLED 패널 포트폴리오 내 모니터 비중을 20%까지 확대하겠다는 구체적 목표를 제시했다. TV 중심이던 대형 OLED 사업의 다변화를 통해 수익성 개선과 시장 저변 확대를 동시에 추진하는 전략이다. 이는 삼성디스플레이가 IT OLED에서 선점 중인 모니터·노트북 세그먼트로 LGD가 본격 진입하는 신호탄으로 해석된다.</div>
+            <div class="accent-line">→ LGD의 대형 OLED 모니터 진격으로 IT OLED 모니터 시장 내 한국 패널사 간 경합 본격화</div>
+          </div>
+        </a>
+        <button class="detail-toggle" onclick="toggleDetail('detail-w3-4', this)" aria-expanded="false">
+          자세히 보기 <span class="arrow">▼</span>
+        </button>
+        <div class="detail-box" id="detail-w3-4">📌 핵심 요약
+LGD는 1분기 컨퍼런스콜에서 대형 OLED 내 모니터 패널 비중을 현재 한 자릿수에서 20% 수준으로 끌어올리는 목표를 공개했다. TV 일변도였던 대형 OLED 포트폴리오를 모니터·사이니지 등으로 다각화해 수익성 기반을 강화하겠다는 의지다.
+
+📋 상세 내용
+지디넷코리아 보도에 따르면 LGD는 WQHD·4K급 고해상도 OLED 모니터 패널 수요 증가에 대응해 광저우·파주 라인의 생산 유연성을 높이고 있다. 1분기 실적발표 컨퍼런스콜에서는 OLED 중심 체질 개선이 본격화되는 구간임을 강조하며 연간 수익성 목표 달성에 대한 자신감을 표명했다.
+
+🔗 원문 보기: <a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE53RktFVzk2YUFsNzBYMlNQa3hjSkxrQkpJV3ZBVlhUTElMV1lwOUdWdE9tQ3dheXJSV29jQkN0d1FRXzNaQzdDODBSVTVaa0ltQy1rOVl3?oc=5" target="_blank" rel="noopener">지디넷코리아</a>
+
+💡 산업 시사점
+LGD의 대형 OLED 모니터 비중 확대 전략은 삼성디스플레이가 8.6세대로 집중 공략하는 IT OLED 모니터 시장에서 대형 OLED 진영과의 경합 구도를 심화시킬 수 있다. 삼성디스플레이는 중소형·IT OLED에서의 기술 우위와 함께 프리미엄 가격 정책 유지를 통한 포지셔닝 차별화가 더욱 중요해진다.</div>
+      </div>
+      <div class="news-item-wrap">
+        <a class="news-item" href="https://news.google.com/rss/articles/CBMiZ0FVX3lxTE5Pb2oxZ25hdVplY1NUWmFYSW5PS3BwZmxBZEpiV1pBelJ1R0NzX05IRDJYN3JEQ0VRaWJPZldWZ2ozaTByYzk2bGtNcDdmNGpqbUZoREVnU09Tc0U0QjdPLTh1QnBVb1U?oc=5" target="_blank" rel="noopener">
+          <div class="news-num">05</div>
+          <div class="news-content">
+            <div class="news-tag-row">
+              <span class="tag">소부장이탈</span>
+              <span class="source-badge">Naver Blog ↗</span>
+              <span class="news-date">2026.05.11</span>
+            </div>
+            <div class="news-headline">K-디스플레이 소부장, 중국 투자 확대에 '텃밭' 이탈 가속 — 국내 생태계 공동화 우려</div>
+            <div class="news-summary">중국 BOE·CSOT의 OLED 설비투자 확대에 따라 한국 디스플레이 소재·부품·장비(소부장) 업체들이 중국 시장으로 이동하는 현상이 가속화되고 있다. 국내 패널 업체들의 신규 투자 감소와 중국 발주 증가가 맞물리면서 K-디스플레이 소부장 생태계의 공동화 우려가 제기된다. 이는 장기적으로 삼성디스플레이·LG디스플레이의 공급망 안정성과 핵심 기술 보안에도 영향을 미칠 수 있는 구조적 이슈다.</div>
+            <div class="accent-line">→ K-소부장의 중국 이탈 가속은 삼성디스플레이 공급망 안보와 기술 경쟁력에 장기적 위협 요인</div>
+          </div>
+        </a>
+        <button class="detail-toggle" onclick="toggleDetail('detail-w3-5', this)" aria-expanded="false">
+          자세히 보기 <span class="arrow">▼</span>
+        </button>
+        <div class="detail-box" id="detail-w3-5">📌 핵심 요약
+한국 디스플레이 소부장 기업들이 국내 패널사의 투자 축소 속에 중국 BOE·CSOT·비전옥스 등의 발주를 따라 중국 시장 의존도를 높이고 있다. 이 과정에서 기술 유출 위험과 함께 국내 디스플레이 생태계의 기반이 약화되는 이중 딜레마가 부각된다.
+
+📋 상세 내용
+네이버 블로그 기자수첩 기사에 따르면 국내 디스플레이 소부장 업체들은 삼성디스플레이·LGD의 신규 라인 투자가 제한된 상황에서 생존을 위해 중국 고객사 의존도를 높이고 있으며, 일부 업체는 중국 현지 법인 설립 및 기술 이전까지 검토 중인 것으로 알려졌다. 이는 단기적으로 매출 확보에 기여하지만 중장기적으로 중국 OLED 경쟁력 강화를 지원하는 역설적 구조를 만들고 있다.
+
+🔗 원문 보기: <a href="https://news.google.com/rss/articles/CBMiZ0FVX3lxTE5Pb2oxZ25hdVplY1NUWmFYSW5PS3BwZmxBZEpiV1pBelJ1R0NzX05IRDJYN3JEQ0VRaWJPZldWZ2ozaTByYzk2bGtNcDdmNGpqbUZoREVnU09Tc0U0QjdPLTh1QnBVb1U?oc=5" target="_blank" rel="noopener">Naver Blog</a>
+
+💡 산업 시사점
+삼성디스플레이는 핵심 소부장 파트너사의 대중 이탈을 방지하기 위해 국내 투자 로드맵을 조기에 제시하고 전략적 파트너십을 강화할 필요가 있다. 기술 보안 측면에서는 핵심 공정 기술 및 소재에 대한 대중 유출 방지 체계를 더욱 정교하게 구축해야 한다.</div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="footer-label">Weekly Briefing</span>
+    <span class="footer-date">2026.06.22 – 06.29</span>
+  </div>
+</div>
+</div>
+
+<div class="page-footer">
+  <span class="footer-note">※ 발행일시: 2026.06.30 (화) | 수집기간: 2026.06.22 ~ 06.29 | 내부 정보 공유 목적으로만 활용</span>
+  <span class="footer-tag">Samsung Display · Display Intelligence</span>
+</div>
+
+<script>
+function toggleDetail(id, btn) {
+  var box = document.getElementById(id);
+  var wrap = btn.parentElement;
+  var isOpen = box.style.display === 'block';
+  box.style.display = isOpen ? 'none' : 'block';
+  btn.classList.toggle('open', !isOpen);
+  btn.setAttribute('aria-expanded', !isOpen);
+  btn.innerHTML = isOpen
+    ? '자세히 보기 <span class="arrow">▼</span>'
+    : '접기 <span class="arrow">▼</span>';
+  if (!isOpen) wrap.querySelector('.news-item').style.borderRadius = '14px 14px 0 0';
+  else wrap.querySelector('.news-item').style.borderRadius = '';
+}
+</script>
+
+</body>
+</html>
