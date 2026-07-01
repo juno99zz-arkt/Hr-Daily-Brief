@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """삼성디스플레이 HR 피플팀 | 데일리 뉴스 브리핑 자동 생성기"""
 
-import sys, os, json, subprocess, feedparser, smtplib
+import sys, os, json, subprocess, feedparser, smtplib, socket
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
@@ -10,6 +10,8 @@ from email import encoders
 from datetime import datetime, timedelta, date as _date, timezone
 from pathlib import Path
 from urllib.parse import quote
+
+socket.setdefaulttimeout(15)  # RSS 요청 타임아웃 15초
 
 KST = timezone(timedelta(hours=9))
 def now_kst():
@@ -170,22 +172,19 @@ def last_working_day(ref: datetime) -> datetime:
 
 # ── 뉴스 수집 ──────────────────────────────────────────────────────────────────
 
-def fetch_news(queries, today, max_per_query=20):
-    # KST 기준 전일 워킹데이 자정 → UTC 변환 (KST = UTC+9)
-    cutoff_kst = last_working_day(today)
-    cutoff_utc = cutoff_kst - timedelta(hours=9)
+_RSS_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
 
+def _do_fetch(queries, cutoff_utc, max_per_query):
     articles, seen = [], set()
     for query in queries:
         url = f"https://news.google.com/rss/search?q={quote(query)}&hl=ko&gl=KR&ceid=KR:ko"
         try:
-            feed = feedparser.parse(url)
+            feed = feedparser.parse(url, agent=_RSS_AGENT)
             for entry in feed.entries[:max_per_query]:
                 raw   = entry.get("title", "")
                 title = raw.rsplit(" - ", 1)[0].strip() if " - " in raw else raw
                 if title in seen:
                     continue
-
                 parsed_time = entry.get("published_parsed")
                 if parsed_time:
                     pub_dt = datetime(*parsed_time[:6])  # UTC
@@ -194,7 +193,6 @@ def fetch_news(queries, today, max_per_query=20):
                     pub_str = (pub_dt + timedelta(hours=9)).strftime("%Y.%m.%d")
                 else:
                     pub_str = ""
-
                 seen.add(title)
                 source = raw.rsplit(" - ", 1)[-1].strip() if " - " in raw else ""
                 articles.append({
@@ -206,6 +204,21 @@ def fetch_news(queries, today, max_per_query=20):
                 })
         except Exception as e:
             print(f"  RSS 오류 ({query}): {e}")
+    return articles
+
+def fetch_news(queries, today, max_per_query=20):
+    # KST 기준 전일 워킹데이 자정 → UTC 변환 (KST = UTC+9)
+    cutoff_kst = last_working_day(today)
+    cutoff_utc = cutoff_kst - timedelta(hours=9)
+
+    articles = _do_fetch(queries, cutoff_utc, max_per_query)
+
+    # 수집 3건 미만이면 3일 전으로 확장 재시도 (Google RSS 차단/지연 대응)
+    if len(articles) < 3:
+        fallback_cutoff = cutoff_utc - timedelta(days=3)
+        articles = _do_fetch(queries, fallback_cutoff, max_per_query)
+        if articles:
+            print(f"  (컷오프 3일 확장 재시도 → {len(articles)}건)")
 
     articles.sort(key=lambda x: x.get("published", ""), reverse=True)
     return articles
@@ -239,6 +252,8 @@ def _extract_json(text):
 
 
 def generate_category(category, articles):
+    if not articles:
+        return {"articles": []}
     articles = articles[:30]
     article_text = json.dumps(articles, ensure_ascii=False, indent=2)
 
@@ -706,14 +721,18 @@ def main():
         # c8 핫뉴스는 쿼리가 많으므로 쿼리당 수집량을 줄여 속도 확보
         mpq = 10 if cat["id"] == "c8" else 20
         articles = fetch_news(cat["queries"], today, max_per_query=mpq)
-        print(f"  수집: {len(articles)}건 → Claude 분석 중...")
-        try:
-            data = generate_category(cat, articles)
-            cnt  = len(data.get("articles", []))
-            print(f"  선별: {cnt}건 완료\n")
-        except Exception as e:
-            print(f"  오류: {e}\n")
+        if not articles:
+            print(f"  수집: 0건 → 건너뜀\n")
             data = {"articles": []}
+        else:
+            print(f"  수집: {len(articles)}건 → Claude 분석 중...")
+            try:
+                data = generate_category(cat, articles)
+                cnt  = len(data.get("articles", []))
+                print(f"  선별: {cnt}건 완료\n")
+            except Exception as e:
+                print(f"  오류: {e}\n")
+                data = {"articles": []}
         all_data.append(data)
 
     html = render_html(all_data, today, session)
