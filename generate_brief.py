@@ -257,7 +257,32 @@ def generate_category(category, articles):
     articles = articles[:30]
     article_text = json.dumps(articles, ensure_ascii=False, indent=2)
 
-    prompt = f"""당신은 삼성디스플레이 HR 피플팀의 시니어 뉴스 에디터입니다.
+    # c8(핫뉴스)는 분야 무관 화제 기사 → HR 관점 강제 제거, 단순 요약 지시
+    is_hot = category["id"] == "c8"
+
+    if is_hot:
+        prompt = f"""다음은 대한민국 최신 뉴스 기사 목록입니다.
+이 중 오늘 가장 화제·주목받는 기사 4건을 선별해 JSON만 출력하세요.
+연예, 스포츠, 정치, 경제, 사회 등 분야 무관하게 화제성 기준으로 선별하세요.
+
+기사 목록:
+{article_text}
+
+출력 형식 (JSON만, 설명 금지):
+{{"articles": [
+  {{
+    "headline": "헤드라인 (50자 이내)",
+    "summary": "3문장. 기사에 나온 사실·수치 중심으로 객관 서술.",
+    "accent_line": "→ 핵심 요점 한 줄",
+    "source": "언론사명",
+    "link": "기사 URL",
+    "date": "YYYY.MM.DD",
+    "tag": "태그(6자이내)",
+    "highlight": false
+  }}
+]}}"""
+    else:
+        prompt = f"""당신은 삼성디스플레이 HR 피플팀의 시니어 뉴스 에디터입니다.
 
 ## 카테고리
 - 이름: {category['title']}
@@ -297,7 +322,7 @@ def generate_category(category, articles):
                 top5 = json.dumps(articles[:5], ensure_ascii=False, indent=2)
                 prompt = f"""다음 기사 중 가장 중요한 1~3개를 JSON만 출력하세요.
 기사: {top5}
-형식: {{"articles": [{{"headline":"제목","summary":"3문장 사실 요약","accent_line":"→ 핵심 의미","source":"언론사","link":"URL","date":"YYYY.MM.DD","tag":"태그","highlight":false}}]}}"""
+형식: {{"articles": [{{"headline":"제목","summary":"3문장 사실 요약","accent_line":"→ 핵심 요점","source":"언론사","link":"URL","date":"YYYY.MM.DD","tag":"태그","highlight":false}}]}}"""
 
             resp = CLIENT.messages.create(
                 model="claude-sonnet-4-6",
@@ -309,6 +334,23 @@ def generate_category(category, articles):
                 return result
         except Exception as e:
             print(f"  Claude API 오류 (시도 {attempt+1}): {e}")
+
+    # 2번 시도 후에도 0건 → 상위 2건 직접 변환 (Claude 거부 대응)
+    if articles:
+        print(f"  Claude 선별 실패 → 상위 2건 직접 포함")
+        fallback = []
+        for a in articles[:2]:
+            fallback.append({
+                "headline": a.get("title", "")[:50],
+                "summary":  a.get("summary", "") or a.get("title", ""),
+                "accent_line": "→ 화제 기사",
+                "source":   a.get("source", ""),
+                "link":     a.get("link", ""),
+                "date":     a.get("published", ""),
+                "tag":      "핫이슈",
+                "highlight": False,
+            })
+        return {"articles": fallback}
 
     return {"articles": []}
 
