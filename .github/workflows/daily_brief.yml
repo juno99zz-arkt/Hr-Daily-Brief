@@ -2,7 +2,7 @@ name: HR Daily Brief
 
 on:
   schedule:
-    - cron: '0 22 * * 0-4'   # 매일 07:00 KST (월~금) = UTC 전날 22:00
+    - cron: '0 21 * * 0-4'   # 목표 07:00 KST (월~금) = UTC 21:00 (GitHub 평균 58분 지연 반영)
   workflow_dispatch:
     inputs:
       force:
