@@ -325,7 +325,7 @@ def generate_category(category, articles):
 형식: {{"articles": [{{"headline":"제목","summary":"3문장 사실 요약","accent_line":"→ 핵심 요점","source":"언론사","link":"URL","date":"YYYY.MM.DD","tag":"태그","highlight":false}}]}}"""
 
             resp = CLIENT.messages.create(
-                model="claude-sonnet-4-6",
+                model="claude-haiku-4-5-20251001",
                 max_tokens=8000,
                 messages=[{"role": "user", "content": prompt}],
             )
