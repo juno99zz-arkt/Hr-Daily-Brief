@@ -192,7 +192,7 @@ def _do_fetch(queries, cutoff_utc, max_per_query):
                         continue
                     pub_str = (pub_dt + timedelta(hours=9)).strftime("%Y.%m.%d")
                 else:
-                    pub_str = ""
+                    continue  # 날짜 없는 기사는 구기사 가능성 → 제외
                 seen.add(title)
                 source = raw.rsplit(" - ", 1)[-1].strip() if " - " in raw else ""
                 articles.append({
@@ -251,19 +251,22 @@ def _extract_json(text):
     return None
 
 
-def generate_category(category, articles):
+def generate_category(category, articles, today=None):
     if not articles:
         return {"articles": []}
     articles = articles[:30]
     article_text = json.dumps(articles, ensure_ascii=False, indent=2)
+    today_str = today.strftime("%Y.%m.%d") if today else now_kst().strftime("%Y.%m.%d")
 
     # c8(핫뉴스)는 분야 무관 화제 기사 → HR 관점 강제 제거, 단순 요약 지시
     is_hot = category["id"] == "c8"
 
     if is_hot:
-        prompt = f"""다음은 대한민국 최신 뉴스 기사 목록입니다.
+        prompt = f"""오늘 날짜: {today_str}
+다음은 대한민국 최신 뉴스 기사 목록입니다.
 이 중 오늘 가장 화제·주목받는 기사 4건을 선별해 JSON만 출력하세요.
 연예, 스포츠, 정치, 경제, 사회 등 분야 무관하게 화제성 기준으로 선별하세요.
+오래된 기사(date가 오늘과 2일 이상 차이나는 경우)는 제외하세요.
 
 기사 목록:
 {article_text}
@@ -283,6 +286,7 @@ def generate_category(category, articles):
 ]}}"""
     else:
         prompt = f"""당신은 삼성디스플레이 HR 피플팀의 시니어 뉴스 에디터입니다.
+오늘 날짜: {today_str}
 
 ## 카테고리
 - 이름: {category['title']}
@@ -298,6 +302,7 @@ def generate_category(category, articles):
 3. 동일 사건 중복 기사 → 1건만 유지
 4. 광고·홍보·보도자료성 기사 제외 (대체 기사 없으면 가장 유익한 것 포함)
 5. highlight: 가장 중요한 1건만 true
+6. 오늘 날짜({today_str}) 기준 2일 이상 지난 기사는 선별하지 말 것
 
 ## 출력 형식 (JSON만 출력, 설명·주석 금지)
 {{
@@ -769,7 +774,7 @@ def main():
         else:
             print(f"  수집: {len(articles)}건 → Claude 분석 중...")
             try:
-                data = generate_category(cat, articles)
+                data = generate_category(cat, articles, today)
                 cnt  = len(data.get("articles", []))
                 print(f"  선별: {cnt}건 완료\n")
             except Exception as e:
