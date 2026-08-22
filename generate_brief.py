@@ -670,8 +670,8 @@ def send_email(all_data, today, session_label="morning"):
     day_str = days[today.weekday()]
     period_start = last_working_day(today)
     period = f"{period_start.strftime('%Y.%m.%d')} – {today.strftime('%m.%d')}"
-    session_str = "오후" if session_label == "afternoon" else "아침"
-    subject = f"[피플팀 데일리 브리핑] {today.strftime('%Y.%m.%d')} ({day_str}) {session_str}"
+    session_str = "오후" if session_label == "afternoon" else ""
+    subject = f"[피플팀 데일리 브리핑] {today.strftime('%Y.%m.%d')} ({day_str})"
     url = "https://juno99zz-arkt.github.io/Hr-Daily-Brief/"
 
     rows_html = ""
@@ -697,7 +697,7 @@ def send_email(all_data, today, session_label="morning"):
     <tr><td style="background:linear-gradient(135deg,#0A2342,#0D3260);padding:32px 36px;">
       <div style="font-size:11px;color:rgba(255,255,255,0.5);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Samsung Display · HR People Team</div>
       <div style="font-size:24px;font-weight:900;color:#fff;margin-bottom:6px;">피플팀 데일리 뉴스 브리핑</div>
-      <div style="font-size:13px;color:rgba(255,255,255,0.6);">{today.strftime('%Y년 %m월 %d일')} ({day_str}) · {session_str} 브리핑 · 수집기간: {period}</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.6);">{today.strftime('%Y년 %m월 %d일')} ({day_str}) · 수집기간: {period}</div>
     </td></tr>
     <tr><td style="padding:24px 36px 12px;">
       <a href="{url}" style="display:inline-block;background:#1A1A1A;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:700;">전체 브리핑 보기 →</a>
@@ -724,7 +724,7 @@ def send_email(all_data, today, session_label="morning"):
 
     html_file = OUTPUT_DIR / "index.html"
     if html_file.exists():
-        attach_name = f"피플팀_데일리브리핑_{today.strftime('%Y%m%d')}_{session_str}.html"
+        attach_name = f"피플팀_데일리브리핑_{today.strftime('%Y%m%d')}.html"
         part = MIMEBase("application", "octet-stream")
         part.set_payload(html_file.read_bytes())
         encoders.encode_base64(part)
