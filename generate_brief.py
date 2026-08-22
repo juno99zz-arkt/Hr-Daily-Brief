@@ -255,8 +255,21 @@ def generate_category(category, articles, today=None):
     if not articles:
         return {"articles": []}
     articles = articles[:30]
-    article_text = json.dumps(articles, ensure_ascii=False, indent=2)
     today_str = today.strftime("%Y.%m.%d") if today else now_kst().strftime("%Y.%m.%d")
+
+    # 인덱스 맵 생성 (Claude에게 link 대신 idx 번호만 출력하게 함)
+    link_map = {}
+    indexed = []
+    for i, a in enumerate(articles, 1):
+        link_map[i] = a.get("link", "")
+        indexed.append({
+            "idx":       i,
+            "title":     a.get("title", ""),
+            "date":      a.get("published", ""),
+            "source":    a.get("source", ""),
+            "summary":   a.get("summary", ""),
+        })
+    article_text = json.dumps(indexed, ensure_ascii=False, indent=2)
 
     # c8(핫뉴스)는 분야 무관 화제 기사 → HR 관점 강제 제거, 단순 요약 지시
     is_hot = category["id"] == "c8"
@@ -274,11 +287,11 @@ def generate_category(category, articles, today=None):
 출력 형식 (JSON만, 설명 금지):
 {{"articles": [
   {{
+    "idx": 기사번호(정수),
     "headline": "헤드라인 (50자 이내)",
     "summary": "3문장. 기사에 나온 사실·수치 중심으로 객관 서술.",
     "accent_line": "→ 핵심 요점 한 줄",
     "source": "언론사명",
-    "link": "기사 URL",
     "date": "YYYY.MM.DD",
     "tag": "태그(6자이내)",
     "highlight": false
@@ -308,11 +321,11 @@ def generate_category(category, articles, today=None):
 {{
   "articles": [
     {{
+      "idx": 기사번호(정수),
       "headline": "헤드라인 (핵심 수치·팩트 포함, 50자 내외)",
       "summary": "3~4문장. 기사에 나온 수치·사실·발언 중심. 해석·시사점 없이 사실만.",
       "accent_line": "→ 이 기사가 HR 피플팀에 갖는 핵심 의미 한 줄",
       "source": "언론사명",
-      "link": "기사 URL",
       "date": "YYYY.MM.DD",
       "tag": "핵심태그(8자이내)",
       "highlight": false
@@ -320,14 +333,21 @@ def generate_category(category, articles, today=None):
   ]
 }}"""
 
+    def _apply_links(result):
+        """Claude가 출력한 idx로 실제 link를 매핑"""
+        for art in result.get("articles", []):
+            idx = art.pop("idx", None)
+            art["link"] = link_map.get(idx, "")
+        return result
+
     for attempt in range(2):
         try:
             if attempt == 1:
                 # 재시도: 상위 5개만, 단순 지시
-                top5 = json.dumps(articles[:5], ensure_ascii=False, indent=2)
+                top5 = json.dumps(indexed[:5], ensure_ascii=False, indent=2)
                 prompt = f"""다음 기사 중 가장 중요한 1~3개를 JSON만 출력하세요.
 기사: {top5}
-형식: {{"articles": [{{"headline":"제목","summary":"3문장 사실 요약","accent_line":"→ 핵심 요점","source":"언론사","link":"URL","date":"YYYY.MM.DD","tag":"태그","highlight":false}}]}}"""
+형식: {{"articles": [{{"idx":기사번호,"headline":"제목","summary":"3문장 사실 요약","accent_line":"→ 핵심 요점","source":"언론사","date":"YYYY.MM.DD","tag":"태그","highlight":false}}]}}"""
 
             resp = CLIENT.messages.create(
                 model="claude-haiku-4-5-20251001",
@@ -336,7 +356,7 @@ def generate_category(category, articles, today=None):
             )
             result = _extract_json(resp.content[0].text.strip())
             if result and result.get("articles"):
-                return result
+                return _apply_links(result)
         except Exception as e:
             print(f"  Claude API 오류 (시도 {attempt+1}): {e}")
 
