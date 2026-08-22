@@ -490,16 +490,6 @@ body{font-family:'Noto Sans KR',sans-serif;background:#EDEAE3;min-height:100vh;p
 .footer-note{font-size:12px;color:#AAA;line-height:1.6;}
 .footer-tag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#BBB;}
 
-.archive-nav{max-width:960px;margin:48px auto 0;background:#F7F6F2;border-radius:16px;padding:24px 32px;}
-.archive-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#AAA;margin-bottom:12px;}
-.archive-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
-.archive-input{font-size:14px;font-weight:600;color:#1A1A1A;background:#fff;border:1.5px solid #DDD;border-radius:10px;padding:10px 16px;outline:none;cursor:pointer;transition:border-color 0.15s;}
-.archive-input:focus{border-color:#1A1A1A;}
-.archive-btn{font-size:14px;font-weight:700;color:#fff;background:#1A1A1A;border:none;border-radius:10px;padding:10px 22px;cursor:pointer;transition:background 0.15s;}
-.archive-btn:hover{background:#333;}
-.archive-msg{font-size:12px;color:#E24B4A;margin-top:8px;width:100%;}
-@media(max-width:640px){.archive-nav{padding:18px 16px;}.archive-row{gap:8px;}}
-
 @media(max-width:640px){
   body{padding:20px 14px 60px;}
   .page-header{flex-direction:column;align-items:flex-start;gap:10px;}
@@ -659,39 +649,10 @@ def render_html(all_data, today, session_label="morning"):
 {cards_html}
 </div>
 
-<div class="archive-nav">
-  <div class="archive-label">지난 브리핑 보기</div>
-  <div class="archive-row">
-    <input type="date" id="archiveDate" class="archive-input"
-      max="{today.strftime('%Y-%m-%d')}"
-      value="{today.strftime('%Y-%m-%d')}">
-    <button class="archive-btn" onclick="goArchive()">이동 →</button>
-  </div>
-  <div id="archiveMsg" class="archive-msg"></div>
-</div>
-
 <div class="page-footer">
   <span class="footer-note">※ {generated} 생성 · 수집기간: {period}<br>내부 정보 공유 목적으로만 활용</span>
   <span class="footer-tag">Samsung Display · HR People Team</span>
 </div>
-
-<script>
-function goArchive() {{
-  var d = document.getElementById('archiveDate').value;
-  if (!d) return;
-  var url = 'https://juno99zz-arkt.github.io/Hr-Daily-Brief/archive/' + d + '.html';
-  var msg = document.getElementById('archiveMsg');
-  fetch(url, {{method:'HEAD'}})
-    .then(function(r) {{
-      if (r.ok) {{ window.open(url, '_blank'); msg.textContent = ''; }}
-      else {{ msg.textContent = d + ' 브리핑이 존재하지 않습니다.'; }}
-    }})
-    .catch(function() {{ window.open(url, '_blank'); }});
-}}
-document.getElementById('archiveDate').addEventListener('keydown', function(e) {{
-  if (e.key === 'Enter') goArchive();
-}});
-</script>
 
 {FILTER_JS}
 </body>
