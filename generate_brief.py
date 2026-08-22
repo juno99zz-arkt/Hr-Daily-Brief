@@ -3,6 +3,7 @@
 """삼성디스플레이 HR 피플팀 | 데일리 뉴스 브리핑 자동 생성기"""
 
 import sys, os, json, subprocess, feedparser, smtplib, socket
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
@@ -117,7 +118,8 @@ CATEGORIES = [
         "sub": "OLED·MicroLED·기술동향·LGD·BOE·CSOT 등 경쟁사",
         "priority": "삼성디스플레이 기술 > 업계 기술동향 > 경쟁사(LGD·BOE·CSOT)",
         "queries": ["OLED 기술", "MicroLED", "LG디스플레이",
-                    "BOE 디스플레이", "CSOT 중국 패널", "디스플레이 시장"],
+                    "BOE 디스플레이", "CSOT 중국 패널", "디스플레이 시장",
+                    "QD-OLED", "AMOLED", "플렉시블 디스플레이", "디스플레이 패널"],
     },
     {
         "id": "c8", "eyebrow": "Korea Hot News", "badge": "Hot News",
@@ -209,6 +211,13 @@ def _do_fetch(queries, cutoff_utc, max_per_query):
 def fetch_news(queries, today, max_per_query=20):
     # KST 기준 전일 워킹데이 자정 → UTC 변환 (KST = UTC+9)
     cutoff_kst = last_working_day(today)
+
+    # 내일이 공휴일/주말이면 당일 뉴스 부족 가능 → 컷오프 1일 추가 확장
+    tomorrow = today.date() + timedelta(days=1)
+    if is_holiday(tomorrow):
+        cutoff_kst -= timedelta(days=1)
+        print(f"  (연휴 전날: 컷오프 1일 확장 → {cutoff_kst.strftime('%Y.%m.%d')})")
+
     cutoff_utc = cutoff_kst - timedelta(hours=9)
 
     articles = _do_fetch(queries, cutoff_utc, max_per_query)
@@ -728,6 +737,10 @@ def send_email(all_data, today, session_label="morning"):
             srv.login(EMAIL_SENDER, EMAIL_PASSWORD)
             srv.sendmail(EMAIL_SENDER, recipients, msg.as_string())
         print(f"  이메일 발송 완료 → {', '.join(recipients)}")
+    except smtplib.SMTPAuthenticationError as e:
+        print(f"  이메일 발송 오류 (인증 실패): {e}")
+        print("  ⚠ Gmail 앱 비밀번호가 만료됐습니다. GitHub Secrets의 EMAIL_PASSWORD를 갱신하세요.")
+        sys.exit(1)  # 워크플로 실패 → GitHub 이메일 알림
     except Exception as e:
         print(f"  이메일 발송 오류: {e}")
 
@@ -782,25 +795,45 @@ def main():
         print("  강제 실행: --force 옵션 사용\n")
         return
 
-    all_data = []
-    for cat in CATEGORIES:
-        print(f"[{cat['title']}]")
-        # c8 핫뉴스는 쿼리가 많으므로 쿼리당 수집량을 줄여 속도 확보
+    # ── 카테고리별 병렬 처리 ──────────────────────────────────────────────────
+    credit_errors = 0
+
+    def _process(cat):
+        nonlocal credit_errors
         mpq = 10 if cat["id"] == "c8" else 20
         articles = fetch_news(cat["queries"], today, max_per_query=mpq)
         if not articles:
-            print(f"  수집: 0건 → 건너뜀\n")
-            data = {"articles": []}
-        else:
-            print(f"  수집: {len(articles)}건 → Claude 분석 중...")
-            try:
-                data = generate_category(cat, articles, today)
-                cnt  = len(data.get("articles", []))
-                print(f"  선별: {cnt}건 완료\n")
-            except Exception as e:
-                print(f"  오류: {e}\n")
-                data = {"articles": []}
-        all_data.append(data)
+            print(f"[{cat['title']}] 수집: 0건 → 건너뜀")
+            return cat["id"], {"articles": []}
+        print(f"[{cat['title']}] 수집: {len(articles)}건 → Claude 분석 중...")
+        try:
+            data = generate_category(cat, articles, today)
+            cnt  = len(data.get("articles", []))
+            print(f"[{cat['title']}] 선별: {cnt}건 완료")
+            return cat["id"], data
+        except Exception as e:
+            errmsg = str(e)
+            if "credit balance is too low" in errmsg:
+                credit_errors += 1
+                print(f"[{cat['title']}] ⚠ 크레딧 부족")
+            else:
+                print(f"[{cat['title']}] 오류: {e}")
+            return cat["id"], {"articles": []}
+
+    results = {}
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        futures = {pool.submit(_process, cat): cat for cat in CATEGORIES}
+        for future in as_completed(futures):
+            cid, data = future.result()
+            results[cid] = data
+
+    all_data = [results[cat["id"]] for cat in CATEGORIES]
+
+    # 크레딧 부족 감지 → 워크플로 실패로 GitHub 알림
+    if credit_errors > 0:
+        print(f"\n  ⚠ {credit_errors}개 카테고리 크레딧 부족으로 실패.")
+        print("  Anthropic 콘솔에서 크레딧을 충전하세요: https://console.anthropic.com/settings/billing")
+        sys.exit(1)
 
     html = render_html(all_data, today, session)
     out  = OUTPUT_DIR / "index.html"
