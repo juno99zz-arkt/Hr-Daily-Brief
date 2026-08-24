@@ -61,7 +61,15 @@ jobs:
           git config user.email "actions@github.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
 
-          git add index.html
+          # 날짜별 아카이브 저장
+          DATED="archive/$(TZ='Asia/Seoul' date '+%Y-%m-%d').html"
+          mkdir -p archive
+          cp index.html "$DATED"
+
+          # 중복 기사 차단용 제목 기록 (다음 실행에서 재사용)
+          [ -f seen_titles.json ] && git add seen_titles.json
+
+          git add index.html "$DATED"
           if git diff --cached --quiet; then
             echo "변경 없음, 배포 생략."
             exit 0

@@ -58,20 +58,23 @@ OUTPUT_DIR = Path(__file__).parent / "public"
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 SEEN_FILE = OUTPUT_DIR / "seen_titles.json"
+SEEN_DAYS = 30  # Google RSS 구기사 재색인은 수개월에 걸쳐 반복되므로 충분히 길게 유지
 
 def load_seen_titles(today):
-    """최근 5일간 선별된 기사 원문 제목 로드 (중복 방지)"""
+    """최근 SEEN_DAYS일간 선별된 기사 원문 제목 로드 (중복 방지)"""
     if not SEEN_FILE.exists():
+        print(f"  seen_titles 파일 없음 ({SEEN_FILE}) → 중복 차단 없이 시작")
         return set()
     try:
         data = json.loads(SEEN_FILE.read_text("utf-8"))
-        cutoff = (today - timedelta(days=5)).strftime("%Y.%m.%d")
+        cutoff = (today - timedelta(days=SEEN_DAYS)).strftime("%Y.%m.%d")
         return {e["title"] for e in data.get("entries", []) if e.get("date", "") >= cutoff}
-    except Exception:
+    except Exception as e:
+        print(f"  seen_titles 로드 오류: {e}")
         return set()
 
 def save_seen_titles(titles, today):
-    """선별된 원문 제목을 seen_titles.json에 누적 저장 (5일 초과 항목 자동 제거)"""
+    """선별된 원문 제목을 seen_titles.json에 누적 저장 (SEEN_DAYS 초과 항목 자동 제거)"""
     existing = []
     if SEEN_FILE.exists():
         try:
@@ -79,14 +82,15 @@ def save_seen_titles(titles, today):
         except Exception:
             pass
     today_str = today.strftime("%Y.%m.%d")
-    cutoff = (today - timedelta(days=5)).strftime("%Y.%m.%d")
+    cutoff = (today - timedelta(days=SEEN_DAYS)).strftime("%Y.%m.%d")
+    before = len(existing)
     existing = [e for e in existing if e.get("date", "") >= cutoff]
     seen_set = {e["title"] for e in existing}
     for t in titles:
         if t not in seen_set:
             existing.append({"title": t, "date": today_str})
     SEEN_FILE.write_text(json.dumps({"entries": existing}, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"  seen_titles 업데이트: 총 {len(existing)}건")
+    print(f"  seen_titles 업데이트: 기존 {before}건 → 총 {len(existing)}건 저장")
 
 CLIENT = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
@@ -206,22 +210,15 @@ def last_working_day(ref: datetime) -> datetime:
 # ── 뉴스 수집 ──────────────────────────────────────────────────────────────────
 
 _RSS_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
-_URL_DATE_RE = __import__("re").compile(r'(202[0-9])(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])')
 
-def _url_date(link):
-    """URL에서 YYYYMMDD 패턴의 원본 게재 날짜 추출 (Google RSS 재색인 감지용)"""
-    m = _URL_DATE_RE.search(link)
-    if m:
-        try:
-            return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)))
-        except ValueError:
-            pass
-    return None
-
-def _do_fetch(queries, cutoff_utc, max_per_query):
+def _do_fetch(queries, cutoff_utc, max_per_query, when_days):
+    """when_days: Google 검색의 when:Nd 연산자 기간.
+    Google RSS의 published 필드는 구기사 재색인 시 현재 날짜로 위조되지만,
+    when: 연산자는 Google 색인의 실제 게재일을 기준으로 동작하므로 이쪽이 신뢰 가능."""
     articles, seen = [], set()
     for query in queries:
-        url = f"https://news.google.com/rss/search?q={quote(query)}&hl=ko&gl=KR&ceid=KR:ko"
+        q = f"{query} when:{when_days}d"
+        url = f"https://news.google.com/rss/search?q={quote(q)}&hl=ko&gl=KR&ceid=KR:ko"
         try:
             feed = feedparser.parse(url, agent=_RSS_AGENT)
             for entry in feed.entries[:max_per_query]:
@@ -233,11 +230,6 @@ def _do_fetch(queries, cutoff_utc, max_per_query):
                 if parsed_time:
                     pub_dt = datetime(*parsed_time[:6])  # UTC
                     if pub_dt < cutoff_utc:
-                        continue
-                    # URL에 박힌 원본 날짜가 컷오프보다 오래됐으면 구기사 (Google 재색인 감지)
-                    link = entry.get("link", "")
-                    orig_date = _url_date(link)
-                    if orig_date and orig_date < cutoff_utc:
                         continue
                     pub_str = (pub_dt + timedelta(hours=9)).strftime("%Y.%m.%d")
                 else:
@@ -269,13 +261,14 @@ def fetch_news(queries, today, max_per_query=20):
         print(f"  (연휴 전날: 컷오프 1일 확장 → {cutoff_kst.strftime('%Y.%m.%d')})")
 
     cutoff_utc = cutoff_kst - timedelta(hours=9)
+    when_days  = max(1, (today.date() - cutoff_kst.date()).days)
 
-    articles = _do_fetch(queries, cutoff_utc, max_per_query)
+    articles = _do_fetch(queries, cutoff_utc, max_per_query, when_days)
 
     # 수집 3건 미만이면 3일 전으로 확장 재시도 (Google RSS 차단/지연 대응)
     if len(articles) < 3:
         fallback_cutoff = cutoff_utc - timedelta(days=3)
-        articles = _do_fetch(queries, fallback_cutoff, max_per_query)
+        articles = _do_fetch(queries, fallback_cutoff, max_per_query, when_days + 3)
         if articles:
             print(f"  (컷오프 3일 확장 재시도 → {len(articles)}건)")
 
