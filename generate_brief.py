@@ -92,6 +92,18 @@ def save_seen_titles(titles, today):
     SEEN_FILE.write_text(json.dumps({"entries": existing}, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"  seen_titles 업데이트: 기존 {before}건 → 총 {len(existing)}건 저장")
 
+BLACKLIST_FILE = OUTPUT_DIR / "blacklist.json"
+
+def load_blacklist():
+    """관리자가 삭제 지정한 원문 제목 목록 로드 (만료 없이 영구 차단)"""
+    if not BLACKLIST_FILE.exists():
+        return set()
+    try:
+        return set(json.loads(BLACKLIST_FILE.read_text("utf-8")).get("titles", []))
+    except Exception as e:
+        print(f"  blacklist 로드 오류: {e}")
+        return set()
+
 CLIENT = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
 # ── 카테고리 정의 ──────────────────────────────────────────────────────────────
@@ -390,13 +402,15 @@ def generate_category(category, articles, today=None):
     idx_to_title = {item["idx"]: item["title"] for item in indexed}
 
     def _apply_links(result):
-        """Claude가 출력한 idx로 실제 link를 매핑, 원문 제목도 기록"""
+        """Claude가 출력한 idx로 실제 link를 매핑, 원문 제목도 기록 (관리자 삭제 기능용)"""
         source_titles = []
         for art in result.get("articles", []):
             idx = art.pop("idx", None)
             art["link"] = link_map.get(idx, "")
-            if idx and idx in idx_to_title:
-                source_titles.append(idx_to_title[idx])
+            src_title = idx_to_title.get(idx, "")
+            art["src_title"] = src_title
+            if src_title:
+                source_titles.append(src_title)
         result["_source_titles"] = source_titles
         return result
 
@@ -620,8 +634,9 @@ def render_card(category, data, period):
         items_html = ""
         for i, art in enumerate(arts, 1):
             summary = art.get("summary", "").replace("\n", " ")
+            src_title_attr = art.get("src_title", "").replace('"', "&quot;")
             items_html += f"""
-      <a class="news-item" href="{art.get('link','#')}" target="_blank" rel="noopener">
+      <a class="news-item" href="{art.get('link','#')}" target="_blank" rel="noopener" data-src-title="{src_title_attr}">
         <div class="news-num">{i:02d}</div>
         <div class="news-content">
           <div class="news-tag-row">
@@ -850,19 +865,23 @@ def main():
     seen_titles = load_seen_titles(today)
     if seen_titles:
         print(f"  seen_titles 로드: {len(seen_titles)}건 (중복 차단 대상)\n")
+    blacklist = load_blacklist()
+    if blacklist:
+        print(f"  blacklist 로드: {len(blacklist)}건 (관리자 영구 차단)\n")
+    blocked = seen_titles | blacklist
     credit_errors = 0
 
     def _process(cat):
         nonlocal credit_errors
         mpq = 10 if cat["id"] == "c8" else 20
         articles = fetch_news(cat["queries"], today, max_per_query=mpq)
-        # 이미 선별된 적 있는 기사 제목 제거 (중복 방지)
-        if seen_titles:
+        # 이미 선별된 적 있거나 관리자가 삭제한 기사 제목 제거
+        if blocked:
             before = len(articles)
-            articles = [a for a in articles if a["title"] not in seen_titles]
+            articles = [a for a in articles if a["title"] not in blocked]
             filtered = before - len(articles)
             if filtered:
-                print(f"[{cat['title']}] seen 필터: {filtered}건 제거 → {len(articles)}건 남음")
+                print(f"[{cat['title']}] 차단 필터: {filtered}건 제거 → {len(articles)}건 남음")
         if not articles:
             print(f"[{cat['title']}] 수집: 0건 → 건너뜀")
             return cat["id"], {"articles": []}
