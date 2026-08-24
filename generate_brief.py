@@ -240,10 +240,13 @@ def _do_fetch(queries, cutoff_utc, max_per_query):
     return articles
 
 def fetch_news(queries, today, max_per_query=20):
-    # KST 기준 전일 워킹데이 자정 → UTC 변환 (KST = UTC+9)
-    cutoff_kst = last_working_day(today)
+    # 월요일만 금요일까지 소급, 나머지는 어제 자정으로 제한 (이틀 이상 된 기사 차단)
+    if today.weekday() == 0:  # 월요일: 금요일(전 워킹데이) 기사 포함
+        cutoff_kst = last_working_day(today)
+    else:
+        cutoff_kst = datetime(today.year, today.month, today.day) - timedelta(days=1)
 
-    # 내일이 공휴일/주말이면 당일 뉴스 부족 가능 → 컷오프 1일 추가 확장
+    # 내일이 공휴일/주말이면 뉴스 부족 가능 → 컷오프 1일 추가 확장
     tomorrow = today.date() + timedelta(days=1)
     if is_holiday(tomorrow):
         cutoff_kst -= timedelta(days=1)
