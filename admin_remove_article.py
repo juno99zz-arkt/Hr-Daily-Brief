@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """관리자용: 오보/오류 기사를 게시된 사이트에서 즉시 제거하고 영구 차단 목록에 등록.
 
-사용법: python admin_remove_article.py "삭제할 기사 헤드라인 일부"
+사용법: python admin_remove_article.py "삭제할 기사 헤드라인 일부" [--dry-run]
 """
 import sys, os, re, json, shutil, subprocess, tempfile
 
@@ -20,9 +20,10 @@ def run(cmd, cwd):
 
 def main():
     if len(sys.argv) < 2:
-        print('사용법: python admin_remove_article.py "삭제할 기사 헤드라인 일부"')
+        print('사용법: python admin_remove_article.py "삭제할 기사 헤드라인 일부" [--dry-run]')
         sys.exit(1)
     query = sys.argv[1]
+    dry_run = "--dry-run" in sys.argv[2:]
 
     tmp = tempfile.mkdtemp(prefix="ghp_admin_")
     try:
@@ -58,6 +59,10 @@ def main():
 
         print(f"찾은 기사: {headline}")
         print(f"원문 제목(영구 차단 등록용): {src_title!r}")
+
+        if dry_run:
+            print("\n[--dry-run] 실제 삭제/커밋/푸시는 수행하지 않았습니다.")
+            return
 
         # 해당 블록 제거
         blocks[i] = blocks[i][len(item):]
