@@ -1,0 +1,52 @@
+name: Remove Article
+
+on:
+  workflow_dispatch:
+    inputs:
+      headline:
+        description: '삭제할 기사의 헤드라인 (일부만 입력해도 됨)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  remove:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout main (스크립트용)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: public
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Remove article
+        run: python admin_remove_article.py "${{ github.event.inputs.headline }}" --dir public
+
+      - name: Commit & push
+        run: |
+          cd public
+          git config user.name  "GitHub Actions"
+          git config user.email "actions@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git add index.html blacklist.json
+          if git diff --cached --quiet; then
+            echo "변경 없음."
+            exit 0
+          fi
+          git commit -m "admin: 기사 삭제 (모바일 요청) - $(TZ='Asia/Seoul' date '+%Y-%m-%d %H:%M') KST"
+          git push origin gh-pages
+          echo "삭제 완료 → https://juno99zz-arkt.github.io/Hr-Daily-Brief/"
