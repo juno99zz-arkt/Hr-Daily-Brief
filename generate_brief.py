@@ -206,6 +206,17 @@ def last_working_day(ref: datetime) -> datetime:
 # ── 뉴스 수집 ──────────────────────────────────────────────────────────────────
 
 _RSS_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+_URL_DATE_RE = __import__("re").compile(r'(202[0-9])(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])')
+
+def _url_date(link):
+    """URL에서 YYYYMMDD 패턴의 원본 게재 날짜 추출 (Google RSS 재색인 감지용)"""
+    m = _URL_DATE_RE.search(link)
+    if m:
+        try:
+            return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+        except ValueError:
+            pass
+    return None
 
 def _do_fetch(queries, cutoff_utc, max_per_query):
     articles, seen = [], set()
@@ -222,6 +233,11 @@ def _do_fetch(queries, cutoff_utc, max_per_query):
                 if parsed_time:
                     pub_dt = datetime(*parsed_time[:6])  # UTC
                     if pub_dt < cutoff_utc:
+                        continue
+                    # URL에 박힌 원본 날짜가 컷오프보다 오래됐으면 구기사 (Google 재색인 감지)
+                    link = entry.get("link", "")
+                    orig_date = _url_date(link)
+                    if orig_date and orig_date < cutoff_utc:
                         continue
                     pub_str = (pub_dt + timedelta(hours=9)).strftime("%Y.%m.%d")
                 else:
