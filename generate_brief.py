@@ -57,6 +57,37 @@ EMAIL_RECIPIENT   = _env_clean("EMAIL_RECIPIENT")
 OUTPUT_DIR = Path(__file__).parent / "public"
 OUTPUT_DIR.mkdir(exist_ok=True)
 
+SEEN_FILE = OUTPUT_DIR / "seen_titles.json"
+
+def load_seen_titles(today):
+    """최근 5일간 선별된 기사 원문 제목 로드 (중복 방지)"""
+    if not SEEN_FILE.exists():
+        return set()
+    try:
+        data = json.loads(SEEN_FILE.read_text("utf-8"))
+        cutoff = (today - timedelta(days=5)).strftime("%Y.%m.%d")
+        return {e["title"] for e in data.get("entries", []) if e.get("date", "") >= cutoff}
+    except Exception:
+        return set()
+
+def save_seen_titles(titles, today):
+    """선별된 원문 제목을 seen_titles.json에 누적 저장 (5일 초과 항목 자동 제거)"""
+    existing = []
+    if SEEN_FILE.exists():
+        try:
+            existing = json.loads(SEEN_FILE.read_text("utf-8")).get("entries", [])
+        except Exception:
+            pass
+    today_str = today.strftime("%Y.%m.%d")
+    cutoff = (today - timedelta(days=5)).strftime("%Y.%m.%d")
+    existing = [e for e in existing if e.get("date", "") >= cutoff]
+    seen_set = {e["title"] for e in existing}
+    for t in titles:
+        if t not in seen_set:
+            existing.append({"title": t, "date": today_str})
+    SEEN_FILE.write_text(json.dumps({"entries": existing}, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"  seen_titles 업데이트: 총 {len(existing)}건")
+
 CLIENT = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
 # ── 카테고리 정의 ──────────────────────────────────────────────────────────────
@@ -344,11 +375,17 @@ def generate_category(category, articles, today=None):
   ]
 }}"""
 
+    idx_to_title = {item["idx"]: item["title"] for item in indexed}
+
     def _apply_links(result):
-        """Claude가 출력한 idx로 실제 link를 매핑"""
+        """Claude가 출력한 idx로 실제 link를 매핑, 원문 제목도 기록"""
+        source_titles = []
         for art in result.get("articles", []):
             idx = art.pop("idx", None)
             art["link"] = link_map.get(idx, "")
+            if idx and idx in idx_to_title:
+                source_titles.append(idx_to_title[idx])
+        result["_source_titles"] = source_titles
         return result
 
     for attempt in range(2):
@@ -798,12 +835,22 @@ def main():
         return
 
     # ── 카테고리별 병렬 처리 ──────────────────────────────────────────────────
+    seen_titles = load_seen_titles(today)
+    if seen_titles:
+        print(f"  seen_titles 로드: {len(seen_titles)}건 (중복 차단 대상)\n")
     credit_errors = 0
 
     def _process(cat):
         nonlocal credit_errors
         mpq = 10 if cat["id"] == "c8" else 20
         articles = fetch_news(cat["queries"], today, max_per_query=mpq)
+        # 이미 선별된 적 있는 기사 제목 제거 (중복 방지)
+        if seen_titles:
+            before = len(articles)
+            articles = [a for a in articles if a["title"] not in seen_titles]
+            filtered = before - len(articles)
+            if filtered:
+                print(f"[{cat['title']}] seen 필터: {filtered}건 제거 → {len(articles)}건 남음")
         if not articles:
             print(f"[{cat['title']}] 수집: 0건 → 건너뜀")
             return cat["id"], {"articles": []}
@@ -836,6 +883,14 @@ def main():
         print(f"\n  ⚠ {credit_errors}개 카테고리 크레딧 부족으로 실패.")
         print("  Anthropic 콘솔에서 크레딧을 충전하세요: https://console.anthropic.com/settings/billing")
         sys.exit(1)
+
+    # 선별된 원문 제목 수집 → seen_titles 저장
+    source_titles = set()
+    for data in all_data:
+        for t in data.pop("_source_titles", []):
+            source_titles.add(t)
+    if source_titles:
+        save_seen_titles(source_titles, today)
 
     html = render_html(all_data, today, session)
     out  = OUTPUT_DIR / "index.html"
