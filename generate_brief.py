@@ -344,7 +344,8 @@ def generate_category(category, articles, today=None):
 이 중 오늘 가장 화제·주목받는 기사를 반드시 4건 선별해 JSON만 출력하세요.
 연예, 스포츠, 정치, 경제, 사회 등 분야 무관하게 화제성 기준으로 선별하세요.
 오래된 기사(date가 오늘과 2일 이상 차이나는 경우, 또는 summary 내용이 수개월 전 사건을 다루는 경우)는 제외하세요.
-요약 작성 시 반드시 기사 원문(title·summary)에 나온 정보만 사용하세요. 인물명·기업명 등 고유명사는 원문 그대로만 쓰고, 원문에 없는 이름은 절대 추가하지 마세요.
+요약 작성 시 헤드라인의 핵심 사실을 서술한 뒤, 이 사안의 배경·맥락을 자연스럽게 덧붙여 2~3문장의 완결된 문단으로 작성하세요.
+단, 헤드라인에 없는 구체적 수치·인용문은 지어내지 마세요. 인물명·기업명 등 고유명사는 원문 그대로만 쓰고, 원문에 없는 이름은 절대 추가하지 마세요.
 
 기사 목록:
 {article_text}
@@ -354,7 +355,7 @@ def generate_category(category, articles, today=None):
   {{
     "idx": 기사번호(정수),
     "headline": "헤드라인 (50자 이내)",
-    "summary": "3문장. 기사에 나온 사실·수치 중심으로 객관 서술.",
+    "summary": "2~3문장. 헤드라인의 핵심 사실 + 배경·맥락 설명.",
     "accent_line": "→ 핵심 요점 한 줄",
     "source": "언론사명",
     "date": "YYYY.MM.DD",
@@ -381,7 +382,8 @@ def generate_category(category, articles, today=None):
 4. 광고·홍보·보도자료성 기사 제외 (대체 기사 없으면 가장 유익한 것 포함)
 5. highlight: 가장 중요한 1건만 true
 6. 오늘 날짜({today_str}) 기준 2일 이상 지난 기사는 선별하지 말 것. summary 내용이 수개월 전 사건을 다루는 경우도 제외.
-7. 요약은 반드시 기사 원문(title·summary)에 나온 정보만 사용할 것. 인물명·기업명 등 고유명사는 원문 그대로만 쓰고, 원문에 없는 이름은 절대 추가하지 말 것.
+7. 요약은 헤드라인의 핵심 사실을 서술한 뒤, 이 사안이 왜 중요한지·어떤 맥락인지를 자연스럽게 덧붙여 2~3문장의 완결된 문단으로 작성할 것.
+   단, 헤드라인에 없는 구체적 수치·인용문은 지어내지 말 것. 인물명·기업명 등 고유명사는 원문 그대로만 쓰고, 원문에 없는 이름은 절대 추가하지 말 것.
 
 ## 출력 형식 (JSON만 출력, 설명·주석 금지)
 {{
@@ -389,7 +391,7 @@ def generate_category(category, articles, today=None):
     {{
       "idx": 기사번호(정수),
       "headline": "헤드라인 (핵심 수치·팩트 포함, 50자 내외)",
-      "summary": "3~4문장. 기사 원문에 나온 수치·사실·발언만. 원문에 없는 내용 추가 금지.",
+      "summary": "2~3문장. 헤드라인의 핵심 사실 + 왜 중요한지/배경 맥락. 원문에 없는 구체적 수치·인용문·인물명은 금지.",
       "accent_line": "→ 이 기사가 HR 피플팀에 갖는 핵심 의미 한 줄",
       "source": "언론사명",
       "date": "YYYY.MM.DD",
@@ -421,7 +423,7 @@ def generate_category(category, articles, today=None):
                 top5 = json.dumps(indexed[:5], ensure_ascii=False, indent=2)
                 prompt = f"""다음 기사 중 가장 중요한 1~3개를 JSON만 출력하세요.
 기사: {top5}
-형식: {{"articles": [{{"idx":기사번호,"headline":"제목","summary":"3문장 사실 요약","accent_line":"→ 핵심 요점","source":"언론사","date":"YYYY.MM.DD","tag":"태그","highlight":false}}]}}"""
+형식: {{"articles": [{{"idx":기사번호,"headline":"제목","summary":"2~3문장 요약(핵심사실+배경)","accent_line":"→ 핵심 요점","source":"언론사","date":"YYYY.MM.DD","tag":"태그","highlight":false}}]}}"""
 
             resp = CLIENT.messages.create(
                 model="claude-haiku-4-5-20251001",
