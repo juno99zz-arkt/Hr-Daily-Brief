@@ -2,8 +2,8 @@ name: HR Daily Brief
 
 on:
   schedule:
-    - cron: '0 21 * * 0-4'    # 1차 목표 06:00 KST = UTC 21:00 (여유 확보용으로 기존보다 앞당김)
-    - cron: '30 22 * * 0-4'   # 2차(재촉) 07:30 KST = UTC 22:30. 1차가 아직이면 이때 대신 실행
+    - cron: '30 20 * * 0-4'   # 1차 목표 05:30 KST = UTC 20:30 (기존보다 30분 앞당김)
+    - cron: '0 22 * * 0-4'    # 2차(재촉) 07:00 KST = UTC 22:00 (기존보다 30분 앞당김). 1차가 아직이면 이때 대신 실행
   workflow_dispatch:
     inputs:
       force:
