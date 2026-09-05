@@ -569,65 +569,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:#EDEAE3;min-height:100vh;p
   .news-num{font-size:34px;}
   .card-footer{padding:12px 20px 14px;}
 }
-
-.lock-screen{position:fixed;inset:0;background:#1A1A1A;display:flex;align-items:center;justify-content:center;z-index:9999;}
-.lock-box{background:#fff;border-radius:16px;padding:36px 32px;width:280px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.3);}
-.lock-title{font-size:15px;font-weight:700;color:#1A1A1A;margin-bottom:18px;}
-.lock-input{width:100%;padding:12px 14px;font-size:16px;border:2px solid #E5E2DC;border-radius:8px;text-align:center;letter-spacing:4px;margin-bottom:12px;box-sizing:border-box;}
-.lock-input:focus{outline:none;border-color:#1A1A1A;}
-.lock-btn{width:100%;padding:12px;font-size:14px;font-weight:700;background:#1A1A1A;color:#fff;border:none;border-radius:8px;cursor:pointer;}
-.lock-btn:hover{background:#333;}
-.lock-error{color:#E24B4A;font-size:12px;margin-top:10px;display:none;}
 """
-
-LOCK_PASSWORD = "8760"
-
-LOCK_HTML = f"""
-<div class="lock-screen" id="lockScreen">
-  <div class="lock-box">
-    <div class="lock-title">🔒 비밀번호를 입력하세요</div>
-    <input type="password" class="lock-input" id="lockInput" maxlength="10" inputmode="numeric" autofocus>
-    <button class="lock-btn" id="lockBtn">확인</button>
-    <div class="lock-error" id="lockError">비밀번호가 올바르지 않습니다.</div>
-  </div>
-</div>
-<script>
-(function(){{
-  var PW = "{LOCK_PASSWORD}";
-  var screen  = document.getElementById('lockScreen');
-  var main    = document.getElementById('mainContent');
-  var input   = document.getElementById('lockInput');
-  var btn     = document.getElementById('lockBtn');
-  var errBox  = document.getElementById('lockError');
-
-  function unlock(){{
-    screen.style.display = 'none';
-    main.style.display = '';
-    try {{ sessionStorage.setItem('hrBriefAuth', 'ok'); }} catch(e){{}}
-  }}
-
-  function tryUnlock(){{
-    if(input.value === PW){{
-      unlock();
-    }} else {{
-      errBox.style.display = 'block';
-      input.value = '';
-      input.focus();
-    }}
-  }}
-
-  var already = false;
-  try {{ already = sessionStorage.getItem('hrBriefAuth') === 'ok'; }} catch(e){{}}
-  if(already){{
-    unlock();
-  }}
-
-  btn.addEventListener('click', tryUnlock);
-  input.addEventListener('keydown', function(e){{
-    if(e.key === 'Enter') tryUnlock();
-  }});
-}})();
-</script>"""
 
 FILTER_JS = """
 <script>
@@ -756,10 +698,6 @@ def render_html(all_data, today, session_label="morning"):
 </head>
 <body>
 
-{LOCK_HTML}
-
-<div id="mainContent" style="display:none;">
-
 <div class="page-header">
   <div>
     <div class="page-label">Samsung Display · HR People Team Daily</div>
@@ -782,8 +720,6 @@ def render_html(all_data, today, session_label="morning"):
 <div class="page-footer">
   <span class="footer-note">※ {generated} 생성 · 수집기간: {period}<br>내부 정보 공유 목적으로만 활용</span>
   <span class="footer-tag">Samsung Display · HR People Team</span>
-</div>
-
 </div>
 
 {FILTER_JS}
