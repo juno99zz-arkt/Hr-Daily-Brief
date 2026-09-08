@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>VoiceBrief · 녹음 정리</title>
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>VoiceBrief</h1>
+      <p class="sub">녹음하면 요약해서 메일·텔레그램으로 보냅니다</p>
+    </header>
+
+    <!-- ── 녹음 화면 ────────────────────────────────────────────── -->
+    <section class="card recorder" id="recorder">
+      <div class="timer" id="timer">00:00</div>
+      <div class="level-wrap"><div class="level" id="level"></div></div>
+      <div class="state-text" id="recState">대기 중</div>
+
+      <div class="controls">
+        <button class="btn btn-main" id="btnRecord" aria-label="녹음 시작">
+          <span class="dot"></span><span id="btnRecordLabel">녹음 시작</span>
+        </button>
+        <button class="btn btn-ghost" id="btnPause" disabled>일시정지</button>
+        <button class="btn btn-stop" id="btnStop" disabled>완료 · 전송</button>
+      </div>
+
+      <details class="note-box">
+        <summary>메모 / 고유명사 힌트 (선택)</summary>
+        <textarea id="note" rows="2"
+          placeholder="예: 김철수, 정준호, 피플팀, OKR — 쉼표로 구분하면 인식 정확도가 올라갑니다"></textarea>
+      </details>
+
+      <div class="upload-alt">
+        <label for="fileInput">이미 녹음된 파일 올리기</label>
+        <input type="file" id="fileInput" accept="audio/*" />
+      </div>
+    </section>
+
+    <!-- ── 진행 상태 ────────────────────────────────────────────── -->
+    <section class="card progress-card hidden" id="progressCard">
+      <h2 id="progressTitle">처리 중…</h2>
+      <ol class="steps" id="steps">
+        <li data-step="upload"><span class="mark"></span>오디오 업로드</li>
+        <li data-step="transcribing"><span class="mark"></span>텍스트 변환 (CLOVA)</li>
+        <li data-step="summarizing"><span class="mark"></span>AI 요약</li>
+        <li data-step="delivering"><span class="mark"></span>메일 · 텔레그램 전송</li>
+        <li data-step="done"><span class="mark"></span>전송 완료</li>
+      </ol>
+      <p class="err hidden" id="progressError"></p>
+      <button class="btn btn-ghost hidden" id="btnCloseProgress">닫기</button>
+    </section>
+
+    <!-- ── 최근 기록 ────────────────────────────────────────────── -->
+    <section class="card">
+      <div class="list-head">
+        <h2>최근 요약</h2>
+        <button class="btn-link" id="btnRefresh">새로고침</button>
+      </div>
+      <div id="historyList" class="history"><p class="empty">기록이 없습니다.</p></div>
+    </section>
+
+    <footer class="footer"><span id="healthLine">상태 확인 중…</span></footer>
+  </div>
+
+  <!-- ── 상세 보기 모달 ──────────────────────────────────────────── -->
+  <div class="modal hidden" id="modal">
+    <div class="modal-body">
+      <button class="modal-close" id="btnCloseModal">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
