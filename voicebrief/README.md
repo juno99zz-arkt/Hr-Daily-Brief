@@ -147,6 +147,24 @@ ngrok http 8000
 localStorage.setItem('vb_token', '설정한_API_TOKEN');
 ```
 
+### 3-5. Render에 상시 배포 (컴퓨터를 켜둘 필요 없음)
+
+터널링은 컴퓨터를 켜둔 동안만 동작합니다. 24시간 폰에서 쓰려면 [Render](https://render.com)(무료 플랜 있음)에 올리는 편이 낫습니다. HTTPS가 자동으로 붙어서 마이크 권한 문제도 해결됩니다.
+
+1. [render.com](https://render.com) 접속 → **GitHub로 가입**
+2. 대시보드에서 **New +** → **Web Service** 클릭
+3. 이 저장소(`juno99zz-arkt/Hr-Daily-Brief`)를 연결 (처음이면 GitHub 권한 승인 필요, 비공개 저장소면 Render에 접근 권한을 줘야 함)
+4. 설정값 입력:
+   - **Branch**: `claude/voice-recording-pipeline-app-26x98s` (PR이 main에 머지되면 `main`으로 변경 가능)
+   - **Root Directory**: `voicebrief`
+   - **Runtime**: `Docker` (Root Directory에 `Dockerfile`이 있으면 자동 인식됨)
+   - **Instance Type**: `Free`
+5. **Environment Variables**에 `.env.example`의 키·값을 하나씩 추가 (`MAIL_TO`는 이미 두 주소가 기본값)
+6. **Create Web Service** 클릭 → 5분 정도 빌드 대기
+7. 완료되면 `https://voicebrief-xxxx.onrender.com` 같은 주소가 생성됨. 폰 브라우저로 열고 **홈 화면에 추가**
+
+> ⚠️ 무료 플랜은 15분간 요청이 없으면 서버가 잠들고, 다음 접속 시 깨어나는 데 30~50초 걸립니다. 또한 디스크가 영구 저장이 아니라서 재배포하면 "최근 기록" 목록은 초기화됩니다 (이미 보낸 메일·텔레그램 메시지는 그대로 남음).
+
 ---
 
 ## 4. API
