@@ -458,6 +458,7 @@ def generate_category(category, articles, today=None):
             result = _extract_json(resp.content[0].text.strip())
             if result and result.get("articles"):
                 if is_hot:
+                    print(f"  핫뉴스 후보 분야: {[a.get('field') for a in result['articles']]}")
                     result["articles"] = _pick_diverse(result["articles"])
                 return _apply_links(result)
         except Exception as e:
