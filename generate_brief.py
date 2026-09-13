@@ -324,6 +324,19 @@ def _extract_json(text):
     return None
 
 
+def _pick_diverse(cands, n=4):
+    """핫뉴스: 화제성 순 후보에서 분야가 겹치지 않게 n건 선택 (부족분은 정치 외 분야로 채움)"""
+    picked, fields = [], set()
+    for a in cands:
+        if len(picked) < n and a.get("field") not in fields:
+            picked.append(a)
+            fields.add(a.get("field"))
+    for a in cands:
+        if len(picked) < n and a not in picked and a.get("field") != "정치":
+            picked.append(a)
+    return picked
+
+
 def generate_category(category, articles, today=None):
     if not articles:
         return {"articles": []}
@@ -350,12 +363,10 @@ def generate_category(category, articles, today=None):
     if is_hot:
         prompt = f"""오늘 날짜: {today_str}
 다음은 대한민국 최신 뉴스 기사 목록입니다.
-이 중 오늘 가장 화제·주목받는 기사를 반드시 4건 선별해 JSON만 출력하세요.
-화제성을 기본 기준으로 하되, 4건이 한 분야에 몰리지 않도록 분야를 분산하세요.
-- 분야: 정치 / 경제·부동산 / 사회·사건 / 연예·문화 / 스포츠 / 국제·기타
-- 4건은 서로 다른 분야에서 선별할 것 (같은 분야 최대 1건)
-- 정치 분야(대통령·국회·정당·검찰 수사 등 정치 성격 사건 포함)는 최대 1건
-- 특정 분야에 적합한 기사가 없을 때만 다른 분야에서 채울 것
+이 중 오늘 화제·주목받는 기사 후보를 화제성 높은 순으로 8건 선별해 JSON만 출력하세요.
+후보 8건은 여러 분야에 고루 걸치도록 고르고, 각 기사에 field를 반드시 아래 중 하나로 지정하세요.
+- field 목록: 정치 / 경제 / 사회 / 연예 / 스포츠 / 국제
+- 대통령·장관·국회·정당·정부 인사가 주체이거나 발언한 기사는 주제가 문화·경제여도 무조건 "정치"
 오래된 기사(date가 오늘과 2일 이상 차이나는 경우, 또는 summary 내용이 수개월 전 사건을 다루는 경우)는 제외하세요.
 요약 작성 시 헤드라인의 핵심 사실을 서술한 뒤, 이 사안의 배경·맥락을 자연스럽게 덧붙여 2~3문장의 완결된 문단으로 작성하세요.
 단, 헤드라인에 없는 구체적 수치·인용문은 지어내지 마세요. 인물명·기업명 등 고유명사는 원문 그대로만 쓰고, 원문에 없는 이름은 절대 추가하지 마세요.
@@ -367,6 +378,7 @@ def generate_category(category, articles, today=None):
 {{"articles": [
   {{
     "idx": 기사번호(정수),
+    "field": "정치|경제|사회|연예|스포츠|국제 중 하나",
     "headline": "헤드라인 (50자 이내)",
     "summary": "2~3문장. 헤드라인의 핵심 사실 + 배경·맥락 설명.",
     "accent_line": "→ 핵심 요점 한 줄",
@@ -445,6 +457,8 @@ def generate_category(category, articles, today=None):
             )
             result = _extract_json(resp.content[0].text.strip())
             if result and result.get("articles"):
+                if is_hot:
+                    result["articles"] = _pick_diverse(result["articles"])
                 return _apply_links(result)
         except Exception as e:
             print(f"  Claude API 오류 (시도 {attempt+1}): {e}")
