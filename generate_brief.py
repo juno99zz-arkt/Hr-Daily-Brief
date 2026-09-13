@@ -169,10 +169,19 @@ CATEGORIES = [
                     "QD-OLED", "AMOLED", "플렉시블 디스플레이", "디스플레이 패널"],
     },
     {
+        "id": "c9", "eyebrow": "Samsung CSR", "badge": "CSR",
+        "title": "삼성 사회공헌",
+        "sub": "사회공헌·기부·봉사·지역상생·ESG 활동",
+        "priority": "삼성디스플레이 > 삼성전자 > 천안/아산 지역·관계사 > 업계 전반",
+        "queries": ["삼성디스플레이 사회공헌", "삼성디스플레이 봉사", "삼성전자 사회공헌",
+                    "삼성 기부", "삼성 봉사활동", "천안 아산 삼성 기부", "아산 삼성디스플레이 지역",
+                    "기업 사회공헌 ESG"],
+    },
+    {
         "id": "c8", "eyebrow": "Korea Hot News", "badge": "Hot News",
         "title": "대한민국 핫뉴스",
         "sub": "실시간 인기검색어·정치·경제·사회·연예·스포츠·가십",
-        "priority": "실시간 화제성·언급량·관심도 높은 순 (분야 무관)",
+        "priority": "실시간 화제성 기준, 분야별 분산 (정치 최대 1건)",
         "queries": [
             # 정치·정부
             "대통령", "국회", "여당 야당", "총리 장관",
@@ -342,7 +351,11 @@ def generate_category(category, articles, today=None):
         prompt = f"""오늘 날짜: {today_str}
 다음은 대한민국 최신 뉴스 기사 목록입니다.
 이 중 오늘 가장 화제·주목받는 기사를 반드시 4건 선별해 JSON만 출력하세요.
-연예, 스포츠, 정치, 경제, 사회 등 분야 무관하게 화제성 기준으로 선별하세요.
+화제성을 기본 기준으로 하되, 4건이 한 분야에 몰리지 않도록 분야를 분산하세요.
+- 분야: 정치 / 경제·부동산 / 사회·사건 / 연예·문화 / 스포츠 / 국제·기타
+- 4건은 서로 다른 분야에서 선별할 것 (같은 분야 최대 1건)
+- 정치 분야(대통령·국회·정당·검찰 수사 등 정치 성격 사건 포함)는 최대 1건
+- 특정 분야에 적합한 기사가 없을 때만 다른 분야에서 채울 것
 오래된 기사(date가 오늘과 2일 이상 차이나는 경우, 또는 summary 내용이 수개월 전 사건을 다루는 경우)는 제외하세요.
 요약 작성 시 헤드라인의 핵심 사실을 서술한 뒤, 이 사안의 배경·맥락을 자연스럽게 덧붙여 2~3문장의 완결된 문단으로 작성하세요.
 단, 헤드라인에 없는 구체적 수치·인용문은 지어내지 마세요. 인물명·기업명 등 고유명사는 원문 그대로만 쓰고, 원문에 없는 이름은 절대 추가하지 마세요.
@@ -542,6 +555,11 @@ body{font-family:'Noto Sans KR',sans-serif;background:#EDEAE3;min-height:100vh;p
 .c7 .news-num{color:#0078DC;}.c7 .tag{background:#E0F2FF;color:#004C8C;}
 .c7 .accent-line{border-color:#0078DC;}.c7 .card-footer{border-color:#E0F2FF;}.c7 .footer-date{color:#0057B3;}
 
+.c9 .card-header{background:linear-gradient(135deg,#0B3D3A,#136F63);}
+.c9 .badge{background:rgba(38,166,154,.3);color:#A7F3EB;border:1px solid rgba(38,166,154,.4);}
+.c9 .news-num{color:#26A69A;}.c9 .tag{background:#E0F5F2;color:#00695C;}
+.c9 .accent-line{border-color:#26A69A;}.c9 .card-footer{border-color:#E0F5F2;}.c9 .footer-date{color:#00796B;}
+
 .c8 .card-header{background:linear-gradient(135deg,#1A1A2E,#16213E);}
 .c8 .badge{background:rgba(229,57,53,.25);color:#FF8A80;border:1px solid rgba(229,57,53,.4);}
 .c8 .news-num{color:#E53935;}.c8 .tag{background:#FEEBEE;color:#B71C1C;}
@@ -552,6 +570,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:#EDEAE3;min-height:100vh;p
 .chip-c3{background:#FAEEDA;color:#633806;}.chip-c4{background:#EAF3DE;color:#3B6D11;}
 .chip-c5{background:#E6F1FB;color:#0C447C;}.chip-c6{background:#EEEDFE;color:#3C3489;}
 .chip-c7{background:#E0F2FF;color:#004C8C;}.chip-c8{background:#FEEBEE;color:#B71C1C;}
+.chip-c9{background:#E0F5F2;color:#00695C;}
 
 .page-footer{max-width:960px;margin:36px auto 0;display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid #CCC;}
 .footer-note{font-size:12px;color:#AAA;line-height:1.6;}
