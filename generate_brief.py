@@ -169,15 +169,6 @@ CATEGORIES = [
                     "QD-OLED", "AMOLED", "플렉시블 디스플레이", "디스플레이 패널"],
     },
     {
-        "id": "c9", "eyebrow": "Samsung CSR", "badge": "CSR",
-        "title": "삼성 사회공헌",
-        "sub": "사회공헌·기부·봉사·지역상생·ESG 활동",
-        "priority": "삼성디스플레이 > 삼성전자 > 천안/아산 지역·관계사 > 업계 전반",
-        "queries": ["삼성디스플레이 사회공헌", "삼성디스플레이 봉사", "삼성전자 사회공헌",
-                    "삼성 기부", "삼성 봉사활동", "천안 아산 삼성 기부", "아산 삼성디스플레이 지역",
-                    "기업 사회공헌 ESG"],
-    },
-    {
         "id": "c8", "eyebrow": "Korea Hot News", "badge": "Hot News",
         "title": "대한민국 핫뉴스",
         "sub": "실시간 인기검색어·정치·경제·사회·연예·스포츠·가십",
@@ -586,12 +577,6 @@ body{font-family:'Noto Sans KR',sans-serif;background:#EDEAE3;min-height:100vh;p
 .c7 .badge{background:rgba(0,120,220,.3);color:#7ECFFF;border:1px solid rgba(0,120,220,.4);}
 .c7 .news-num{color:#0078DC;}.c7 .tag{background:#E0F2FF;color:#004C8C;}
 .c7 .accent-line{border-color:#0078DC;}.c7 .card-footer{border-color:#E0F2FF;}.c7 .footer-date{color:#0057B3;}
-
-.c9 .card-header{background:linear-gradient(135deg,#0B3D3A,#136F63);}
-.c9 .badge{background:rgba(38,166,154,.3);color:#A7F3EB;border:1px solid rgba(38,166,154,.4);}
-.c9 .news-num{color:#26A69A;}.c9 .tag{background:#E0F5F2;color:#00695C;}
-.c9 .accent-line{border-color:#26A69A;}.c9 .card-footer{border-color:#E0F5F2;}.c9 .footer-date{color:#00796B;}
-
 .c8 .card-header{background:linear-gradient(135deg,#1A1A2E,#16213E);}
 .c8 .badge{background:rgba(229,57,53,.25);color:#FF8A80;border:1px solid rgba(229,57,53,.4);}
 .c8 .news-num{color:#E53935;}.c8 .tag{background:#FEEBEE;color:#B71C1C;}
@@ -602,8 +587,6 @@ body{font-family:'Noto Sans KR',sans-serif;background:#EDEAE3;min-height:100vh;p
 .chip-c3{background:#FAEEDA;color:#633806;}.chip-c4{background:#EAF3DE;color:#3B6D11;}
 .chip-c5{background:#E6F1FB;color:#0C447C;}.chip-c6{background:#EEEDFE;color:#3C3489;}
 .chip-c7{background:#E0F2FF;color:#004C8C;}.chip-c8{background:#FEEBEE;color:#B71C1C;}
-.chip-c9{background:#E0F5F2;color:#00695C;}
-
 .page-footer{max-width:960px;margin:36px auto 0;display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid #CCC;}
 .footer-note{font-size:12px;color:#AAA;line-height:1.6;}
 .footer-tag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#BBB;}
