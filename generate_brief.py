@@ -263,6 +263,7 @@ def _do_fetch(queries, cutoff_utc, max_per_query, when_days):
                     "published": pub_str,
                     "summary":   entry.get("summary", "")[:400],
                     "source":    source,
+                    "query":     query,
                 })
         except Exception as e:
             print(f"  RSS 오류 ({query}): {e}")
@@ -337,10 +338,26 @@ def _pick_diverse(cands, n=4):
     return picked
 
 
+def _round_robin_by_query(articles, n):
+    """핫뉴스: 검색어별로 번갈아 뽑아 n건 구성 (최신순으로 자르면 정치 기사로 쏠림)"""
+    buckets = {}
+    for a in articles:  # 이미 최신순 정렬됨
+        buckets.setdefault(a.get("query"), []).append(a)
+    out = []
+    while len(out) < n and any(buckets.values()):
+        for q in buckets:
+            if buckets[q] and len(out) < n:
+                out.append(buckets[q].pop(0))
+    return out
+
+
 def generate_category(category, articles, today=None):
     if not articles:
         return {"articles": []}
-    articles = articles[:30]
+    if category["id"] == "c8":
+        articles = _round_robin_by_query(articles, 40)
+    else:
+        articles = articles[:30]
     today_str = today.strftime("%Y.%m.%d") if today else now_kst().strftime("%Y.%m.%d")
 
     # 인덱스 맵 생성 (Claude에게 link 대신 idx 번호만 출력하게 함)
