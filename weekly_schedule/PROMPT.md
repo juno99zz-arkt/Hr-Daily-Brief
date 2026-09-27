@@ -2,8 +2,8 @@
 
 - 실행: 매주 월요일 06:50 KST (Claude Code Routine `trig_01EzMi4rfiAxNtFwGsQFsETv`, `CRON_TZ=Asia/Seoul 50 6 * * 1`)
 - 수신: 실행 완료 시 휴대폰 푸시 + 이메일 (Routine 알림)
-- 데이터: Google Calendar(개인·가족·대한민국 휴일), Obsidian 볼트(OneDrive, Microsoft 365 커넥터 연결 시)
-- 필수 설정: claude.ai Routines 화면에서 이 Routine에 Google Calendar(＋Microsoft 365) 커넥터를 추가해야 캘린더를 읽을 수 있다
+- 데이터: Google Calendar(개인·가족·대한민국 휴일), Obsidian 볼트(휴대폰 SD카드 → FolderSync → Google Drive `ObsidianVault`)
+- 필수 설정: claude.ai Routines 화면에서 이 Routine에 Google Calendar + Google Drive 커넥터를 추가해야 캘린더를 읽을 수 있다
 
 아래가 Routine이 매번 실행하는 프롬프트 원문이다. 수정 시 Routine 프롬프트도 함께 갱신한다.
 
@@ -17,9 +17,11 @@
    - 다음 주 월~수 일정도 한 번 조회해 "다음 주 미리보기"에 사용
    - 휴일 캘린더는 description이 "공휴일"인 것만 휴일로, "기념일"은 (기념일)로 구분 표기
    - Google Calendar 도구가 없으면 브리핑 첫 줄에 "⚠️ 캘린더 커넥터 미연결 — Routine에 Google Calendar 커넥터 추가 필요"라고 쓴다
-2. Obsidian 볼트 (OneDrive)
-   - Microsoft 365/OneDrive 도구가 있으면 Obsidian 볼트에서 확인: 이번 주 주간노트·데일리노트, 마감일이 이번 주인 미완료 할 일(`- [ ]` + `📅 YYYY-MM-DD`, `due::` 등), "일정/회의/마감" 관련 최근 메모
-   - 도구가 없거나 접근 실패 시 건너뛰고 브리핑 끝에 "옵시디언 미연동" 한 줄만 표기
+2. Obsidian 볼트 (Google Drive `ObsidianVault` 폴더 — 휴대폰 FolderSync가 SD카드 볼트를 업로드)
+   - Google Drive search_files로 `title = 'ObsidianVault' and mimeType = 'application/vnd.google-apps.folder'` 폴더를 찾고, 그 아래 .md 파일 중 최근 14일 내 수정분을 `fullText`/`modifiedTime`으로 검색해 read_file_content로 읽는다
+   - 확인 대상: 이번 주 주간노트·데일리노트, 마감일이 이번 주인 미완료 할 일(`- [ ]` + `📅 YYYY-MM-DD`, `due::` 등), "일정/회의/마감/약속" 관련 메모
+   - 폴더가 없거나 Drive 도구가 없으면 건너뛰고 브리핑 끝에 "옵시디언 미연동" 한 줄만 표기
+   - 가장 최근 수정 파일이 7일 넘게 지났으면 "⚠️ 옵시디언 동기화 확인 필요(마지막 MM/DD)" 표기
 3. 브리핑 작성 (최종 답변 = 알림 본문이므로 이 형식 그대로 출력)
    ```
    📅 주간 브리핑 | MM/DD(월)~MM/DD(일)
