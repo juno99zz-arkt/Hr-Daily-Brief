@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """삼성디스플레이 HR 피플팀 | 데일리 뉴스 브리핑 자동 생성기"""
 
-import sys, os, json, subprocess, feedparser, smtplib, socket
+import sys, os, re, html, json, subprocess, feedparser, smtplib, socket
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -58,20 +58,31 @@ OUTPUT_DIR = Path(__file__).parent / "public"
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 SEEN_FILE = OUTPUT_DIR / "seen_titles.json"
-SEEN_DAYS = 30  # Google RSS 구기사 재색인은 수개월에 걸쳐 반복되므로 충분히 길게 유지
+SEEN_DAYS = 180  # Google RSS 구기사 재색인은 수개월 뒤에도 발생 (예: 9/7 기사가 10/23 재등장)
+ARCHIVE_DIR = OUTPUT_DIR / "archive"
+_SRC_TITLE_RE = re.compile(r'data-src-title="([^"]*)"')
+
+def _norm_title(t):
+    """따옴표·띄어쓰기·문장부호 차이를 무시한 비교용 제목"""
+    return re.sub(r"[\W_]+", "", t).lower()
 
 def load_seen_titles(today):
-    """최근 SEEN_DAYS일간 선별된 기사 원문 제목 로드 (중복 방지)"""
-    if not SEEN_FILE.exists():
-        print(f"  seen_titles 파일 없음 ({SEEN_FILE}) → 중복 차단 없이 시작")
-        return set()
-    try:
-        data = json.loads(SEEN_FILE.read_text("utf-8"))
-        cutoff = (today - timedelta(days=SEEN_DAYS)).strftime("%Y.%m.%d")
-        return {e["title"] for e in data.get("entries", []) if e.get("date", "") >= cutoff}
-    except Exception as e:
-        print(f"  seen_titles 로드 오류: {e}")
-        return set()
+    """최근 SEEN_DAYS일간 발행된 기사 원문 제목 로드 (seen_titles.json + 날짜별 아카이브)"""
+    titles = set()
+    cutoff = today - timedelta(days=SEEN_DAYS)
+    if SEEN_FILE.exists():
+        try:
+            data = json.loads(SEEN_FILE.read_text("utf-8"))
+            cutoff_str = cutoff.strftime("%Y.%m.%d")
+            titles |= {e["title"] for e in data.get("entries", []) if e.get("date", "") >= cutoff_str}
+        except Exception as e:
+            print(f"  seen_titles 로드 오류: {e}")
+    # 아카이브는 실제 발행 기록이라 seen_titles.json이 유실·단축돼도 이력을 복원할 수 있음
+    archive_cutoff = cutoff.strftime("%Y-%m-%d")
+    for f in ARCHIVE_DIR.glob("*.html"):
+        if f.stem >= archive_cutoff:
+            titles |= {html.unescape(t) for t in _SRC_TITLE_RE.findall(f.read_text("utf-8"))}
+    return titles
 
 def save_seen_titles(titles, today):
     """선별된 원문 제목을 seen_titles.json에 누적 저장 (SEEN_DAYS 초과 항목 자동 제거)"""
@@ -982,7 +993,7 @@ def main():
     blacklist = load_blacklist()
     if blacklist:
         print(f"  blacklist 로드: {len(blacklist)}건 (관리자 영구 차단)\n")
-    blocked = seen_titles | blacklist
+    blocked = {_norm_title(t) for t in seen_titles | blacklist}
     credit_errors = 0
 
     def _process(cat):
@@ -992,7 +1003,7 @@ def main():
         # 이미 선별된 적 있거나 관리자가 삭제한 기사 제목 제거
         if blocked:
             before = len(articles)
-            articles = [a for a in articles if a["title"] not in blocked]
+            articles = [a for a in articles if _norm_title(a["title"]) not in blocked]
             filtered = before - len(articles)
             if filtered:
                 print(f"[{cat['title']}] 차단 필터: {filtered}건 제거 → {len(articles)}건 남음")
