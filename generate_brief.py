@@ -10,7 +10,8 @@ from email.mime.base import MIMEBase
 from email import encoders
 from datetime import datetime, timedelta, date as _date, timezone
 from pathlib import Path
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
+import urllib.request
 
 socket.setdefaulttimeout(15)  # RSS 요청 타임아웃 15초
 
@@ -298,6 +299,110 @@ def fetch_news(queries, today, max_per_query=20):
 
     articles.sort(key=lambda x: x.get("published", ""), reverse=True)
     return articles
+
+# ── 원문 발행일 검증 ───────────────────────────────────────────────────────────
+# RSS 날짜는 구글 재색인 시 갱신되므로, 최종 선별 기사만 원문 페이지의 실제 발행일로 재확인.
+# 구글 링크 해석·원문 접속·날짜 추출 중 하나라도 실패하면 기사를 그대로 둔다(fail-open).
+
+STALE_MARGIN_DAYS = 3  # 수집 기준일보다 이만큼 더 오래된 원문만 차단 (재게재 구기사는 수주~수개월 차이)
+_HTTP_TIMEOUT = 8
+_GN_SG_RE = re.compile(r'data-n-a-sg="([^"]+)"')
+_GN_TS_RE = re.compile(r'data-n-a-ts="([^"]+)"')
+_PUB_DATE_RES = [
+    re.compile(r'<meta[^>]+property=["\']article:published_time["\'][^>]*content=["\'](\d{4})-(\d{2})-(\d{2})'),
+    re.compile(r'<meta[^>]+content=["\'](\d{4})-(\d{2})-(\d{2})[^"\']*["\'][^>]*property=["\']article:published_time["\']'),
+    re.compile(r'"datePublished"\s*:\s*"(\d{4})-(\d{2})-(\d{2})'),
+]
+
+def _http_get(url):
+    req = urllib.request.Request(url, headers={"User-Agent": _RSS_AGENT})
+    with urllib.request.urlopen(req, timeout=_HTTP_TIMEOUT) as r:
+        return r.read(500_000).decode("utf-8", errors="ignore")
+
+def _resolve_gnews_url(link):
+    """news.google.com/rss/articles/<id> 링크를 언론사 원문 URL로 변환"""
+    if "news.google.com" not in link:
+        return link
+    art_id = urlparse(link).path.rsplit("/", 1)[-1]
+    sg = ts = None
+    for page_url in (f"https://news.google.com/articles/{art_id}",
+                     f"https://news.google.com/rss/articles/{art_id}"):
+        page = _http_get(page_url)
+        sg, ts = _GN_SG_RE.search(page), _GN_TS_RE.search(page)
+        if sg and ts:
+            break
+    if not (sg and ts):
+        raise ValueError("구글 링크 서명 없음")
+    inner = ('["garturlreq",[["X","X",["X","X"],null,null,1,1,"US:en",null,1,null,null,null,null,null,0,1],'
+             f'"X","X",1,[1,1,1],1,1,null,0,0,null,0],"{art_id}",{ts.group(1)},"{sg.group(1)}"]')
+    req = urllib.request.Request(
+        "https://news.google.com/_/DotsSplashUi/data/batchexecute",
+        data=("f.req=" + quote(json.dumps([[["Fbv4je", inner]]]))).encode(),
+        headers={"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+                 "User-Agent": _RSS_AGENT},
+    )
+    with urllib.request.urlopen(req, timeout=_HTTP_TIMEOUT) as r:
+        text = r.read().decode("utf-8", errors="ignore")
+    for row in json.loads(text.split("\n\n")[1]):
+        if row[:2] == ["wrb.fr", "Fbv4je"]:
+            return json.loads(row[2])[1]
+    raise ValueError("구글 링크 해석 실패")
+
+def _extract_pub_date(page):
+    for rx in _PUB_DATE_RES:
+        m = rx.search(page)
+        if m:
+            return _date(*map(int, m.groups()))
+    return None
+
+def _original_date(link):
+    """(원문 발행일 또는 None, 실패 사유 또는 None)"""
+    try:
+        d = _extract_pub_date(_http_get(_resolve_gnews_url(link)))
+    except Exception as e:
+        return None, f"{type(e).__name__}: {e}"[:80]
+    return (d, None) if d else (None, "발행일 메타 없음")
+
+def _stale_links(cat_title, arts, threshold, checked):
+    """선별 기사 중 원문 발행일이 threshold 이전인 기사의 link 집합 (checked: link→날짜 캐시)"""
+    stale = set()
+    for art in arts:
+        link = art.get("link", "")
+        if not link:
+            continue
+        if link not in checked:
+            d, err = _original_date(link)
+            checked[link] = d
+            title = art.get("src_title") or art.get("headline", "")
+            if err:
+                print(f"  [{cat_title}] 원문 날짜 확인불가: {title[:40]} — {err}")
+            elif d < threshold:
+                print(f"  [{cat_title}] 구기사 차단: {title[:40]} (원문 {d.strftime('%Y.%m.%d')})")
+        d = checked[link]
+        if d and d < threshold:
+            stale.add(link)
+    return stale
+
+def select_with_date_check(cat, articles, today):
+    """Claude 선별 → 원문 발행일로 구기사 재확인 → 구기사 제외 후 재선별 (최대 2회)"""
+    data = generate_category(cat, articles, today)
+    threshold = last_working_day(today).date() - timedelta(days=STALE_MARGIN_DAYS)
+    checked, stale, stale_titles = {}, set(), []
+    for attempt in range(3):
+        new_stale = _stale_links(cat["title"], data.get("articles", []), threshold, checked)
+        if not new_stale:
+            break
+        stale |= new_stale
+        stale_titles += [a["title"] for a in articles if a["link"] in new_stale]
+        articles = [a for a in articles if a["link"] not in stale]
+        if attempt == 2 or not articles:
+            data["articles"] = [a for a in data["articles"] if a.get("link") not in stale]
+            break
+        print(f"[{cat['title']}] 구기사 {len(new_stale)}건 제외 후 재선별")
+        data = generate_category(cat, articles, today)
+    # 차단한 구기사도 기억해 다음 실행에선 원문 확인 없이 바로 거름
+    data["_source_titles"] = data.get("_source_titles", []) + stale_titles
+    return data
 
 # ── Claude API ─────────────────────────────────────────────────────────────────
 
@@ -1012,7 +1117,7 @@ def main():
             return cat["id"], {"articles": []}
         print(f"[{cat['title']}] 수집: {len(articles)}건 → Claude 분석 중...")
         try:
-            data = generate_category(cat, articles, today)
+            data = select_with_date_check(cat, articles, today)
             cnt  = len(data.get("articles", []))
             print(f"[{cat['title']}] 선별: {cnt}건 완료")
             return cat["id"], data
