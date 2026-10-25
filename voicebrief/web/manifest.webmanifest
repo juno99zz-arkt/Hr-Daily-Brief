@@ -1,0 +1,19 @@
+{
+  "name": "VoiceBrief — 녹음 정리",
+  "short_name": "VoiceBrief",
+  "description": "녹음하면 STT + AI 요약 후 메일·텔레그램으로 자동 전송",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='42' fill='%230f172a'/%3E%3Cpath d='M96 44a18 18 0 0 1 18 18v34a18 18 0 1 1-36 0V62a18 18 0 0 1 18-18z' fill='%233b82f6'/%3E%3Cpath d='M62 92a34 34 0 0 0 68 0' stroke='%233b82f6' stroke-width='9' fill='none' stroke-linecap='round'/%3E%3Cpath d='M96 126v22' stroke='%233b82f6' stroke-width='9' stroke-linecap='round'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
