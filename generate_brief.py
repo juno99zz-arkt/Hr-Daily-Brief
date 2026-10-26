@@ -431,6 +431,112 @@ def select_with_date_check(cat, articles, today):
     data["_source_titles"] = data.get("_source_titles", []) + stale_titles
     return data
 
+# ── 카테고리 간 중복 정리 ─────────────────────────────────────────────────────
+# 카테고리별 선별이 독립 병렬로 돌아 같은 기사가 여러 곳에 실림(주로 삼성 비즈니스↔디스플레이).
+# 가장 맞는 1곳에만 남기고, 기사를 내준 카테고리는 남은 후보로 다시 채워 전체 건수를 유지한다.
+
+def _art_key(art):
+    return _norm_title(art.get("src_title") or art.get("headline", ""))
+
+def _ask_json(prompt):
+    """단발성 Claude 호출 → JSON dict (실패 시 None)"""
+    try:
+        resp = CLIENT.messages.create(
+            model=MODEL, max_tokens=16000, output_config={"effort": EFFORT},
+            messages=[{"role": "user", "content": prompt}],
+        )
+        _record_usage(resp.usage)
+        if resp.stop_reason == "refusal":
+            return None
+        return _extract_json("".join(b.text for b in resp.content if b.type == "text").strip())
+    except Exception as e:
+        print(f"  Claude API 오류: {e}")
+        return None
+
+def _pick_owners(dups, titles):
+    """dups: 기사키→후보 카테고리 id 목록. 기사키→남길 카테고리 id (AI 판정, 실패 시 CATEGORIES 순서상 앞선 곳)"""
+    cats = {c["id"]: c for c in CATEGORIES}
+    keys = list(dups)
+    cat_lines = "\n".join(f"- {c['id']} {c['title']}: {c['sub']}" for c in CATEGORIES)
+    items = json.dumps([{"no": i, "title": titles[k], "candidates": dups[k]} for i, k in enumerate(keys, 1)],
+                       ensure_ascii=False, indent=2)
+    result = _ask_json(f"""같은 기사가 여러 카테고리에 동시에 선별됐습니다.
+각 기사를 내용상 가장 잘 맞는 카테고리 1곳에 배정하세요. 반드시 그 기사의 candidates 중에서만 고르세요.
+기사의 주체·핵심 주제가 카테고리 설명과 가장 직접적으로 맞는 곳을 고르고,
+삼성 관련 카테고리는 기사의 주체가 삼성일 때만 고르세요.
+
+## 카테고리
+{cat_lines}
+
+## 중복 기사
+{items}
+
+출력 (JSON만): {{"assign": [{{"no": 기사번호, "category": "카테고리id"}}]}}""") or {}
+    picked = {}
+    for a in result.get("assign", []):
+        no = a.get("no")
+        if isinstance(no, int) and 1 <= no <= len(keys) and a.get("category") in dups[keys[no - 1]]:
+            picked[keys[no - 1]] = a["category"]
+    order = [c["id"] for c in CATEGORIES]
+    for k in keys:
+        if k not in picked:
+            picked[k] = min(dups[k], key=order.index)
+            print(f"  [카테고리 중복] AI 배정 실패 → 기본 순서 적용: {titles[k][:40]}")
+        print(f"  [카테고리 중복] {titles[k][:40]} → {cats[picked[k]]['title']}에만 표시")
+    return picked
+
+def dedupe_across_categories(results, pools, today):
+    """results: 카테고리id→선별 결과, pools: 카테고리id→선별 전 후보 기사 목록 (results를 직접 수정)"""
+    cats = {c["id"]: c for c in CATEGORIES}
+    order = [c["id"] for c in CATEGORIES]
+    for rnd in range(3):
+        where, titles = {}, {}
+        for cid in order:
+            for art in results.get(cid, {}).get("articles", []):
+                k = _art_key(art)
+                if k:
+                    where.setdefault(k, [])
+                    if cid not in where[k]:
+                        where[k].append(cid)
+                    titles.setdefault(k, art.get("src_title") or art.get("headline", ""))
+        dups = {k: v for k, v in where.items() if len(v) > 1}
+        if not dups:
+            return
+        owners = _pick_owners(dups, titles)
+        removed = {}   # 카테고리id → 다른 곳에 넘긴 기사키
+        for k, cids in dups.items():
+            for cid in cids:
+                if cid != owners[k]:
+                    removed.setdefault(cid, set()).add(k)
+
+        def _trimmed(cid):
+            return [a for a in results[cid]["articles"] if _art_key(a) not in removed[cid]]
+
+        if rnd == 2:   # 재선별을 반복해도 겹치면 더 채우지 않고 빼기만 함
+            for cid in removed:
+                results[cid]["articles"] = _trimmed(cid)
+            return
+
+        def _refill(cid):
+            # 다른 카테고리에 실린(또는 배정된) 기사는 후보에서 제외
+            taken = {k for k, v in where.items() if owners.get(k, v[0]) != cid}
+            pool = [a for a in pools.get(cid, []) if _norm_title(a["title"]) not in taken]
+            fallback = _trimmed(cid)
+            try:
+                data = select_with_date_check(cats[cid], pool, today) if pool else {"articles": []}
+            except Exception as e:
+                print(f"[{cats[cid]['title']}] 중복 제외 후 재선별 오류: {e}")
+                data = {"articles": []}
+            if len(data.get("articles", [])) < len(fallback):
+                # 재선별이 오히려 적게 골랐으면 기존 선별에서 중복만 뺀 쪽을 유지
+                data = {**results[cid], "articles": fallback}
+            print(f"[{cats[cid]['title']}] 중복 제외 후 재선별: {len(fallback)}건 → {len(data['articles'])}건")
+            return cid, data
+
+        with ThreadPoolExecutor(max_workers=4) as pool_exec:
+            for cid, data in pool_exec.map(_refill, list(removed)):
+                results[cid] = data
+
 # ── Claude API ─────────────────────────────────────────────────────────────────
 
 def _extract_json(text):
@@ -1153,13 +1259,13 @@ def main():
                 print(f"[{cat['title']}] 차단 필터: {filtered}건 제거 → {len(articles)}건 남음")
         if not articles:
             print(f"[{cat['title']}] 수집: 0건 → 건너뜀")
-            return cat["id"], {"articles": []}
+            return cat["id"], {"articles": []}, []
         print(f"[{cat['title']}] 수집: {len(articles)}건 → Claude 분석 중...")
         try:
             data = select_with_date_check(cat, articles, today)
             cnt  = len(data.get("articles", []))
             print(f"[{cat['title']}] 선별: {cnt}건 완료")
-            return cat["id"], data
+            return cat["id"], data, articles
         except Exception as e:
             errmsg = str(e)
             if "credit balance is too low" in errmsg:
@@ -1167,14 +1273,17 @@ def main():
                 print(f"[{cat['title']}] ⚠ 크레딧 부족")
             else:
                 print(f"[{cat['title']}] 오류: {e}")
-            return cat["id"], {"articles": []}
+            return cat["id"], {"articles": []}, articles
 
-    results = {}
+    results, pools = {}, {}
     with ThreadPoolExecutor(max_workers=4) as pool:
         futures = {pool.submit(_process, cat): cat for cat in CATEGORIES}
         for future in as_completed(futures):
-            cid, data = future.result()
-            results[cid] = data
+            cid, data, cands = future.result()
+            results[cid], pools[cid] = data, cands
+
+    if not credit_errors:
+        dedupe_across_categories(results, pools, today)
 
     all_data = [results[cat["id"]] for cat in CATEGORIES]
     print_usage_summary()
