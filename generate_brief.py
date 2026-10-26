@@ -4,6 +4,7 @@
 
 import sys, os, re, html, json, subprocess, feedparser, smtplib, socket
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from threading import Lock
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
@@ -117,6 +118,33 @@ def load_blacklist():
         return set()
 
 CLIENT = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+
+# 모델 설정 (되돌리려면 MODEL만 "claude-haiku-4-5"로 변경)
+MODEL  = "claude-haiku-5-5"
+EFFORT = "medium"   # low / medium / high — thinking 깊이. medium이 기본값
+
+# 토큰 사용량 집계 (병렬 실행이므로 lock 필요)
+_USAGE = {"input": 0, "output": 0, "calls": 0}
+_USAGE_LOCK = Lock()
+# 100K 토큰 이하 프롬프트 기준 단가 ($/1M tokens)
+_PRICE = {"claude-haiku-5-5": (0.10, 0.50), "claude-haiku-4-5": (1.00, 5.00)}
+
+def _record_usage(usage):
+    with _USAGE_LOCK:
+        _USAGE["input"]  += usage.input_tokens
+        _USAGE["output"] += usage.output_tokens
+        _USAGE["calls"]  += 1
+
+def print_usage_summary():
+    """실행 1회분 토큰·비용 요약 (모델 비교용)"""
+    inp, out, calls = _USAGE["input"], _USAGE["output"], _USAGE["calls"]
+    if not calls:
+        return
+    pin, pout = _PRICE.get(MODEL, (0, 0))
+    cost = inp / 1_000_000 * pin + out / 1_000_000 * pout
+    print(f"\n  [토큰] {MODEL} (effort={EFFORT}) · 호출 {calls}회")
+    print(f"    입력 {inp:,} / 출력 {out:,} 토큰")
+    print(f"    1회 실행 비용 ${cost:.4f} · 월 22일 환산 ${cost*22:.2f}")
 
 # ── 카테고리 정의 ──────────────────────────────────────────────────────────────
 
@@ -264,7 +292,6 @@ def _do_fetch(queries, cutoff_utc, max_per_query, when_days):
                     "title":     title,
                     "link":      entry.get("link", ""),
                     "published": pub_str,
-                    "summary":   entry.get("summary", "")[:400],
                     "source":    source,
                     "query":     query,
                 })
@@ -477,7 +504,6 @@ def generate_category(category, articles, today=None):
             "title":     a.get("title", ""),
             "date":      a.get("published", ""),
             "source":    a.get("source", ""),
-            "summary":   a.get("summary", ""),
         })
     article_text = json.dumps(indexed, ensure_ascii=False, indent=2)
 
@@ -491,7 +517,7 @@ def generate_category(category, articles, today=None):
 해당 분야 기사가 목록에 없을 때만 그 분야를 생략하세요. 각 기사의 field는 반드시 아래 중 하나로 지정하세요.
 - field 목록: 정치 / 경제 / 사회 / 연예 / 스포츠 / 국제
 - 대통령·장관·국회·정당·정부 인사가 주체이거나 발언한 기사는 주제가 문화·경제여도 무조건 "정치"
-오래된 기사(date가 오늘과 2일 이상 차이나는 경우, 또는 summary 내용이 수개월 전 사건을 다루는 경우)는 제외하세요.
+date가 오늘과 2일 이상 차이나는 오래된 기사는 제외하세요.
 요약 작성 시 헤드라인의 핵심 사실을 서술한 뒤, 이 사안의 배경·맥락을 자연스럽게 덧붙여 2~3문장의 완결된 문단으로 작성하세요.
 단, 헤드라인에 없는 구체적 수치·인용문은 지어내지 마세요. 인물명·기업명 등 고유명사는 원문 그대로만 쓰고, 원문에 없는 이름은 절대 추가하지 마세요.
 
@@ -530,7 +556,7 @@ def generate_category(category, articles, today=None):
 3. 동일 사건 중복 기사 → 1건만 유지
 4. 광고·홍보·보도자료성 기사 제외 (대체 기사 없으면 가장 유익한 것 포함)
 5. highlight: 가장 중요한 1건만 true
-6. 오늘 날짜({today_str}) 기준 2일 이상 지난 기사는 선별하지 말 것. summary 내용이 수개월 전 사건을 다루는 경우도 제외.
+6. 오늘 날짜({today_str}) 기준 2일 이상 지난 기사는 선별하지 말 것.
 7. 요약은 헤드라인의 핵심 사실을 서술한 뒤, 이 사안이 왜 중요한지·어떤 맥락인지를 자연스럽게 덧붙여 2~3문장의 완결된 문단으로 작성할 것.
    단, 헤드라인에 없는 구체적 수치·인용문은 지어내지 말 것. 인물명·기업명 등 고유명사는 원문 그대로만 쓰고, 원문에 없는 이름은 절대 추가하지 말 것.
 
@@ -575,11 +601,24 @@ def generate_category(category, articles, today=None):
 형식: {{"articles": [{{"idx":기사번호,"headline":"제목","summary":"2~3문장 요약(핵심사실+배경)","accent_line":"→ 핵심 요점","source":"언론사","date":"YYYY.MM.DD","tag":"태그","highlight":false}}]}}"""
 
             resp = CLIENT.messages.create(
-                model="claude-haiku-4-5-20251001",
-                max_tokens=8000,
+                model=MODEL,
+                max_tokens=16000,          # thinking이 함께 쓰므로 여유 확보
+                output_config={"effort": EFFORT},
                 messages=[{"role": "user", "content": prompt}],
             )
-            result = _extract_json(resp.content[0].text.strip())
+            _record_usage(resp.usage)
+
+            # Haiku 5.5는 thinking이 기본 ON → 첫 블록이 thinking일 수 있음.
+            # 위치가 아닌 type으로 text 블록을 찾아야 한다.
+            if resp.stop_reason == "refusal":
+                cat_name = getattr(resp.stop_details, "category", None)
+                print(f"  ⚠ 안전 분류기 거절 (category={cat_name}) — 재시도")
+                continue
+            text = "".join(b.text for b in resp.content if b.type == "text").strip()
+            if resp.stop_reason == "max_tokens":
+                print(f"  ⚠ max_tokens 도달 (출력 {resp.usage.output_tokens}토큰) — JSON이 잘렸을 수 있음")
+
+            result = _extract_json(text)
             if result and result.get("articles"):
                 if is_hot:
                     print(f"  핫뉴스 후보 분야: {[a.get('field') for a in result['articles']]}")
@@ -1138,6 +1177,7 @@ def main():
             results[cid] = data
 
     all_data = [results[cat["id"]] for cat in CATEGORIES]
+    print_usage_summary()
 
     # 크레딧 부족 감지 → 워크플로 실패로 GitHub 알림
     if credit_errors > 0:
