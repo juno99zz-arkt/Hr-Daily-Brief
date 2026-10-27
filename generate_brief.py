@@ -11,8 +11,10 @@ from email.mime.base import MIMEBase
 from email import encoders
 from datetime import datetime, timedelta, date as _date, timezone
 from pathlib import Path
-from urllib.parse import quote, urlparse
-import urllib.request
+from urllib.parse import quote
+from difflib import SequenceMatcher
+from email.utils import parsedate_to_datetime
+import urllib.request, urllib.error
 
 socket.setdefaulttimeout(15)  # RSS 요청 타임아웃 15초
 
@@ -55,6 +57,8 @@ ANTHROPIC_API_KEY = _env_clean("ANTHROPIC_API_KEY")
 EMAIL_SENDER      = _env_clean("EMAIL_SENDER")
 EMAIL_PASSWORD    = _env_clean("EMAIL_PASSWORD").replace(" ", "")
 EMAIL_RECIPIENT   = _env_clean("EMAIL_RECIPIENT")
+NAVER_CLIENT_ID     = _env_clean("NAVER_CLIENT_ID")
+NAVER_CLIENT_SECRET = _env_clean("NAVER_CLIENT_SECRET")
 
 OUTPUT_DIR = Path(__file__).parent / "public"
 OUTPUT_DIR.mkdir(exist_ok=True)
@@ -327,53 +331,50 @@ def fetch_news(queries, today, max_per_query=20):
     articles.sort(key=lambda x: x.get("published", ""), reverse=True)
     return articles
 
-# ── 원문 발행일 검증 ───────────────────────────────────────────────────────────
-# RSS 날짜는 구글 재색인 시 갱신되므로, 최종 선별 기사만 원문 페이지의 실제 발행일로 재확인.
-# 구글 링크 해석·원문 접속·날짜 추출 중 하나라도 실패하면 기사를 그대로 둔다(fail-open).
+# ── 최종 선별 기사 원문 검증 ───────────────────────────────────────────────────
+# AI는 RSS 제목만 보고 요약하므로 제목에 회사명이 없으면 카테고리 맥락으로 회사를 짐작하고(예: LGD 기사를
+# 삼성디스플레이로 요약), RSS 날짜는 구글 재색인 시 갱신돼 구기사를 못 거른다.
+# 최종 선별 기사만 네이버 뉴스 검색으로 원문을 찾아 실제 발행일·본문 발췌를 확보한 뒤
+#   1) 구기사 제외  2) 본문 근거로 AI 검수·재작성  3) 카테고리 불일치 제외
+#   4) 헤드라인·태그에 원문 근거 없는 주요 회사명이 남으면 제외 → 빈자리는 남은 후보로 재선별
+# 원문을 못 찾으면(네이버 키 없음 포함) 제목만 근거로 2)~4)를 적용한다.
 
 STALE_MARGIN_DAYS = 3  # 수집 기준일보다 이만큼 더 오래된 원문만 차단 (재게재 구기사는 수주~수개월 차이)
 _HTTP_TIMEOUT = 8
-_GN_SG_RE = re.compile(r'data-n-a-sg="([^"]+)"')
-_GN_TS_RE = re.compile(r'data-n-a-ts="([^"]+)"')
 _PUB_DATE_RES = [
     re.compile(r'<meta[^>]+property=["\']article:published_time["\'][^>]*content=["\'](\d{4})-(\d{2})-(\d{2})'),
     re.compile(r'<meta[^>]+content=["\'](\d{4})-(\d{2})-(\d{2})[^"\']*["\'][^>]*property=["\']article:published_time["\']'),
     re.compile(r'"datePublished"\s*:\s*"(\d{4})-(\d{2})-(\d{2})'),
 ]
+_OG_DESC_RES = [
+    re.compile(r'<meta[^>]+(?:property|name)=["\'](?:og:description|description)["\'][^>]*content="([^"]*)"'),
+    re.compile(r'<meta[^>]+content="([^"]*)"[^>]*(?:property|name)=["\'](?:og:description|description)["\']'),
+]
+_CHARSET_RE = re.compile(rb'charset=["\']?([\w-]+)', re.I)
+_TAG_RE = re.compile(r"<[^>]+>")
 
-def _http_get(url):
-    req = urllib.request.Request(url, headers={"User-Agent": _RSS_AGENT})
-    with urllib.request.urlopen(req, timeout=_HTTP_TIMEOUT) as r:
-        return r.read(500_000).decode("utf-8", errors="ignore")
+# 헤드라인·태그 검사 대상 회사 → 같은 회사를 가리키는 표기 (_norm_title 적용 후 비교)
+_COMPANY_ALIASES = {
+    "삼성디스플레이": ["삼성디스플레이", "삼성d", "삼성디스", "삼성디플", "sdc", "삼성lg디스플레이", "삼성lgd"],
+    "삼성전자":       ["삼성전자", "삼전", "ds부문", "dx부문"],
+    "LG디스플레이":   ["lg디스플레이", "lgd", "lg디스", "lgdisplay"],
+    "SK하이닉스":     ["sk하이닉스", "하이닉스", "삼전닉스"],
+    "BOE":            ["boe"],
+}
 
-def _resolve_gnews_url(link):
-    """news.google.com/rss/articles/<id> 링크를 언론사 원문 URL로 변환"""
-    if "news.google.com" not in link:
-        return link
-    art_id = urlparse(link).path.rsplit("/", 1)[-1]
-    sg = ts = None
-    for page_url in (f"https://news.google.com/articles/{art_id}",
-                     f"https://news.google.com/rss/articles/{art_id}"):
-        page = _http_get(page_url)
-        sg, ts = _GN_SG_RE.search(page), _GN_TS_RE.search(page)
-        if sg and ts:
-            break
-    if not (sg and ts):
-        raise ValueError("구글 링크 서명 없음")
-    inner = ('["garturlreq",[["X","X",["X","X"],null,null,1,1,"US:en",null,1,null,null,null,null,null,0,1],'
-             f'"X","X",1,[1,1,1],1,1,null,0,0,null,0],"{art_id}",{ts.group(1)},"{sg.group(1)}"]')
-    req = urllib.request.Request(
-        "https://news.google.com/_/DotsSplashUi/data/batchexecute",
-        data=("f.req=" + quote(json.dumps([[["Fbv4je", inner]]]))).encode(),
-        headers={"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-                 "User-Agent": _RSS_AGENT},
-    )
+def _http_get(url, headers=None):
+    req = urllib.request.Request(url, headers={"User-Agent": _RSS_AGENT, **(headers or {})})
     with urllib.request.urlopen(req, timeout=_HTTP_TIMEOUT) as r:
-        text = r.read().decode("utf-8", errors="ignore")
-    for row in json.loads(text.split("\n\n")[1]):
-        if row[:2] == ["wrb.fr", "Fbv4je"]:
-            return json.loads(row[2])[1]
-    raise ValueError("구글 링크 해석 실패")
+        raw = r.read(500_000)
+        m = _CHARSET_RE.search(r.headers.get("Content-Type", "").encode()) or _CHARSET_RE.search(raw[:3000])
+    charset = m.group(1).decode() if m else "utf-8"
+    try:
+        return raw.decode(charset, errors="replace")
+    except LookupError:
+        return raw.decode("utf-8", errors="replace")
+
+def _clean_text(s):
+    return html.unescape(_TAG_RE.sub("", s or "")).strip()
 
 def _extract_pub_date(page):
     for rx in _PUB_DATE_RES:
@@ -382,54 +383,257 @@ def _extract_pub_date(page):
             return _date(*map(int, m.groups()))
     return None
 
-def _original_date(link):
-    """(원문 발행일 또는 None, 실패 사유 또는 None)"""
+def _naver_search(q):
+    """네이버 뉴스 검색 원본 응답. 검색 API는 2026.7 NAVER API HUB(네이버 클라우드)로 이관됨 →
+    HUB 키 방식으로 먼저 호출하고, 인증 거부(401/403)면 기존 개발자센터 키 방식으로 재시도"""
+    params = f"query={q}&display=10&start=1&sort=sim"
     try:
-        d = _extract_pub_date(_http_get(_resolve_gnews_url(link)))
-    except Exception as e:
-        return None, f"{type(e).__name__}: {e}"[:80]
-    return (d, None) if d else (None, "발행일 메타 없음")
+        return _http_get(f"https://naverapihub.apigw.ntruss.com/search/v1/news?{params}&format=json",
+                         {"X-NCP-APIGW-API-KEY-ID": NAVER_CLIENT_ID, "X-NCP-APIGW-API-KEY": NAVER_CLIENT_SECRET})
+    except urllib.error.HTTPError as e:
+        if e.code not in (401, 403):
+            raise
+    return _http_get(f"https://openapi.naver.com/v1/search/news.json?{params}",
+                     {"X-Naver-Client-Id": NAVER_CLIENT_ID, "X-Naver-Client-Secret": NAVER_CLIENT_SECRET})
 
-def _stale_links(cat_title, arts, threshold, checked):
-    """선별 기사 중 원문 발행일이 threshold 이전인 기사의 link 집합 (checked: link→날짜 캐시)"""
-    stale = set()
-    for art in arts:
-        link = art.get("link", "")
-        if not link:
+def _naver_find(title):
+    """네이버 뉴스 검색으로 같은 제목의 기사 → {url, date, desc} (못 찾으면 None)"""
+    title = re.sub(r"\s+-\s+[^-]{1,15}$", "", title)   # 끝에 붙은 " - 언론사명" 제거
+    body = _naver_search(quote(re.sub(r"^\[[^\]]*\]\s*", "", title)[:80]))
+    target = _norm_title(title)
+    best, best_score = None, 0.0
+    for it in json.loads(body).get("items", []):
+        cand = _norm_title(_clean_text(it.get("title", "")))
+        if not cand:
             continue
-        if link not in checked:
-            d, err = _original_date(link)
-            checked[link] = d
-            title = art.get("src_title") or art.get("headline", "")
-            if err:
-                print(f"  [{cat_title}] 원문 날짜 확인불가: {title[:40]} — {err}")
-            elif d < threshold:
-                print(f"  [{cat_title}] 구기사 차단: {title[:40]} (원문 {d.strftime('%Y.%m.%d')})")
-        d = checked[link]
-        if d and d < threshold:
-            stale.add(link)
-    return stale
+        score = 1.0 if cand == target else SequenceMatcher(None, cand, target).ratio()
+        if score > best_score:
+            best, best_score = it, score
+    if not best or best_score < 0.85:
+        return None
+    pub = parsedate_to_datetime(best["pubDate"]).astimezone(KST).date() if best.get("pubDate") else None
+    return {"url": best.get("originallink") or best.get("link"), "date": pub,
+            "desc": _clean_text(best.get("description", ""))}
 
-def select_with_date_check(cat, articles, today):
-    """Claude 선별 → 원문 발행일로 구기사 재확인 → 구기사 제외 후 재선별 (최대 2회)"""
-    data = generate_category(cat, articles, today)
+def _article_info(art):
+    """원문 정보 {date, excerpt, note}. note는 원문을 못 찾은 사유 (찾았으면 None)"""
+    if not (NAVER_CLIENT_ID and NAVER_CLIENT_SECRET):
+        return {"date": None, "excerpt": "", "note": "네이버 API 키 없음"}
+    title = art.get("src_title") or art.get("headline", "")
+    try:
+        found = _naver_find(title)
+    except Exception as e:
+        return {"date": None, "excerpt": "", "note": f"네이버 검색 실패 {type(e).__name__}: {e}"[:80]}
+    if not found:
+        return {"date": None, "excerpt": "", "note": "네이버에서 같은 기사 못 찾음"}
+    excerpt, date = found["desc"], found["date"]
+    try:
+        page = _http_get(found["url"])
+        og = next((m.group(1) for rx in _OG_DESC_RES for m in [rx.search(page)] if m), "")
+        og = _clean_text(og)
+        if og and og[:40] not in excerpt:
+            excerpt = f"{og} {excerpt}".strip()
+        date = date or _extract_pub_date(page)
+    except Exception:
+        pass   # 원문 페이지 접속 실패 시 네이버 발췌만 사용
+    return {"date": date, "excerpt": excerpt[:500], "note": None}
+
+def _unsupported_companies(art, support):
+    """헤드라인·태그에 있지만 원문 제목·발췌에는 없는 주요 회사"""
+    shown = _norm_title(f"{art.get('tag', '')} {art.get('headline', '')}")
+    basis = _norm_title(support)
+    return [co for co, al in _COMPANY_ALIASES.items()
+            if any(a in shown for a in al) and not any(a in basis for a in al)]
+
+def _verify_articles(cat, arts, infos):
+    """원문 제목·발췌를 근거로 AI가 초안을 검수·재작성. 반환: (수정된 기사 목록, 카테고리 불일치 link 집합)"""
+    if not arts:
+        return arts, set()
+    items = [{"no": i,
+              "원문 제목": a.get("src_title") or a.get("headline", ""),
+              "원문 발췌": infos.get(a.get("link"), {}).get("excerpt", ""),
+              "초안": {k: a.get(k, "") for k in ("tag", "headline", "summary", "accent_line")}}
+             for i, a in enumerate(arts, 1)]
+    result = _ask_json(f"""당신은 삼성디스플레이 HR 피플팀 뉴스 브리핑의 팩트체커입니다.
+카테고리: {cat['title']} — {cat['sub']}
+
+아래 초안은 AI가 원문 제목만 보고 작성한 것입니다. 각 기사의 '원문 제목'과 '원문 발췌'(비어 있을 수 있음)를 근거로 초안을 검수해 고쳐 쓰세요.
+
+규칙:
+1. 회사명·인물명·직함·수치는 원문 제목이나 원문 발췌에 나온 것만 쓰세요. 근거 없이 주체를 삼성디스플레이·삼성전자 등으로 단정한 부분은 근거 있는 주체로 바로잡거나, 근거가 없으면 주체를 빼고 쓰세요.
+2. 원문 발췌가 있으면 summary를 발췌 내용에 맞게 2~3문장으로 다시 쓰세요. 발췌에 없는 사실은 지어내지 마세요.
+3. 원문 발췌가 비어 있으면 제목으로 확인되는 사실만 남기세요.
+4. headline은 50자 내외, tag는 8자 이내, accent_line은 "→ "로 시작하는 HR 피플팀 관점 한 줄. 표현 방식은 초안을 따르세요.
+5. 기사의 실제 주체·주제가 카테고리 설명과 맞지 않으면 fits_category를 false로 하세요. (예: '삼성 비즈니스'에 들어온 LG디스플레이 기사)
+
+기사:
+{json.dumps(items, ensure_ascii=False, indent=2)}
+
+출력 (JSON만): {{"articles": [{{"no": 기사번호, "fits_category": true, "tag": "", "headline": "", "summary": "", "accent_line": ""}}]}}""")
+    if not result:
+        print(f"  [{cat['title']}] 원문 검수 AI 응답 없음 → 초안 유지")
+        return arts, set()
+    off = set()
+    for r in result.get("articles", []):
+        no = r.get("no")
+        if not (isinstance(no, int) and 1 <= no <= len(arts)):
+            continue
+        art = arts[no - 1]
+        for k in ("tag", "headline", "summary", "accent_line"):
+            if isinstance(r.get(k), str) and r[k].strip():
+                art[k] = r[k].strip()
+        if r.get("fits_category") is False and cat["id"] != "c8":
+            off.add(art.get("link"))
+    return arts, off
+
+def select_and_verify(cat, articles, today):
+    """Claude 선별 → 원문 검증(구기사·회사명·카테고리) → 걸린 기사 제외 후 재선별 (최대 2회)"""
     threshold = last_working_day(today).date() - timedelta(days=STALE_MARGIN_DAYS)
-    checked, stale, stale_titles = {}, set(), []
+    infos, excluded, stale_titles = {}, set(), []
+    data = generate_category(cat, articles, today)
     for attempt in range(3):
-        new_stale = _stale_links(cat["title"], data.get("articles", []), threshold, checked)
-        if not new_stale:
+        arts = data.get("articles", [])
+        for a in arts:
+            if a.get("link") and a["link"] not in infos:
+                infos[a["link"]] = _article_info(a)
+        bad = {}
+        for a in arts:
+            d = infos.get(a.get("link"), {}).get("date")
+            if d and d < threshold:
+                bad[a["link"]] = f"구기사 (원문 {d.strftime('%Y.%m.%d')})"
+                stale_titles.append(a.get("src_title") or a.get("headline", ""))
+        arts, off = _verify_articles(cat, [a for a in arts if a.get("link") not in bad], infos)
+        for a in arts:
+            title = a.get("src_title") or a.get("headline", "")
+            if a.get("link") in off:
+                bad[a["link"]] = "카테고리 불일치"
+            elif cos := _unsupported_companies(a, title + " " + infos.get(a.get("link"), {}).get("excerpt", "")):
+                bad[a["link"]] = f"원문 근거 없는 회사명: {', '.join(cos)}"
+        found = sum(1 for a in data.get("articles", []) if not infos.get(a.get("link"), {}).get("note"))
+        notes = {i["note"] for i in infos.values() if i.get("note")}
+        print(f"  [{cat['title']}] 원문 확인 {found}/{len(data.get('articles', []))}건"
+              + (f" (미확인 사유: {', '.join(sorted(notes))})" if notes else ""))
+        data["articles"] = [a for a in arts if a.get("link") not in bad]
+        if not bad:
             break
-        stale |= new_stale
-        stale_titles += [a["title"] for a in articles if a["link"] in new_stale]
-        articles = [a for a in articles if a["link"] not in stale]
+        for link, why in bad.items():
+            t = next((x["title"] for x in articles if x.get("link") == link), link)
+            print(f"  [{cat['title']}] 제외: {t[:40]} — {why}")
+        excluded |= set(bad)
+        articles = [a for a in articles if a.get("link") not in excluded]
         if attempt == 2 or not articles:
-            data["articles"] = [a for a in data["articles"] if a.get("link") not in stale]
             break
-        print(f"[{cat['title']}] 구기사 {len(new_stale)}건 제외 후 재선별")
+        print(f"[{cat['title']}] {len(bad)}건 제외 후 재선별")
         data = generate_category(cat, articles, today)
-    # 차단한 구기사도 기억해 다음 실행에선 원문 확인 없이 바로 거름
+    # 구기사는 기억해 다음 실행에서 바로 거름 (카테고리 불일치·회사명 오류는 다른 날 다른 카테고리에서 정상일 수 있어 제외)
     data["_source_titles"] = data.get("_source_titles", []) + stale_titles
     return data
+
+# ── 카테고리 간 중복 정리 ─────────────────────────────────────────────────────
+# 카테고리별 선별이 독립 병렬로 돌아 같은 기사가 여러 곳에 실림(주로 삼성 비즈니스↔디스플레이).
+# 가장 맞는 1곳에만 남기고, 기사를 내준 카테고리는 남은 후보로 다시 채워 전체 건수를 유지한다.
+
+def _art_key(art):
+    return _norm_title(art.get("src_title") or art.get("headline", ""))
+
+def _ask_json(prompt):
+    """단발성 Claude 호출 → JSON dict (실패 시 None)"""
+    try:
+        resp = CLIENT.messages.create(
+            model=MODEL, max_tokens=16000, output_config={"effort": EFFORT},
+            messages=[{"role": "user", "content": prompt}],
+        )
+        _record_usage(resp.usage)
+        if resp.stop_reason == "refusal":
+            return None
+        return _extract_json("".join(b.text for b in resp.content if b.type == "text").strip())
+    except Exception as e:
+        print(f"  Claude API 오류: {e}")
+        return None
+
+def _pick_owners(dups, titles):
+    """dups: 기사키→후보 카테고리 id 목록. 기사키→남길 카테고리 id (AI 판정, 실패 시 CATEGORIES 순서상 앞선 곳)"""
+    cats = {c["id"]: c for c in CATEGORIES}
+    keys = list(dups)
+    cat_lines = "\n".join(f"- {c['id']} {c['title']}: {c['sub']}" for c in CATEGORIES)
+    items = json.dumps([{"no": i, "title": titles[k], "candidates": dups[k]} for i, k in enumerate(keys, 1)],
+                       ensure_ascii=False, indent=2)
+    result = _ask_json(f"""같은 기사가 여러 카테고리에 동시에 선별됐습니다.
+각 기사를 내용상 가장 잘 맞는 카테고리 1곳에 배정하세요. 반드시 그 기사의 candidates 중에서만 고르세요.
+기사의 주체·핵심 주제가 카테고리 설명과 가장 직접적으로 맞는 곳을 고르고,
+삼성 관련 카테고리는 기사의 주체가 삼성일 때만 고르세요.
+
+## 카테고리
+{cat_lines}
+
+## 중복 기사
+{items}
+
+출력 (JSON만): {{"assign": [{{"no": 기사번호, "category": "카테고리id"}}]}}""") or {}
+    picked = {}
+    for a in result.get("assign", []):
+        no = a.get("no")
+        if isinstance(no, int) and 1 <= no <= len(keys) and a.get("category") in dups[keys[no - 1]]:
+            picked[keys[no - 1]] = a["category"]
+    order = [c["id"] for c in CATEGORIES]
+    for k in keys:
+        if k not in picked:
+            picked[k] = min(dups[k], key=order.index)
+            print(f"  [카테고리 중복] AI 배정 실패 → 기본 순서 적용: {titles[k][:40]}")
+        print(f"  [카테고리 중복] {titles[k][:40]} → {cats[picked[k]]['title']}에만 표시")
+    return picked
+
+def dedupe_across_categories(results, pools, today):
+    """results: 카테고리id→선별 결과, pools: 카테고리id→선별 전 후보 기사 목록 (results를 직접 수정)"""
+    cats = {c["id"]: c for c in CATEGORIES}
+    order = [c["id"] for c in CATEGORIES]
+    for rnd in range(3):
+        where, titles = {}, {}
+        for cid in order:
+            for art in results.get(cid, {}).get("articles", []):
+                k = _art_key(art)
+                if k:
+                    where.setdefault(k, [])
+                    if cid not in where[k]:
+                        where[k].append(cid)
+                    titles.setdefault(k, art.get("src_title") or art.get("headline", ""))
+        dups = {k: v for k, v in where.items() if len(v) > 1}
+        if not dups:
+            return
+        owners = _pick_owners(dups, titles)
+        removed = {}   # 카테고리id → 다른 곳에 넘긴 기사키
+        for k, cids in dups.items():
+            for cid in cids:
+                if cid != owners[k]:
+                    removed.setdefault(cid, set()).add(k)
+
+        def _trimmed(cid):
+            return [a for a in results[cid]["articles"] if _art_key(a) not in removed[cid]]
+
+        if rnd == 2:   # 재선별을 반복해도 겹치면 더 채우지 않고 빼기만 함
+            for cid in removed:
+                results[cid]["articles"] = _trimmed(cid)
+            return
+
+        def _refill(cid):
+            # 다른 카테고리에 실린(또는 배정된) 기사는 후보에서 제외
+            taken = {k for k, v in where.items() if owners.get(k, v[0]) != cid}
+            pool = [a for a in pools.get(cid, []) if _norm_title(a["title"]) not in taken]
+            fallback = _trimmed(cid)
+            try:
+                data = select_and_verify(cats[cid], pool, today) if pool else {"articles": []}
+            except Exception as e:
+                print(f"[{cats[cid]['title']}] 중복 제외 후 재선별 오류: {e}")
+                data = {"articles": []}
+            if len(data.get("articles", [])) < len(fallback):
+                # 재선별이 오히려 적게 골랐으면 기존 선별에서 중복만 뺀 쪽을 유지
+                data = {**results[cid], "articles": fallback}
+            print(f"[{cats[cid]['title']}] 중복 제외 후 재선별: {len(fallback)}건 → {len(data['articles'])}건")
+            return cid, data
+
+        with ThreadPoolExecutor(max_workers=4) as pool_exec:
+            for cid, data in pool_exec.map(_refill, list(removed)):
+                results[cid] = data
 
 # ── Claude API ─────────────────────────────────────────────────────────────────
 
@@ -1153,13 +1357,13 @@ def main():
                 print(f"[{cat['title']}] 차단 필터: {filtered}건 제거 → {len(articles)}건 남음")
         if not articles:
             print(f"[{cat['title']}] 수집: 0건 → 건너뜀")
-            return cat["id"], {"articles": []}
+            return cat["id"], {"articles": []}, []
         print(f"[{cat['title']}] 수집: {len(articles)}건 → Claude 분석 중...")
         try:
-            data = select_with_date_check(cat, articles, today)
+            data = select_and_verify(cat, articles, today)
             cnt  = len(data.get("articles", []))
             print(f"[{cat['title']}] 선별: {cnt}건 완료")
-            return cat["id"], data
+            return cat["id"], data, articles
         except Exception as e:
             errmsg = str(e)
             if "credit balance is too low" in errmsg:
@@ -1167,14 +1371,17 @@ def main():
                 print(f"[{cat['title']}] ⚠ 크레딧 부족")
             else:
                 print(f"[{cat['title']}] 오류: {e}")
-            return cat["id"], {"articles": []}
+            return cat["id"], {"articles": []}, articles
 
-    results = {}
+    results, pools = {}, {}
     with ThreadPoolExecutor(max_workers=4) as pool:
         futures = {pool.submit(_process, cat): cat for cat in CATEGORIES}
         for future in as_completed(futures):
-            cid, data = future.result()
-            results[cid] = data
+            cid, data, cands = future.result()
+            results[cid], pools[cid] = data, cands
+
+    if not credit_errors:
+        dedupe_across_categories(results, pools, today)
 
     all_data = [results[cat["id"]] for cat in CATEGORIES]
     print_usage_summary()

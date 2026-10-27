@@ -65,6 +65,8 @@ jobs:
           EMAIL_SENDER:      ${{ secrets.EMAIL_SENDER }}
           EMAIL_PASSWORD:    ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_RECIPIENT:   ${{ secrets.EMAIL_RECIPIENT }}
+          NAVER_CLIENT_ID:     ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
           GITHUB_ACTIONS:    "true"
         run: |
           FORCE=""
