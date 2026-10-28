@@ -897,7 +897,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:#FFFFFF;min-height:100vh;p
 .news-tag-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
 .tag{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:5px;}
 .source-badge{font-size:11.5px;color:#BBB;}
-.news-date{font-size:11px;color:#CCC;font-weight:500;background:#F0EEE9;padding:2px 7px;border-radius:4px;}
+.news-date{font-size:11.5px;color:#BBB;font-weight:400;}
 .news-headline{font-size:16px;font-weight:700;color:#1A1A1A;line-height:1.5;margin-bottom:9px;}
 .news-summary{font-size:13.5px;color:#555;line-height:1.8;margin-bottom:10px;}
 .accent-line{font-size:13px;color:#555;line-height:1.6;padding-left:12px;border-left:3px solid;font-weight:600;}
@@ -1042,7 +1042,7 @@ def render_card(category, data, period):
         <div class="news-content">
           <div class="news-tag-row">
             <span class="tag">{art.get('tag','')}</span>
-            <span class="source-badge">{art.get('source','')} ↗</span>
+            <span class="source-badge">{art.get('source','')} |</span>
             <span class="news-date">{art.get('date','')}</span>
           </div>
           <div class="news-headline">{art.get('headline','')}</div>
@@ -1159,13 +1159,13 @@ def render_email_html(all_data, today):
         headline = html.escape(first.get("headline", ""))
         source = html.escape(first.get("source", ""))
         article_date = html.escape(first.get("date", ""))
-        rows_html += f"""<tr><td style="padding:19px 0 20px;border-bottom:1px solid #e9edf2;"><p style="margin:0 0 7px;font-size:10px;line-height:15px;font-weight:700;letter-spacing:1.1px;color:#617085;"><span style="display:inline-block;padding:4px 10px;border:1px solid #dce6f0;border-radius:14px;background:#f5f8fc;color:#536f91;">{label}</span></p><a href="{link}" target="_blank" style="display:block;color:#202b3c;text-decoration:none;font-size:15px;font-weight:700;line-height:24px;word-break:keep-all;overflow-wrap:break-word;">{headline}</a><p style="margin:7px 0 0;font-size:11px;line-height:17px;color:#737d8c;text-align:right;">{source}<span style="padding:0 7px;color:#aab2be;">·</span>{article_date}</p></td></tr>""" + "\n"
+        rows_html += f"""<tr><td style="padding:19px 0 20px;border-bottom:1px solid #e9edf2;"><p style="margin:0 0 7px;font-size:10px;line-height:15px;font-weight:700;letter-spacing:1.1px;color:#617085;"><span style="display:inline-block;padding:4px 10px;border:1px solid #dce6f0;border-radius:14px;background:#f5f8fc;color:#536f91;">{label}</span></p><a href="{link}" target="_blank" style="display:block;color:#202b3c;text-decoration:none;font-size:15px;font-weight:700;line-height:24px;word-break:keep-all;overflow-wrap:break-word;">{headline}</a><p style="margin:7px 0 0;font-size:11px;line-height:17px;color:#737d8c;text-align:right;">{source}<span style="padding:0 7px;color:#aab2be;">|</span>{article_date}</p></td></tr>""" + "\n"
     return f"""<!DOCTYPE html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>피플팀 데일리 뉴스 브리핑</title><style>body{{margin:0;padding:0}}a:hover{{text-decoration:underline!important}}a:focus-visible{{outline:2px solid #245cce;outline-offset:4px}}::selection{{background:#dfebff;color:#202b3c}}@media(max-width:600px){{.outer{{padding:12px 8px!important}}.sheet{{border-left:0!important;border-right:0!important}}.inner{{padding-left:24px!important;padding-right:24px!important}}.title{{font-size:28px!important;letter-spacing:-1px!important}}.brand,.meta{{display:block!important;width:100%!important;text-align:left!important}}.meta{{padding-top:6px!important}}.cta{{width:80%!important}}}}</style></head>
-<body bgcolor="#f5f6f8" style="margin:0;background:#f5f6f8;color:#202b3c;font-family:Arial,'Malgun Gothic','맑은 고딕',sans-serif;">
+<body bgcolor="#ffffff" style="margin:0;background:#ffffff;color:#202b3c;font-family:Arial,'Malgun Gothic','맑은 고딕',sans-serif;">
 <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">오늘 꼭 알아야 할 HR · Business · AI 핵심 이슈 — {preview_date}</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f5f6f8" style="background:#f5f6f8;"><tr><td align="center" class="outer" style="padding:40px 16px;">
-<table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" class="sheet" bgcolor="#ffffff" style="width:100%;max-width:640px;background:#ffffff;border:1px solid #e6eaf0;border-top:3px solid #245cce;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="background:#ffffff;"><tr><td align="center" class="outer" style="padding:40px 16px;">
+<table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" class="sheet" bgcolor="#f5f6f8" style="width:100%;max-width:640px;background:#f5f6f8;border:1px solid #e6eaf0;border-top:3px solid #245cce;">
 <tr><td class="inner" style="padding:37px 40px 31px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:10px;"><tr><td class="brand" style="font-family:Noto Sans KR,Malgun Gothic,맑은 고딕,sans-serif;font-size:11px;line-height:19px;font-weight:500;letter-spacing:0;color:#657184;padding-right:12px;white-space:nowrap;">오늘의 HR · Business · AI, 핵심을 한눈에</td><td class="meta" align="right" style="font-family:Noto Sans KR,Malgun Gothic,맑은 고딕,sans-serif;font-size:11px;line-height:19px;font-weight:500;letter-spacing:0;color:#657184;">{date_display}<span style="padding:0 6px;color:#c3cbd5;">|</span>수집기간 {period}</td></tr></table>
 <h1 class="title" style="margin:0;font-family:Noto Sans KR,Malgun Gothic,맑은 고딕,sans-serif;font-size:36px;line-height:1.3;font-weight:900;letter-spacing:-1.4px;color:#1a1a1a;">피플팀 데일리 뉴스 브리핑</h1>
