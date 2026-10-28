@@ -16,7 +16,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Noto Sans KR',sans-serif;background:#EDEAE3;min-height:100vh;padding:48px 32px 80px;}
+body{font-family:'Noto Sans KR',sans-serif;background:#FFFFFF;min-height:100vh;padding:48px 32px 80px;}
 .page-header{max-width:960px;margin:0 auto 28px;display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:18px;border-bottom:3px solid #1A1A1A;}
 .page-label{font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#999;margin-bottom:7px;}
 .page-title{font-size:34px;font-weight:900;color:#1A1A1A;}
@@ -51,8 +51,8 @@ body{font-family:'Noto Sans KR',sans-serif;background:#EDEAE3;min-height:100vh;p
 .badge{flex-shrink:0;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:5px 14px;border-radius:24px;margin-top:4px;white-space:nowrap;}
 .card-body{padding:20px 32px 8px;}
 .news-list{display:flex;flex-direction:column;gap:14px;}
-.news-item{display:flex;flex-direction:row;gap:20px;align-items:flex-start;padding:20px 22px;border-radius:14px;background:#F7F6F2;text-decoration:none;transition:background 0.15s,transform 0.12s;}
-.news-item:hover{background:#EEECEA;transform:translateY(-2px);}
+.news-item{display:flex;flex-direction:row;gap:20px;align-items:flex-start;padding:20px 22px;border-radius:14px;background:#FFFFFF;text-decoration:none;transition:background 0.15s,transform 0.12s;}
+.news-item:hover{background:#F7F9FC;transform:translateY(-2px);}
 .news-num{font-family:'Bebas Neue',sans-serif;font-size:44px;line-height:1;flex-shrink:0;min-width:36px;margin-top:2px;}
 .news-content{flex:1;min-width:0;}
 .news-tag-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
@@ -142,7 +142,7 @@ if ('serviceWorker' in navigator) {
 
 <div class="page-header">
   <div>
-    <div class="page-label">Samsung Display · HR People Team Daily</div>
+    <div class="page-label">Samsung Display · People Team Daily</div>
     <div class="page-title">피플팀 데일리 뉴스 브리핑</div>
     <span class="session-badge session-morning">아침 브리핑 (07:00)</span>
   </div>
@@ -160,23 +160,6 @@ if ('serviceWorker' in navigator) {
   <button class="install-close" id="installClose" aria-label="닫기">×</button>
 </div>
 
-
-<div class="filter-bar">
-  <div class="filter-label">카테고리 선택</div>
-  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-    <button class="select-all" id="selectAll">전체 해제</button>
-    <div class="filter-checks">
-    <label><input type="checkbox" data-card="c1" checked><span class="chip chip-c1">삼성 비즈니스</span></label>
-    <label><input type="checkbox" data-card="c2" checked><span class="chip chip-c2">삼성 노사관계 이슈</span></label>
-    <label><input type="checkbox" data-card="c3" checked><span class="chip chip-c3">대한민국 노동 관련</span></label>
-    <label><input type="checkbox" data-card="c4" checked><span class="chip chip-c4">삼성 마음건강 · 산재</span></label>
-    <label><input type="checkbox" data-card="c5" checked><span class="chip chip-c5">최신 AI 이슈</span></label>
-    <label><input type="checkbox" data-card="c6" checked><span class="chip chip-c6">글로벌 빅테크 뉴스</span></label>
-    <label><input type="checkbox" data-card="c7" checked><span class="chip chip-c7">디스플레이 기술/산업/경쟁사</span></label>
-    <label><input type="checkbox" data-card="c8" checked><span class="chip chip-c8">대한민국 핫뉴스</span></label>
-    </div>
-  </div>
-</div>
 
 <div class="cards-grid">
 
@@ -243,10 +226,7 @@ if ('serviceWorker' in navigator) {
         </div>
       </a>
   </div></div>
-  <div class="card-footer">
-    <span class="footer-label">Samsung Display · HR People Team</span>
-    <span class="footer-date">2026.10.27 – 10.28</span>
-  </div>
+
 </div>
 <div class="card c2" id="c2">
   <div class="card-header">
@@ -311,10 +291,7 @@ if ('serviceWorker' in navigator) {
         </div>
       </a>
   </div></div>
-  <div class="card-footer">
-    <span class="footer-label">Samsung Display · HR People Team</span>
-    <span class="footer-date">2026.10.27 – 10.28</span>
-  </div>
+
 </div>
 <div class="card c3" id="c3">
   <div class="card-header">
@@ -379,10 +356,7 @@ if ('serviceWorker' in navigator) {
         </div>
       </a>
   </div></div>
-  <div class="card-footer">
-    <span class="footer-label">Samsung Display · HR People Team</span>
-    <span class="footer-date">2026.10.27 – 10.28</span>
-  </div>
+
 </div>
 <div class="card c4" id="c4">
   <div class="card-header">
@@ -447,10 +421,7 @@ if ('serviceWorker' in navigator) {
         </div>
       </a>
   </div></div>
-  <div class="card-footer">
-    <span class="footer-label">Samsung Display · HR People Team</span>
-    <span class="footer-date">2026.10.27 – 10.28</span>
-  </div>
+
 </div>
 <div class="card c5" id="c5">
   <div class="card-header">
@@ -515,10 +486,7 @@ if ('serviceWorker' in navigator) {
         </div>
       </a>
   </div></div>
-  <div class="card-footer">
-    <span class="footer-label">Samsung Display · HR People Team</span>
-    <span class="footer-date">2026.10.27 – 10.28</span>
-  </div>
+
 </div>
 <div class="card c6" id="c6">
   <div class="card-header">
@@ -583,10 +551,7 @@ if ('serviceWorker' in navigator) {
         </div>
       </a>
   </div></div>
-  <div class="card-footer">
-    <span class="footer-label">Samsung Display · HR People Team</span>
-    <span class="footer-date">2026.10.27 – 10.28</span>
-  </div>
+
 </div>
 <div class="card c7" id="c7">
   <div class="card-header">
@@ -651,10 +616,7 @@ if ('serviceWorker' in navigator) {
         </div>
       </a>
   </div></div>
-  <div class="card-footer">
-    <span class="footer-label">Samsung Display · HR People Team</span>
-    <span class="footer-date">2026.10.27 – 10.28</span>
-  </div>
+
 </div>
 <div class="card c8" id="c8">
   <div class="card-header">
@@ -719,10 +681,7 @@ if ('serviceWorker' in navigator) {
         </div>
       </a>
   </div></div>
-  <div class="card-footer">
-    <span class="footer-label">Samsung Display · HR People Team</span>
-    <span class="footer-date">2026.10.27 – 10.28</span>
-  </div>
+
 </div>
 </div>
 
@@ -732,41 +691,7 @@ if ('serviceWorker' in navigator) {
 </div>
 
 
-<script>
-(function(){
-  var checks = document.querySelectorAll('.filter-checks input[type=checkbox]');
-  var saved = null;
-  try { saved = JSON.parse(localStorage.getItem('briefFilter')); } catch(e){}
 
-  function applyFilter(){
-    var state = {};
-    checks.forEach(function(cb){
-      state[cb.dataset.card] = cb.checked;
-      var card = document.getElementById(cb.dataset.card);
-      if(card) card.classList.toggle('hidden', !cb.checked);
-    });
-    try { localStorage.setItem('briefFilter', JSON.stringify(state)); } catch(e){}
-  }
-
-  if(saved){
-    checks.forEach(function(cb){
-      if(saved[cb.dataset.card] !== undefined) cb.checked = saved[cb.dataset.card];
-    });
-  }
-  applyFilter();
-
-  checks.forEach(function(cb){ cb.addEventListener('change', applyFilter); });
-
-  var btn = document.getElementById('selectAll');
-  if(btn) btn.addEventListener('click', function(){
-    var allOn = Array.from(checks).every(function(c){ return c.checked; });
-    checks.forEach(function(cb){ cb.checked = !allOn; });
-    btn.textContent = allOn ? '전체 선택' : '전체 해제';
-    applyFilter();
-    setTimeout(function(){ btn.textContent = allOn ? '전체 해제' : '전체 선택'; }, 1000);
-  });
-})();
-</script>
 
 
 <script>
