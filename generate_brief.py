@@ -1155,27 +1155,27 @@ def render_email_html(all_data, today):
             continue
         first = arts[0]
         label = html.escape(short_labels.get(cat["id"], cat["title"]))
-        link = html.escape(first.get("link", "#"), quote=True)
         headline = html.escape(first.get("headline", ""))
         source = html.escape(first.get("source", ""))
         article_date = html.escape(first.get("date", ""))
-        rows_html += f"""<tr><td style="padding:19px 0 20px;border-bottom:1px solid #e9edf2;"><p style="margin:0 0 7px;font-size:10px;line-height:15px;font-weight:700;letter-spacing:1.1px;color:#617085;"><span style="display:inline-block;padding:4px 10px;border:1px solid #dce6f0;border-radius:14px;background:#f5f8fc;color:#536f91;">{label}</span></p><a href="{link}" target="_blank" style="display:block;color:#202b3c;text-decoration:none;font-size:15px;font-weight:700;line-height:24px;word-break:keep-all;overflow-wrap:break-word;">{headline}</a><p style="margin:7px 0 0;font-size:11px;line-height:17px;color:#737d8c;text-align:right;">{source}<span style="padding:0 7px;color:#aab2be;">|</span>{article_date}</p></td></tr>""" + "\n"
+        rows_html += f"""<tr><td style="padding:19px 0 20px;border-bottom:1px solid #e9edf2;"><p style="margin:0 0 7px;font-size:10px;line-height:15px;font-weight:700;letter-spacing:1.1px;color:#617085;"><span style="display:inline-block;padding:4px 10px;border:1px solid #dce6f0;border-radius:14px;background:#f5f8fc;color:#536f91;">{label}</span></p><span style="display:block;color:#202b3c;text-decoration:none;font-size:15px;font-weight:700;line-height:24px;word-break:keep-all;overflow-wrap:break-word;">{headline}</span><p style="margin:7px 0 0;font-size:11px;line-height:17px;color:#737d8c;text-align:right;">{source}<span style="padding:0 7px;color:#aab2be;">|</span>{article_date}</p></td></tr>""" + "\n"
     return f"""<!DOCTYPE html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>피플팀 데일리 뉴스 브리핑</title><style>body{{margin:0;padding:0}}a:hover{{text-decoration:underline!important}}a:focus-visible{{outline:2px solid #245cce;outline-offset:4px}}::selection{{background:#dfebff;color:#202b3c}}@media(max-width:600px){{.outer{{padding:12px 8px!important}}.sheet{{border-left:0!important;border-right:0!important}}.inner{{padding-left:24px!important;padding-right:24px!important}}.title{{font-size:28px!important;letter-spacing:-1px!important}}.brand,.meta{{display:block!important;width:100%!important;text-align:left!important}}.meta{{padding-top:6px!important}}.cta{{width:80%!important}}}}</style></head>
 <body bgcolor="#ffffff" style="margin:0;background:#ffffff;color:#202b3c;font-family:Arial,'Malgun Gothic','맑은 고딕',sans-serif;">
 <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">오늘 꼭 알아야 할 HR · Business · AI 핵심 이슈 — {preview_date}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="background:#ffffff;"><tr><td align="center" class="outer" style="padding:40px 16px;">
+<a class="briefing-link" href="https://juno99zz-arkt.github.io/Hr-Daily-Brief/" target="_blank" aria-label="전체 브리핑 보기" style="display:block;width:100%;max-width:640px;margin:0 auto;color:#202b3c;text-decoration:none;">
 <table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" class="sheet" bgcolor="#ffffff" style="width:100%;max-width:640px;background:#ffffff;border:1px solid #e6eaf0;border-top:3px solid #245cce;">
 <tr><td class="inner" style="padding:37px 40px 31px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:10px;"><tr><td class="brand" style="font-family:Noto Sans KR,Malgun Gothic,맑은 고딕,sans-serif;font-size:11px;line-height:19px;font-weight:500;letter-spacing:0;color:#657184;padding-right:12px;white-space:nowrap;">오늘의 HR · Business · AI, 핵심을 한눈에</td><td class="meta" align="right" style="font-family:Noto Sans KR,Malgun Gothic,맑은 고딕,sans-serif;font-size:11px;line-height:19px;font-weight:500;letter-spacing:0;color:#657184;">{date_display}<span style="padding:0 6px;color:#c3cbd5;">|</span>수집기간 {period}</td></tr></table>
 <h1 class="title" style="margin:0;font-family:Noto Sans KR,Malgun Gothic,맑은 고딕,sans-serif;font-size:36px;line-height:1.3;font-weight:900;letter-spacing:-1.4px;color:#1a1a1a;">피플팀 데일리 뉴스 브리핑</h1>
 
 
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="256" class="cta" style="width:256px;max-width:100%;margin-top:27px;"><tr><td bgcolor="#245cce" style="border-radius:4px;background:#245cce;"><a href="https://juno99zz-arkt.github.io/Hr-Daily-Brief/" target="_blank" style="display:block;text-align:center;padding:17px 30px;border:1px solid #245cce;border-radius:4px;font-size:16px;line-height:24px;font-weight:700;text-decoration:none;color:#ffffff;">전체 브리핑 보기&nbsp;&nbsp; →</a></td></tr></table>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="256" class="cta" style="width:256px;max-width:100%;margin-top:27px;"><tr><td bgcolor="#245cce" style="border-radius:4px;background:#245cce;"><span style="display:block;text-align:center;padding:17px 30px;border:1px solid #245cce;border-radius:4px;font-size:16px;line-height:24px;font-weight:700;text-decoration:none;color:#ffffff;">전체 브리핑 보기&nbsp;&nbsp; →</span></td></tr></table>
 </td></tr>
 <tr><td class="inner" style="padding:0 40px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:19px 0 2px;border-top:1px solid #d7dee8;font-size:11px;line-height:18px;letter-spacing:1.3px;color:#536176;font-weight:700;">TODAY’S HEADLINES</td><td align="right" style="padding:19px 0 2px;border-top:1px solid #d7dee8;font-size:11px;line-height:18px;color:#737d8c;">오늘의 주요 뉴스</td></tr></table><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">{rows_html}</table></td></tr>
 <tr><td class="inner" style="padding:26px 40px 30px;"><p style="margin:0;font-size:11px;line-height:19px;color:#737d8c;">※ 내부 정보 공유 목적으로만 활용</p></td></tr>
-</table></td></tr></table></body></html>"""
+</table></a></td></tr></table></body></html>"""
 
 
 def send_email(all_data, today, session_label="morning"):
