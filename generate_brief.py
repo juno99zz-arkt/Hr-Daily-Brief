@@ -351,6 +351,7 @@ _OG_DESC_RES = [
     re.compile(r'<meta[^>]+content="([^"]*)"[^>]*(?:property|name)=["\'](?:og:description|description)["\']'),
 ]
 _CHARSET_RE = re.compile(rb'charset=["\']?([\w-]+)', re.I)
+_PROCESS_TALK_RE = re.compile(r"원문|발췌|제목에 따르면|제목에는|확인되지 않|확인할 수 없")
 _TAG_RE = re.compile(r"<[^>]+>")
 
 # 헤드라인·태그 검사 대상 회사 → 같은 회사를 가리키는 표기 (_norm_title 적용 후 비교)
@@ -462,9 +463,10 @@ def _verify_articles(cat, arts, infos):
 규칙:
 1. 회사명·인물명·직함·수치는 원문 제목이나 원문 발췌에 나온 것만 쓰세요. 근거 없이 주체를 삼성디스플레이·삼성전자 등으로 단정한 부분은 근거 있는 주체로 바로잡거나, 근거가 없으면 주체를 빼고 쓰세요.
 2. 원문 발췌가 있으면 summary를 발췌 내용에 맞게 2~3문장으로 다시 쓰세요. 발췌에 없는 사실은 지어내지 마세요.
-3. 원문 발췌가 비어 있으면 제목으로 확인되는 사실만 남기세요.
-4. headline은 50자 내외, tag는 8자 이내, accent_line은 "→ "로 시작하는 HR 피플팀 관점 한 줄. 표현 방식은 초안을 따르세요.
-5. 기사의 실제 주체·주제가 카테고리 설명과 맞지 않으면 fits_category를 false로 하세요. (예: '삼성 비즈니스'에 들어온 LG디스플레이 기사)
+3. 원문 발췌가 비어 있으면 초안 summary를 최대한 유지하고 1번에 어긋나는 부분만 고치세요. 사안의 의미·배경을 일반적으로 설명하는 문장은 남겨도 됩니다.
+4. 결과물은 임직원이 읽는 브리핑입니다. '원문', '발췌', '제목에 따르면', '확인되지 않는다'처럼 검수 과정이나 정보 부족을 드러내는 표현은 절대 쓰지 마세요.
+5. 모든 문장은 '~했다', '~이다'처럼 '다'로 끝나는 기사체로 쓰세요. headline은 50자 내외, tag는 8자 이내, accent_line은 "→ "로 시작하는 HR 피플팀 관점 한 줄.
+6. 기사의 실제 주체·주제가 카테고리 설명과 맞지 않으면 fits_category를 false로 하세요. (예: '삼성 비즈니스'에 들어온 LG디스플레이 기사)
 
 기사:
 {json.dumps(items, ensure_ascii=False, indent=2)}
@@ -480,7 +482,8 @@ def _verify_articles(cat, arts, infos):
             continue
         art = arts[no - 1]
         for k in ("tag", "headline", "summary", "accent_line"):
-            if isinstance(r.get(k), str) and r[k].strip():
+            # 검수 과정 문구("원문 발췌가 없어…")가 섞인 수정본은 버리고 초안 유지
+            if isinstance(r.get(k), str) and r[k].strip() and not _PROCESS_TALK_RE.search(r[k]):
                 art[k] = r[k].strip()
         if r.get("fits_category") is False and cat["id"] != "c8":
             off.add(art.get("link"))
