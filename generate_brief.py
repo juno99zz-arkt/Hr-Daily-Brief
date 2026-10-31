@@ -865,7 +865,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:#FFFFFF;min-height:100vh;p
 .session-morning{background:#FFF3CD;color:#856404;}
 .session-afternoon{background:#D1ECF1;color:#0C5460;}
 
-.install-banner{display:none;max-width:960px;margin:0 auto 20px;background:#1A1A1A;color:#EDEAE3;border-radius:14px;padding:14px 20px;align-items:center;justify-content:space-between;gap:16px;font-size:13px;line-height:1.5;flex-wrap:wrap;}
+.install-banner{display:none;max-width:960px;margin:28px auto 0;background:#1A1A1A;color:#EDEAE3;border-radius:14px;padding:14px 20px;align-items:center;justify-content:space-between;gap:16px;font-size:13px;line-height:1.5;flex-wrap:wrap;}
 .install-banner.show{display:flex;}
 .install-banner b{font-weight:700;}
 .install-btn{flex-shrink:0;background:#EDEAE3;color:#1A1A1A;border:none;font-size:12px;font-weight:700;padding:8px 16px;border-radius:20px;cursor:pointer;}
@@ -1121,12 +1121,11 @@ if ('serviceWorker' in navigator) {{
   </div>
 </div>
 
-{INSTALL_HTML}
-
-
 <div class="cards-grid">
 {cards_html}
 </div>
+
+{INSTALL_HTML}
 
 <div class="page-footer">
   <span class="footer-note">※ {generated} 생성 · 수집기간: {period}<br>내부 정보 공유 목적으로만 활용</span>
