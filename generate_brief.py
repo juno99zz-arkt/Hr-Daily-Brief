@@ -351,7 +351,6 @@ _OG_DESC_RES = [
     re.compile(r'<meta[^>]+content="([^"]*)"[^>]*(?:property|name)=["\'](?:og:description|description)["\']'),
 ]
 _CHARSET_RE = re.compile(rb'charset=["\']?([\w-]+)', re.I)
-_PROCESS_TALK_RE = re.compile(r"원문|발췌|제목에 따르면|제목에는|확인되지 않|확인할 수 없")
 _TAG_RE = re.compile(r"<[^>]+>")
 
 # 헤드라인·태그 검사 대상 회사 → 같은 회사를 가리키는 표기 (_norm_title 적용 후 비교)
@@ -463,10 +462,9 @@ def _verify_articles(cat, arts, infos):
 규칙:
 1. 회사명·인물명·직함·수치는 원문 제목이나 원문 발췌에 나온 것만 쓰세요. 근거 없이 주체를 삼성디스플레이·삼성전자 등으로 단정한 부분은 근거 있는 주체로 바로잡거나, 근거가 없으면 주체를 빼고 쓰세요.
 2. 원문 발췌가 있으면 summary를 발췌 내용에 맞게 2~3문장으로 다시 쓰세요. 발췌에 없는 사실은 지어내지 마세요.
-3. 원문 발췌가 비어 있으면 초안 summary를 최대한 유지하고 1번에 어긋나는 부분만 고치세요. 사안의 의미·배경을 일반적으로 설명하는 문장은 남겨도 됩니다.
-4. 결과물은 임직원이 읽는 브리핑입니다. '원문', '발췌', '제목에 따르면', '확인되지 않는다'처럼 검수 과정이나 정보 부족을 드러내는 표현은 절대 쓰지 마세요.
-5. 모든 문장은 '~했다', '~이다'처럼 '다'로 끝나는 기사체로 쓰세요. headline은 50자 내외, tag는 8자 이내, accent_line은 "→ "로 시작하는 HR 피플팀 관점 한 줄.
-6. 기사의 실제 주체·주제가 카테고리 설명과 맞지 않으면 fits_category를 false로 하세요. (예: '삼성 비즈니스'에 들어온 LG디스플레이 기사)
+3. 원문 발췌가 비어 있으면 제목으로 확인되는 사실만 남기세요.
+4. headline은 50자 내외, tag는 8자 이내, accent_line은 "→ "로 시작하는 HR 피플팀 관점 한 줄. 표현 방식은 초안을 따르세요.
+5. 기사의 실제 주체·주제가 카테고리 설명과 맞지 않으면 fits_category를 false로 하세요. (예: '삼성 비즈니스'에 들어온 LG디스플레이 기사)
 
 기사:
 {json.dumps(items, ensure_ascii=False, indent=2)}
@@ -482,8 +480,7 @@ def _verify_articles(cat, arts, infos):
             continue
         art = arts[no - 1]
         for k in ("tag", "headline", "summary", "accent_line"):
-            # 검수 과정 문구("원문 발췌가 없어…")가 섞인 수정본은 버리고 초안 유지
-            if isinstance(r.get(k), str) and r[k].strip() and not _PROCESS_TALK_RE.search(r[k]):
+            if isinstance(r.get(k), str) and r[k].strip():
                 art[k] = r[k].strip()
         if r.get("fits_category") is False and cat["id"] != "c8":
             off.add(art.get("link"))
@@ -858,7 +855,7 @@ date가 오늘과 2일 이상 차이나는 오래된 기사는 제외하세요.
 CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Noto Sans KR',sans-serif;background:#EDEAE3;min-height:100vh;padding:48px 32px 80px;}
+body{font-family:'Noto Sans KR',sans-serif;background:#FFFFFF;min-height:100vh;padding:48px 32px 80px;}
 .page-header{max-width:960px;margin:0 auto 28px;display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:18px;border-bottom:3px solid #1A1A1A;}
 .page-label{font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#999;margin-bottom:7px;}
 .page-title{font-size:34px;font-weight:900;color:#1A1A1A;}
@@ -893,14 +890,14 @@ body{font-family:'Noto Sans KR',sans-serif;background:#EDEAE3;min-height:100vh;p
 .badge{flex-shrink:0;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:5px 14px;border-radius:24px;margin-top:4px;white-space:nowrap;}
 .card-body{padding:20px 32px 8px;}
 .news-list{display:flex;flex-direction:column;gap:14px;}
-.news-item{display:flex;flex-direction:row;gap:20px;align-items:flex-start;padding:20px 22px;border-radius:14px;background:#F7F6F2;text-decoration:none;transition:background 0.15s,transform 0.12s;}
-.news-item:hover{background:#EEECEA;transform:translateY(-2px);}
+.news-item{display:flex;flex-direction:row;gap:20px;align-items:flex-start;padding:20px 22px;border-radius:14px;background:#FFFFFF;text-decoration:none;transition:background 0.15s,transform 0.12s;}
+.news-item:hover{background:#F7F9FC;transform:translateY(-2px);}
 .news-num{font-family:'Bebas Neue',sans-serif;font-size:44px;line-height:1;flex-shrink:0;min-width:36px;margin-top:2px;}
 .news-content{flex:1;min-width:0;}
 .news-tag-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
 .tag{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:5px;}
 .source-badge{font-size:11.5px;color:#BBB;}
-.news-date{font-size:11px;color:#CCC;font-weight:500;background:#F0EEE9;padding:2px 7px;border-radius:4px;}
+.news-date{font-size:11.5px;color:#BBB;font-weight:400;}
 .news-headline{font-size:16px;font-weight:700;color:#1A1A1A;line-height:1.5;margin-bottom:9px;}
 .news-summary{font-size:13.5px;color:#555;line-height:1.8;margin-bottom:10px;}
 .accent-line{font-size:13px;color:#555;line-height:1.6;padding-left:12px;border-left:3px solid;font-weight:600;}
@@ -973,44 +970,6 @@ body{font-family:'Noto Sans KR',sans-serif;background:#EDEAE3;min-height:100vh;p
 }
 """
 
-FILTER_JS = """
-<script>
-(function(){
-  var checks = document.querySelectorAll('.filter-checks input[type=checkbox]');
-  var saved = null;
-  try { saved = JSON.parse(localStorage.getItem('briefFilter')); } catch(e){}
-
-  function applyFilter(){
-    var state = {};
-    checks.forEach(function(cb){
-      state[cb.dataset.card] = cb.checked;
-      var card = document.getElementById(cb.dataset.card);
-      if(card) card.classList.toggle('hidden', !cb.checked);
-    });
-    try { localStorage.setItem('briefFilter', JSON.stringify(state)); } catch(e){}
-  }
-
-  if(saved){
-    checks.forEach(function(cb){
-      if(saved[cb.dataset.card] !== undefined) cb.checked = saved[cb.dataset.card];
-    });
-  }
-  applyFilter();
-
-  checks.forEach(function(cb){ cb.addEventListener('change', applyFilter); });
-
-  var btn = document.getElementById('selectAll');
-  if(btn) btn.addEventListener('click', function(){
-    var allOn = Array.from(checks).every(function(c){ return c.checked; });
-    checks.forEach(function(cb){ cb.checked = !allOn; });
-    btn.textContent = allOn ? '전체 선택' : '전체 해제';
-    applyFilter();
-    setTimeout(function(){ btn.textContent = allOn ? '전체 해제' : '전체 선택'; }, 1000);
-  });
-})();
-</script>
-"""
-
 INSTALL_HTML = """
 <div class="install-banner" id="installBanner">
   <span id="installMsg"><b>홈 화면에 앱으로 추가</b>하면 알림 아이콘처럼 바로 열어볼 수 있어요.</span>
@@ -1066,22 +1025,6 @@ INSTALL_JS = """
 """
 
 
-def render_filter_bar():
-    checks = ""
-    for cat in CATEGORIES:
-        cid = cat["id"]
-        checks += f'\n    <label><input type="checkbox" data-card="{cid}" checked><span class="chip chip-{cid}">{cat["title"]}</span></label>'
-    return f"""
-<div class="filter-bar">
-  <div class="filter-label">카테고리 선택</div>
-  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-    <button class="select-all" id="selectAll">전체 해제</button>
-    <div class="filter-checks">{checks}
-    </div>
-  </div>
-</div>"""
-
-
 def render_card(category, data, period):
     cid = category["id"]
     arts = data.get("articles", [])
@@ -1099,7 +1042,7 @@ def render_card(category, data, period):
         <div class="news-content">
           <div class="news-tag-row">
             <span class="tag">{art.get('tag','')}</span>
-            <span class="source-badge">{art.get('source','')} ↗</span>
+            <span class="source-badge">{art.get('source','')} |</span>
             <span class="news-date">{art.get('date','')}</span>
           </div>
           <div class="news-headline">{art.get('headline','')}</div>
@@ -1120,10 +1063,6 @@ def render_card(category, data, period):
   </div>
   <div class="card-body"><div class="news-list">{items_html}
   </div></div>
-  <div class="card-footer">
-    <span class="footer-label">Samsung Display · HR People Team</span>
-    <span class="footer-date">{period}</span>
-  </div>
 </div>"""
 
 
@@ -1171,7 +1110,7 @@ if ('serviceWorker' in navigator) {{
 
 <div class="page-header">
   <div>
-    <div class="page-label">Samsung Display · HR People Team Daily</div>
+    <div class="page-label">Samsung Display · People Team Daily</div>
     <div class="page-title">피플팀 데일리 뉴스 브리핑</div>
     {session_html}
   </div>
@@ -1184,7 +1123,6 @@ if ('serviceWorker' in navigator) {{
 
 {INSTALL_HTML}
 
-{render_filter_bar()}
 
 <div class="cards-grid">
 {cards_html}
@@ -1195,13 +1133,50 @@ if ('serviceWorker' in navigator) {{
   <span class="footer-tag">Samsung Display · HR People Team</span>
 </div>
 
-{FILTER_JS}
 {INSTALL_JS}
 </body>
 </html>"""
 
 
 # ── 이메일 발송 ───────────────────────────────────────────────────────────────
+
+def render_email_html(all_data, today):
+    """메일 본문: 승인된 화이트 시안에 발행일과 카테고리별 대표 기사를 채운다."""
+    days = ["월", "화", "수", "목", "금", "토", "일"]
+    preview_date = f"{today.year}년 {today.month}월 {today.day}일"
+    date_display = f"{preview_date} ({days[today.weekday()]})"
+    period_start = last_working_day(today)
+    period = f"{period_start.strftime('%Y.%m.%d')} – {today.strftime('%m.%d')}"
+    short_labels = {"c4": "마음건강·산재", "c7": "디스플레이 산업"}
+    rows_html = ""
+    for cat, data in zip(CATEGORIES, all_data):
+        arts = data.get("articles", [])
+        if not arts:
+            continue
+        first = arts[0]
+        label = html.escape(short_labels.get(cat["id"], cat["title"]))
+        headline = html.escape(first.get("headline", ""))
+        source = html.escape(first.get("source", ""))
+        article_date = html.escape(first.get("date", ""))
+        rows_html += f"""<tr><td style="padding:19px 0 20px;border-bottom:1px solid #e9edf2;"><p style="margin:0 0 7px;font-size:10px;line-height:15px;font-weight:700;letter-spacing:1.1px;color:#617085;"><span style="display:inline-block;padding:4px 10px;border:1px solid #dce6f0;border-radius:14px;background:#f5f8fc;color:#536f91;">{label}</span></p><span style="display:block;color:#202b3c;text-decoration:none;font-size:15px;font-weight:700;line-height:24px;word-break:keep-all;overflow-wrap:break-word;">{headline}</span><p style="margin:7px 0 0;font-size:11px;line-height:17px;color:#737d8c;text-align:right;">{source}<span style="padding:0 7px;color:#aab2be;">|</span>{article_date}</p></td></tr>""" + "\n"
+    return f"""<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>피플팀 데일리 뉴스 브리핑</title><style>body{{margin:0;padding:0}}a:hover{{text-decoration:underline!important}}a:focus-visible{{outline:2px solid #245cce;outline-offset:4px}}::selection{{background:#dfebff;color:#202b3c}}@media(max-width:600px){{.outer{{padding:12px 8px!important}}.sheet{{border-left:0!important;border-right:0!important}}.inner{{padding-left:24px!important;padding-right:24px!important}}.title{{font-size:28px!important;letter-spacing:-1px!important}}.brand,.meta{{display:block!important;width:100%!important;text-align:left!important}}.meta{{padding-top:6px!important}}.cta{{width:80%!important}}}}</style></head>
+<body bgcolor="#ffffff" style="margin:0;background:#ffffff;color:#202b3c;font-family:Arial,'Malgun Gothic','맑은 고딕',sans-serif;">
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">오늘 꼭 알아야 할 HR · Business · AI 핵심 이슈 — {preview_date}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="background:#ffffff;"><tr><td align="center" class="outer" style="padding:40px 16px;">
+<a class="briefing-link" href="https://juno99zz-arkt.github.io/Hr-Daily-Brief/" target="_blank" aria-label="전체 브리핑 보기" style="display:block;width:100%;max-width:640px;margin:0 auto;color:#202b3c;text-decoration:none;">
+<table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" class="sheet" bgcolor="#ffffff" style="width:100%;max-width:640px;background:#ffffff;border:1px solid #e6eaf0;border-top:3px solid #245cce;">
+<tr><td class="inner" style="padding:37px 40px 31px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:10px;"><tr><td class="brand" style="font-family:Noto Sans KR,Malgun Gothic,맑은 고딕,sans-serif;font-size:11px;line-height:19px;font-weight:500;letter-spacing:0;color:#657184;padding-right:12px;white-space:nowrap;">오늘의 HR · Business · AI, 핵심을 한눈에</td><td class="meta" align="right" style="font-family:Noto Sans KR,Malgun Gothic,맑은 고딕,sans-serif;font-size:11px;line-height:19px;font-weight:500;letter-spacing:0;color:#657184;">{date_display}<span style="padding:0 6px;color:#c3cbd5;">|</span>수집기간 {period}</td></tr></table>
+<h1 class="title" style="margin:0;font-family:Noto Sans KR,Malgun Gothic,맑은 고딕,sans-serif;font-size:36px;line-height:1.3;font-weight:900;letter-spacing:-1.4px;color:#1a1a1a;">피플팀 데일리 뉴스 브리핑</h1>
+
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="256" class="cta" style="width:256px;max-width:100%;margin-top:27px;"><tr><td bgcolor="#245cce" style="border-radius:4px;background:#245cce;"><span style="display:block;text-align:center;padding:17px 30px;border:1px solid #245cce;border-radius:4px;font-size:16px;line-height:24px;font-weight:700;text-decoration:none;color:#ffffff;">전체 브리핑 보기&nbsp;&nbsp; →</span></td></tr></table>
+</td></tr>
+<tr><td class="inner" style="padding:0 40px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:19px 0 2px;border-top:1px solid #d7dee8;font-size:11px;line-height:18px;letter-spacing:1.3px;color:#536176;font-weight:700;">TODAY’S HEADLINES</td><td align="right" style="padding:19px 0 2px;border-top:1px solid #d7dee8;font-size:11px;line-height:18px;color:#737d8c;">오늘의 주요 뉴스</td></tr></table><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">{rows_html}</table></td></tr>
+<tr><td class="inner" style="padding:26px 40px 30px;"><p style="margin:0;font-size:11px;line-height:19px;color:#737d8c;">※ 내부 정보 공유 목적으로만 활용</p></td></tr>
+</table></a></td></tr></table></body></html>"""
+
 
 def send_email(all_data, today, session_label="morning"):
     if not EMAIL_SENDER or not EMAIL_PASSWORD or not EMAIL_RECIPIENT:
@@ -1210,52 +1185,9 @@ def send_email(all_data, today, session_label="morning"):
 
     days = ["월","화","수","목","금","토","일"]
     day_str = days[today.weekday()]
-    period_start = last_working_day(today)
-    period = f"{period_start.strftime('%Y.%m.%d')} – {today.strftime('%m.%d')}"
     session_str = "오후" if session_label == "afternoon" else ""
     subject = f"[피플팀 데일리 브리핑] {today.strftime('%Y.%m.%d')} ({day_str})"
-    url = "https://juno99zz-arkt.github.io/Hr-Daily-Brief/"
-
-    rows_html = ""
-    for cat, data in zip(CATEGORIES, all_data):
-        arts = data.get("articles", [])
-        if not arts:
-            continue
-        first = arts[0]
-        rows_html += f"""
-        <tr>
-          <td style="padding:12px 16px;border-bottom:1px solid #eee;">
-            <div style="font-size:11px;color:#999;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">{cat['eyebrow']}</div>
-            <div style="font-size:13px;font-weight:700;color:#1A1A1A;line-height:1.5;">{first.get('headline','')}</div>
-            <div style="font-size:12px;color:#888;margin-top:4px;">{first.get('source','')} · {first.get('date','')}</div>
-          </td>
-        </tr>"""
-
-    html_body = f"""<!DOCTYPE html>
-<html><head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;background:#EDEAE3;font-family:Arial,sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px;">
-  <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
-    <tr><td style="background:linear-gradient(135deg,#0A2342,#0D3260);padding:32px 36px;">
-      <div style="font-size:11px;color:rgba(255,255,255,0.5);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Samsung Display · HR People Team</div>
-      <div style="font-size:24px;font-weight:900;color:#fff;margin-bottom:6px;">피플팀 데일리 뉴스 브리핑</div>
-      <div style="font-size:13px;color:rgba(255,255,255,0.6);">{today.strftime('%Y년 %m월 %d일')} ({day_str}) · 수집기간: {period}</div>
-    </td></tr>
-    <tr><td style="padding:24px 36px 12px;">
-      <a href="{url}" style="display:inline-block;background:#1A1A1A;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:700;">전체 브리핑 보기 →</a>
-    </td></tr>
-    <tr><td style="padding:8px 36px 16px;">
-      <div style="font-size:11px;font-weight:700;color:#AAA;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">Today's Headlines</div>
-      <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #eee;border-radius:8px;overflow:hidden;">
-        {rows_html}
-      </table>
-    </td></tr>
-    <tr><td style="padding:12px 36px 28px;">
-      <div style="font-size:11px;color:#BBB;">※ 내부 정보 공유 목적으로만 활용 · Samsung Display HR People Team</div>
-    </td></tr>
-  </table>
-</td></tr></table>
-</body></html>"""
+    html_body = render_email_html(all_data, today)
 
     recipients = [r.strip() for r in EMAIL_RECIPIENT.split(",") if r.strip()]
     msg = MIMEMultipart("mixed")
