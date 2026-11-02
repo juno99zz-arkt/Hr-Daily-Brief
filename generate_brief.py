@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """삼성디스플레이 HR 피플팀 | 데일리 뉴스 브리핑 자동 생성기"""
 
-import sys, os, re, html, json, subprocess, feedparser, smtplib, socket
+import sys, os, re, html, json, subprocess, feedparser, smtplib, socket, time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from threading import Lock
 from email.mime.multipart import MIMEMultipart
@@ -1222,18 +1222,38 @@ def send_email(all_data, today, session_label="morning"):
         part.add_header("Content-Disposition", "attachment", filename=attach_name)
         msg.attach(part)
 
-    try:
-        with smtplib.SMTP("smtp.gmail.com", 587) as srv:
-            srv.starttls()
-            srv.login(EMAIL_SENDER, EMAIL_PASSWORD)
-            srv.sendmail(EMAIL_SENDER, recipients, msg.as_string())
-        print(f"  이메일 발송 완료 → {', '.join(recipients)}")
-    except smtplib.SMTPAuthenticationError as e:
-        print(f"  이메일 발송 오류 (인증 실패): {e}")
-        print("  ⚠ Gmail 앱 비밀번호가 만료됐습니다. GitHub Secrets의 EMAIL_PASSWORD를 갱신하세요.")
-        sys.exit(1)  # 워크플로 실패 → GitHub 이메일 알림
-    except Exception as e:
-        print(f"  이메일 발송 오류: {e}")
+    raw = msg.as_string()
+    print(f"  메일 크기: {len(raw) / 1024:.0f}KB (수신자 {len(recipients)}명)")
+    # 연결이 중간에 끊기는 경우가 있어 방식(587 STARTTLS → 465 SSL)을 번갈아 최대 4회 시도
+    last_err = None
+    for attempt in range(1, 5):
+        stage, mode = "연결", "-"
+        try:
+            mode = "587/STARTTLS" if attempt % 2 == 1 else "465/SSL"
+            if attempt % 2 == 1:
+                srv = smtplib.SMTP("smtp.gmail.com", 587, timeout=30)
+            else:
+                srv = smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=30)
+            with srv:
+                if attempt % 2 == 1:
+                    stage = "STARTTLS"
+                    srv.starttls()
+                stage = "로그인"
+                srv.login(EMAIL_SENDER, EMAIL_PASSWORD)
+                stage = "전송"
+                srv.sendmail(EMAIL_SENDER, recipients, raw)
+            print(f"  이메일 발송 완료 → {', '.join(recipients)} ({mode}, {attempt}회째)")
+            return
+        except smtplib.SMTPAuthenticationError as e:
+            print(f"  이메일 발송 오류 (인증 실패): {e}")
+            print("  ⚠ Gmail 앱 비밀번호가 만료됐습니다. GitHub Secrets의 EMAIL_PASSWORD를 갱신하세요.")
+            sys.exit(1)  # 워크플로 실패 → GitHub 이메일 알림
+        except Exception as e:
+            last_err = e
+            print(f"  이메일 발송 오류 [{attempt}/4 · {mode} · {stage} 단계]: {type(e).__name__}: {e}")
+            if attempt < 4:
+                time.sleep(5 * attempt)
+    print(f"  이메일 발송 최종 실패: {type(last_err).__name__}: {last_err}")
 
 
 # ── Git 배포 (로컬 전용) ───────────────────────────────────────────────────────
