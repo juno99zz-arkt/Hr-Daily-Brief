@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="삼성디스플레이 HR 피플팀 데일리 뉴스 브리핑 2026.11.06">
+<title>피플팀 데일리 브리핑 | 2026.11.06 아침 브리핑</title>
+<link rel="manifest" href="/Hr-Daily-Brief/manifest.json">
+<meta name="theme-color" content="#1A1A1A">
+<link rel="icon" href="/Hr-Daily-Brief/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="/Hr-Daily-Brief/icons/favicon-16.png" sizes="16x16">
+<link rel="apple-touch-icon" href="/Hr-Daily-Brief/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="데일리 브리핑">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:#FFFFFF;min-height:100vh;padding:48px 32px 80px;}
+.page-header{max-width:960px;margin:0 auto 28px;display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:18px;border-bottom:3px solid #1A1A1A;}
+.page-label{font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#999;margin-bottom:7px;}
+.page-title{font-size:34px;font-weight:900;color:#1A1A1A;}
+.page-date{font-size:15px;font-weight:500;color:#555;text-align:right;}
+.page-period{font-size:12px;color:#AAA;margin-top:4px;text-align:right;}
+.session-badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1px;padding:4px 12px;border-radius:20px;margin-top:6px;}
+.session-morning{background:#FFF3CD;color:#856404;}
+.session-afternoon{background:#D1ECF1;color:#0C5460;}
+
+.install-banner{display:none;max-width:960px;margin:28px auto 0;background:#1A1A1A;color:#EDEAE3;border-radius:14px;padding:14px 20px;align-items:center;justify-content:space-between;gap:16px;font-size:13px;line-height:1.5;flex-wrap:wrap;}
+.install-banner.show{display:flex;}
+.install-banner b{font-weight:700;}
+.install-btn{flex-shrink:0;background:#EDEAE3;color:#1A1A1A;border:none;font-size:12px;font-weight:700;padding:8px 16px;border-radius:20px;cursor:pointer;}
+.install-close{flex-shrink:0;background:transparent;color:#999;border:none;font-size:18px;cursor:pointer;line-height:1;padding:0 4px;}
+
+.filter-bar{max-width:960px;margin:0 auto 32px;background:#fff;border-radius:16px;padding:18px 24px;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
+.filter-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#AAA;margin-bottom:12px;}
+.filter-checks{display:flex;flex-wrap:wrap;gap:10px;}
+.filter-checks label{display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;}
+.filter-checks input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:#1A1A1A;}
+.filter-checks .chip{font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:0.3px;}
+.select-all{font-size:12px;font-weight:700;color:#888;background:#F0EEE9;border:none;padding:5px 14px;border-radius:20px;cursor:pointer;transition:background 0.15s;}
+.select-all:hover{background:#E5E2DC;color:#444;}
+
+.cards-grid{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:32px;}
+.card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);transition:opacity 0.2s;}
+.card.hidden{display:none;}
+.card-header{padding:28px 36px 24px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.header-eyebrow{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:7px;}
+.header-title{font-size:28px;font-weight:900;color:#fff;line-height:1.2;}
+.header-sub{font-size:13.5px;color:rgba(255,255,255,0.5);margin-top:6px;line-height:1.5;}
+.badge{flex-shrink:0;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:5px 14px;border-radius:24px;margin-top:4px;white-space:nowrap;}
+.card-body{padding:20px 32px 8px;}
+.news-list{display:flex;flex-direction:column;gap:14px;}
+.news-item{display:flex;flex-direction:row;gap:20px;align-items:flex-start;padding:20px 22px;border-radius:14px;background:#FFFFFF;text-decoration:none;transition:background 0.15s,transform 0.12s;}
+.news-item:hover{background:#F7F9FC;transform:translateY(-2px);}
+.news-num{font-family:'Bebas Neue',sans-serif;font-size:44px;line-height:1;flex-shrink:0;min-width:36px;margin-top:2px;}
+.news-content{flex:1;min-width:0;}
+.news-tag-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:5px;}
+.source-badge{font-size:11.5px;color:#BBB;}
+.news-date{font-size:11.5px;color:#BBB;font-weight:400;}
+.news-headline{font-size:16px;font-weight:700;color:#1A1A1A;line-height:1.5;margin-bottom:9px;}
+.news-summary{font-size:13.5px;color:#555;line-height:1.8;margin-bottom:10px;}
+.accent-line{font-size:13px;color:#555;line-height:1.6;padding-left:12px;border-left:3px solid;font-weight:600;}
+.card-footer{padding:14px 36px 18px;border-top:2px solid;display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
+.footer-label{font-size:12px;color:#CCC;font-weight:500;letter-spacing:0.8px;}
+.footer-date{font-size:13px;font-weight:700;}
+
+.empty-state{padding:32px;text-align:center;color:#BBB;font-size:14px;}
+
+/* 카드 색상 */
+.c1 .card-header{background:linear-gradient(135deg,#0A2342,#0D3260);}
+.c1 .badge{background:rgba(29,158,117,.25);color:#6EEFC7;border:1px solid rgba(29,158,117,.4);}
+.c1 .news-num,.c1 .accent-line{color:#1D9E75;}.c1 .tag{background:#E1F5EE;color:#085041;}
+.c1 .accent-line{border-color:#1D9E75;}.c1 .card-footer{border-color:#E1F5EE;}.c1 .footer-date{color:#1D9E75;}
+
+.c2 .card-header{background:linear-gradient(135deg,#2D0A0A,#4A1515);}
+.c2 .badge{background:rgba(226,75,74,.25);color:#FF9898;border:1px solid rgba(226,75,74,.4);}
+.c2 .news-num{color:#E24B4A;}.c2 .tag{background:#FCEBEB;color:#A32D2D;}
+.c2 .accent-line{border-color:#E24B4A;}.c2 .card-footer{border-color:#FCEBEB;}.c2 .footer-date{color:#A32D2D;}
+
+.c3 .card-header{background:linear-gradient(135deg,#2C1800,#4A2D00);}
+.c3 .badge{background:rgba(186,117,23,.3);color:#FAC775;border:1px solid rgba(186,117,23,.4);}
+.c3 .news-num{color:#BA7517;}.c3 .tag{background:#FAEEDA;color:#633806;}
+.c3 .accent-line{border-color:#BA7517;}.c3 .card-footer{border-color:#FAEEDA;}.c3 .footer-date{color:#BA7517;}
+
+.c4 .card-header{background:linear-gradient(135deg,#0F2E1A,#17472A);}
+.c4 .badge{background:rgba(99,153,34,.25);color:#AADF6A;border:1px solid rgba(99,153,34,.4);}
+.c4 .news-num{color:#639922;}.c4 .tag{background:#EAF3DE;color:#3B6D11;}
+.c4 .accent-line{border-color:#639922;}.c4 .card-footer{border-color:#EAF3DE;}.c4 .footer-date{color:#639922;}
+
+.c5 .card-header{background:linear-gradient(135deg,#0C1E3B,#162E58);}
+.c5 .badge{background:rgba(55,138,221,.25);color:#7EC3FF;border:1px solid rgba(55,138,221,.4);}
+.c5 .news-num{color:#378ADD;}.c5 .tag{background:#E6F1FB;color:#0C447C;}
+.c5 .accent-line{border-color:#378ADD;}.c5 .card-footer{border-color:#E6F1FB;}.c5 .footer-date{color:#185FA5;}
+
+.c6 .card-header{background:linear-gradient(135deg,#1A0A30,#2E1555);}
+.c6 .badge{background:rgba(127,119,221,.3);color:#CECBF6;border:1px solid rgba(127,119,221,.4);}
+.c6 .news-num{color:#7F77DD;}.c6 .tag{background:#EEEDFE;color:#3C3489;}
+.c6 .accent-line{border-color:#7F77DD;}.c6 .card-footer{border-color:#EEEDFE;}.c6 .footer-date{color:#534AB7;}
+
+.c7 .card-header{background:linear-gradient(135deg,#003366,#005599);}
+.c7 .badge{background:rgba(0,120,220,.3);color:#7ECFFF;border:1px solid rgba(0,120,220,.4);}
+.c7 .news-num{color:#0078DC;}.c7 .tag{background:#E0F2FF;color:#004C8C;}
+.c7 .accent-line{border-color:#0078DC;}.c7 .card-footer{border-color:#E0F2FF;}.c7 .footer-date{color:#0057B3;}
+.c8 .card-header{background:linear-gradient(135deg,#1A1A2E,#16213E);}
+.c8 .badge{background:rgba(229,57,53,.25);color:#FF8A80;border:1px solid rgba(229,57,53,.4);}
+.c8 .news-num{color:#E53935;}.c8 .tag{background:#FEEBEE;color:#B71C1C;}
+.c8 .accent-line{border-color:#E53935;}.c8 .card-footer{border-color:#FEEBEE;}.c8 .footer-date{color:#C62828;}
+
+/* 체크박스 칩 */
+.chip-c1{background:#E1F5EE;color:#085041;}.chip-c2{background:#FCEBEB;color:#A32D2D;}
+.chip-c3{background:#FAEEDA;color:#633806;}.chip-c4{background:#EAF3DE;color:#3B6D11;}
+.chip-c5{background:#E6F1FB;color:#0C447C;}.chip-c6{background:#EEEDFE;color:#3C3489;}
+.chip-c7{background:#E0F2FF;color:#004C8C;}.chip-c8{background:#FEEBEE;color:#B71C1C;}
+.page-footer{max-width:960px;margin:36px auto 0;display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid #CCC;}
+.footer-note{font-size:12px;color:#AAA;line-height:1.6;}
+.footer-tag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#BBB;}
+
+@media(max-width:640px){
+  body{padding:20px 14px 60px;}
+  .page-header{flex-direction:column;align-items:flex-start;gap:10px;}
+  .page-title{font-size:26px;}
+  .filter-bar{padding:14px 16px;}
+  .card-header{padding:20px 20px 18px;}
+  .header-title{font-size:22px;}
+  .card-body{padding:14px 14px 6px;}
+  .news-item{padding:16px 14px;gap:14px;}
+  .news-num{font-size:34px;}
+  .card-footer{padding:12px 20px 14px;}
+}
+</style>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/Hr-Daily-Brief/sw.js', { scope: '/Hr-Daily-Brief/' }).catch(() => {});
+  });
+}
+</script>
+</head>
+<body>
+
+<div class="page-header">
+  <div>
+    <div class="page-label">Samsung Display · People Team Daily</div>
+    <div class="page-title">피플팀 데일리 뉴스 브리핑</div>
+    <span class="session-badge session-morning">아침 브리핑 (07:00)</span>
+  </div>
+  <div>
+    <div class="page-date">2026년 11월 6일 (금)</div>
+    <div class="page-period">수집 기간 : 2026.11.05 – 11.06</div>
+    <div class="page-period" style="color:#BBB;font-size:11px;">생성: 2026.11.06 07:33</div>
+  </div>
+</div>
+
+<div class="cards-grid">
+
+<div class="card c1" id="c1">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Samsung Business</div>
+      <div class="header-title">삼성 비즈니스</div>
+      <div class="header-sub">삼성디스플레이·삼성전자 산업·제품·실적·투자 동향</div>
+    </div>
+    <span class="badge">Business</span>
+  </div>
+  <div class="card-body"><div class="news-list">
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiaEFVX3lxTE1aTDFXX0VuM3dUQ1BPZ25ZZjdXa3FqMk1iLV90ZS1CUjZMODdjaDRrSnBMVFI4QjlqQ25SQ0I0YzE2RUtILU11RGgxT2xuSWY0US1WX3ZrRWpPZVVxb2VwVTZBa05Wbmxz?oc=5" target="_blank" rel="noopener" data-src-title="삼성전자 노조, 불공정 성과급 차이에 1만 명 대규모 집회로 반발">
+        <div class="news-num">01</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">성과급·노조</span>
+            <span class="source-badge">공감신문 |</span>
+            <span class="news-date">2026.11.06</span>
+          </div>
+          <div class="news-headline">삼성전자 노조, 불공정 성과급 차이에 1만 명 집회</div>
+          <div class="news-summary">삼성전자노동조합 동행이 반도체(DS)와 완제품(DX) 부문 간 성과급 차이에 반발해 수원사업장 앞에서 대규모 집회를 열었다. 집회에는 1만 명이 모여 공정한 보상체계를 요구했다.</div>
+          <div class="accent-line">→ 부문 간 성과급 격차 논란에 대비해 보상 체계 설계와 노사 소통 전략을 점검할 필요가 있다</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMia0FVX3lxTFBoaWRnS3VNak9pZlpwbXE0ejB5WFpDQmpBLWRMVS1JQUVDMmpObjBEWERoNkFuUnB6aU5SM1NscWhWenZJQVBiXzB4cy05cGZhb01URXFqaF9qZHZRbDZDdXVMVGlCYmxTSXlR?oc=5" target="_blank" rel="noopener" data-src-title="삼성전자, 파운드리 부활하나… &quot;테일러 2공장 AMD HBM 물량 확보&quot;">
+        <div class="news-num">02</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">파운드리·HBM</span>
+            <span class="source-badge">더퍼블릭 |</span>
+            <span class="news-date">2026.11.05</span>
+          </div>
+          <div class="news-headline">삼성전자, 테일러 2공장 HBM 베이스다이 AMD·엔비디아 물량 확보</div>
+          <div class="news-summary">삼성전자가 미국 텍사스주 테일러 파운드리 2공장에서 생산할 HBM용 베이스다이 물량을 AMD와 엔비디아에서 확보한 것으로 전해졌다. 베이스다이와 첨단공정 판매 확대로 파운드리 실적이 개선되는 가운데 미국 증설 계획도 구체화되고 있다.</div>
+          <div class="accent-line">→ 파운드리·HBM 수주 확대에 따라 생산·기술 인력 충원과 조직 재편 준비가 필요하다</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMicEFVX3lxTE54V1hjWFlTOGhyOC1LVEs3QUV6aldGcnliamNwaHBZNUQ2R1RsVFZOSVNGZ3pGVFNtU21KZHdaZEVvWTlPY1J0b3NBTXNQV1RxSWVkQ0ZwYUpqSU1HSGJYT3BRXzIxYmxiRUJrOWVZVDM?oc=5" target="_blank" rel="noopener" data-src-title="삼성전자 주주환원 유보에 증여세 논란…이사회 독립성 시험대">
+        <div class="news-num">03</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">주주환원·지배구조</span>
+            <span class="source-badge">연합인포맥스 |</span>
+            <span class="news-date">2026.11.05</span>
+          </div>
+          <div class="news-headline">삼성전자 주주환원 유보에 증여세 논란 확산</div>
+          <div class="news-summary">삼성전자가 역대 최대 실적에도 55조~75조원 규모의 잔여 주주환원 재원 활용 방안을 내년 1월 말로 미루면서 주주들의 불만이 이어지고 있다. 일부 주주는 결정 시점이 이재용 회장의 주식 증여에 따른 증여세 평가 기간과 겹친다며 이해상충 가능성 검토를 요구했다. 라이프자산운용은 이사회 특별위원회에 조기 주주환원과 결정 유보의 편익·비용 비교 여부를 확인할 것을 요구했다.</div>
+          <div class="accent-line">→ 주주환원·지배구조 이슈는 임직원 보상과 주식 기반 처우 제도 변화와 맞닿아 있어 모니터링할 필요가 있다</div>
+        </div>
+      </a>
+  </div></div>
+</div>
+<div class="card c2" id="c2">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Samsung Labor Relations</div>
+      <div class="header-title">삼성 노사관계 이슈</div>
+      <div class="header-sub">노조·교섭·파업·임금·성과급·쟁의 동향</div>
+    </div>
+    <span class="badge">Labor</span>
+  </div>
+  <div class="card-body"><div class="news-list">
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE5pYnhLRmFrTnJEQVplcFNlZGZnRDQ1N0lCWDdVbWNMN3lTd0IxMkRrOEg1MUNDRzUzcENLNlBzbm5ycVE3U3lITnJnSWhDTXNuN3ZManh2aVo?oc=5" target="_blank" rel="noopener" data-src-title="삼성전자 노조 1만명 집결…“DX 성과 보상·교섭 참여 보장하라”">
+        <div class="news-num">01</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">성과급·집회</span>
+            <span class="source-badge">더트래커 |</span>
+            <span class="news-date">2026.11.05</span>
+          </div>
+          <div class="news-headline">삼성전자 노조 1만명 집결…DX 성과 보상·교섭 참여 보장 요구</div>
+          <div class="news-summary">삼성전자 DX 부문 구성원 중심의 동행노조가 5일 경기 수원시 삼성전자 수원사업장에서 주최 측 추산 1만명이 참석한 집회를 열었다. 노조는 사업부 간 실적 차이를 이유로 DX 구성원이 보상에서 불이익을 받아서는 안 된다며 경영진의 책임 있는 설명과 직접 대화를 요구했다. 올해 임금교섭에서 DX 구성원의 요구가 충분히 반영되지 않았다고 주장하며 노숙농성을 예고했다.</div>
+          <div class="accent-line">→ DX 부문 성과 보상을 둘러싼 갈등이 대규모 집회로 확대된 만큼 사업부 간 보상 기준에 대한 설명 체계와 노사 소통 창구를 점검할 필요가 있습니다.</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiYkFVX3lxTFBRUlIwUDZIR2tPenM4YS1HY0MzaW9qUXVmSDIyR09meXdzY1lNbUhrcEV1M0xwRWQ2SlkzMXNnaGRuRmstcWsxRVN3b1RmVWh0LXJDZ2xQZzhtQTUzSkJvOFJ3?oc=5" target="_blank" rel="noopener" data-src-title="삼성전자 `제6노조` 설립 추진…수일 내 설립신고증 교부될 듯">
+        <div class="news-num">02</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">노조 설립</span>
+            <span class="source-badge">매일신문 |</span>
+            <span class="news-date">2026.11.05</span>
+          </div>
+          <div class="news-headline">삼성전자 제6노조 설립 추진…수일 내 설립신고증 교부 예정</div>
+          <div class="news-summary">삼성전자 내부에서 제6노조 설립이 추진되며, 설립신고증이 수일 내 교부될 예정이다. 신고증이 교부되면 신설 노조는 정식 법내노조 지위를 얻게 된다.</div>
+          <div class="accent-line">→ 노조 수가 늘어나면 교섭 창구와 단체 간 협상 구도가 복잡해질 수 있어 교섭 대응 체계를 점검할 필요가 있습니다.</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiY0FVX3lxTE95WWRYdC12dEtKZmhMSXJlSXpMVmIzUmZ5bjF4dEx4QU5aSFF1U3RrRm91SE4yM0dXUlNpODBVQ1FQcU9pN1lKSy1VT29DbERmbGhwSkJNb21rOEttWFQzR3FzZw?oc=5" target="_blank" rel="noopener" data-src-title="삼성바이오 노조, 오늘부터 부분파업 돌입…400명 규모">
+        <div class="news-num">03</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">부분파업</span>
+            <span class="source-badge">쿠키뉴스 |</span>
+            <span class="news-date">2026.11.06</span>
+          </div>
+          <div class="news-headline">삼성바이오로직스 노조 부분파업 돌입…400명 참여</div>
+          <div class="news-summary">삼성바이오로직스 노조가 이날부터 27일까지 약 3주간 부분파업에 돌입했다. 조합원 약 4000명 중 10%인 약 400명이 이번 파업에 참여한다.</div>
+          <div class="accent-line">→ 부분파업이 3주간 이어지는 만큼 현장 생산 차질 여부와 쟁의 상황에 따른 대응 방안을 점검할 필요가 있습니다.</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMibEFVX3lxTE5Ua3ktYlotdUdkeTB5cmdNR3dBOE0xcmJsbjhDeG9TYlFsaXFBY1djU3U0eW9CWWdmZEVuTFBsSmVRVFB6VlJuSXRBMS1uT29LWEh5ZGRBcWlINHZHLXlUV0FBandJY05MNDMxYQ?oc=5" target="_blank" rel="noopener" data-src-title="교섭단 떠나고 합의엔 반발…삼성전자 DX노조 '명분 논란'">
+        <div class="news-num">04</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">교섭·합의</span>
+            <span class="source-badge">비즈워치 |</span>
+            <span class="news-date">2026.11.05</span>
+          </div>
+          <div class="news-headline">교섭단 떠나고 합의엔 반발…삼성전자 DX노조 명분 논란</div>
+          <div class="news-summary">삼성전자 동행노조가 올해 임금협상 타결 5개월 만에 경기 수원시 삼성전자 수원사업장에서 집회를 열고 DX 부문 추가 보상을 요구했다. 교섭단이 교섭 과정에서 이탈한 가운데 합의에 대한 반발이 이어지며 집회의 명분과 절차를 둘러싼 논란도 일고 있다.</div>
+          <div class="accent-line">→ 임금협상 타결 이후에도 보상 갈등이 재점화된 만큼 합의 내용의 현장 공유와 절차 안내를 강화할 필요가 있습니다.</div>
+        </div>
+      </a>
+  </div></div>
+</div>
+<div class="card c3" id="c3">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Korea Labor Trend</div>
+      <div class="header-title">대한민국 노동 관련</div>
+      <div class="header-sub">노동시장·노동부 정책·법령·판례·고용·해고</div>
+    </div>
+    <span class="badge">KR Labor</span>
+  </div>
+  <div class="card-body"><div class="news-list">
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMid0FVX3lxTE4zTjlFNU84a1ZqQ1g5YU5oektRODhvNDFvMDc3dVhWcFN3dnkxNmpTQkg2V0FXNmt2X3Y3NkZUSkkxSzdqSjltS1EtOUF2R0FGWmJsa1VVYnZPVHg3U0FMc0c3WjFwM1hzNklEX1ZfSWFXZTlocFhN?oc=5" target="_blank" rel="noopener" data-src-title="성수동 '공짜 야근' 집중 점검…노동부, 전국 100개 사업장 감독">
+        <div class="news-num">01</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">근로감독</span>
+            <span class="source-badge">하이뉴스 |</span>
+            <span class="news-date">2026.11.05</span>
+          </div>
+          <div class="news-headline">성수동 '공짜 야근' 집중 점검…노동부, 전국 100개 사업장 감독</div>
+          <div class="news-summary">고용노동부는 지난 3일부터 '2026년 하반기 장시간 노동 기획감독'을 실시하고 있다. 청년 노동자의 장시간 근로와 연장근무 수당 미지급 문제를 조사하기 위해 정보통신업, 숙박·음식점업 등 청년 고용 비중이 높은 전국 100개 사업장을 감독한다. 국정감사에서 '공짜 야근' 문제가 제기된 서울 성동구 성수동 일대 사업장은 집중 점검한다.</div>
+          <div class="accent-line">→ 노동부가 근로시간 위반에 대한 전국 단위 감독을 확대하고 있어, 사내 연장근로 실태와 수당 지급 기록을 사전에 점검할 필요가 있다.</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiYEFVX3lxTE50RXVTOUJKOWdYc2ZKQjF1LVRLV3RNLTJpMWQzOHpEMHFRbEJ4ZUF1UEp5bVFCa243T1RFUUM1UVNmdXFoRE1kdWp1VjdNTFRZZkFiUWU5TjhyVnl3R3hjM9IBeEFVX3lxTE1ONlZMOEtGRjZWTXp0RUFmWTVvX3BHUXB5LVlvTDZ3bjBaR0Q4LURCbTR3UHF2MjlXNVhpRGNNYkhRM3V4em5LNlV0MWpyRmdSTzhuWnNmREs3VmhLTkZPRHlGM1lfSk5DN2dkdGExZUpvdVJHVEZyYw?oc=5" target="_blank" rel="noopener" data-src-title="'가짜 임금체불'로 1억3천만원 부정수급·시도…건설업자 구속">
+        <div class="news-num">02</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">임금체불</span>
+            <span class="source-badge">뉴시스 |</span>
+            <span class="news-date">2026.11.05</span>
+          </div>
+          <div class="news-headline">'가짜 임금체불'로 1억3천만원 부정수급·시도…건설업자 구속</div>
+          <div class="news-summary">건설업자 A씨가 하청업체 대표와 내부 직원 등과 공모해 허위 임금체불 신고로 국가 대지급금 약 7000만원을 부정수급했다. 이들은 약 6000만원을 추가로 빼돌리려 했으며, 부정수급한 돈 일부는 개인 도박 자금으로 쓰였다. 중부지방고용노동청 인천북부지청은 A씨를 구속했다.</div>
+          <div class="accent-line">→ 임금체불 관련 지원제도가 악용되는 사례이므로, 협력업체 임금 지급 실태와 하도급 대금 흐름을 점검하는 기준이 필요하다.</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiakFVX3lxTE00a3VFN3lfN2xUYmVLWEVFcGdCcEY2TU5JanhCRGdPcEhYb3dERHNLNldsbkZncDNUQWlfNm4zc2xUOWRxVnZzVHE5aFJvMURRd2JfaGcyZjdPb3k2Ull1Qmo0cGxETVBzWnfSAW9BVV95cUxOaS05WDhHekxyb29Gak9PUEVJdEQwdld4YUpibG9DUDJlYjdlMlVwYXpXMmhUbk9la1JTZ3RpWEo2eDRsTzFOSkhQbU1IZy02czZWSG5SYTdBYVVqTzlRQVJWTzliN1hMMFRmcHVremM?oc=5" target="_blank" rel="noopener" data-src-title="법원 쟁의금지에… 간접부서 우회 파업 택한 삼성바이오 노조 - 머니투데이">
+        <div class="news-num">03</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">쟁의행위</span>
+            <span class="source-badge">머니투데이 |</span>
+            <span class="news-date">2026.11.06</span>
+          </div>
+          <div class="news-headline">법원 쟁의금지에… 간접부서 우회 파업 택한 삼성바이오 노조</div>
+          <div class="news-summary">서울고등법원 인천재판부가 지난달 16일 삼성바이오로직스의 쟁의행위 금지 가처분 신청과 관련된 결정을 내린 가운데, 노조는 QC·QA·물류 등 간접부서를 중심으로 파업을 진행한다. 파업 규모는 400명 내외이며, 6일부터 27일까지 3주간 진행될 예정이다.</div>
+          <div class="accent-line">→ 쟁의행위 금지 가처분 이후의 우회 파업은 노무 대응 범위를 가르는 판단 사례이므로, 파업 시 업무 공백 관리와 법적 대응 절차를 미리 정비할 필요가 있다.</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMia0FVX3lxTFB1U0I3X3Fadm16LVhIMVktUzJvZmJZM0ZlZ0RVUXpNRUFJTmRNT2xjMXRpTU1hSU8tblUyRG5LZEJkS2YzOHZjQm1mV2p2WElWdGM2UW9XWlo2X3BWemlqRU9kMFhobTMzT0tn?oc=5" target="_blank" rel="noopener" data-src-title="사망사고 은폐 의혹 근로감독관 검찰 송치…고용노동부 “엄정 조치”">
+        <div class="news-num">04</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">중대재해</span>
+            <span class="source-badge">현대경제 |</span>
+            <span class="news-date">2026.11.05</span>
+          </div>
+          <div class="news-headline">사망사고 은폐 의혹 근로감독관 검찰 송치…고용노동부 “엄정 조치”</div>
+          <div class="news-summary">사망사고 은폐 의혹을 받는 근로감독관이 검찰에 송치됐다. 고용노동부는 이에 대해 엄정 조치하겠다는 방침을 밝혔다.</div>
+          <div class="accent-line">→ 산업재해 발생 시 사고 보고와 기록 관리의 정확성을 점검할 필요가 있다.</div>
+        </div>
+      </a>
+  </div></div>
+</div>
+<div class="card c4" id="c4">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Safety & Mental Health</div>
+      <div class="header-title">삼성 마음건강 · 산재</div>
+      <div class="header-sub">산재·직업병·정신건강·마음건강</div>
+    </div>
+    <span class="badge">Safety</span>
+  </div>
+  <div class="card-body"><div class="news-list">
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiYEFVX3lxTFB5aEFaZl9GU2xJdmxjQkd3MVRkSzJrbFZRSmFDSzhtQ1p6QktTeHl2ei13azB0Q1E1bTFVQkZNVkxrVF9vY2NyaUpSTlhXdFFTTzVJMVdoNjBVdWQ2T18tZNIBeEFVX3lxTE9seFNFUTFpX2FKSkFuTFB3ZXl6MFF4dVM5OGpUR19LZEc2ckQtc0d1RTVSQ3RtajJMa1FSbTdEQnJldUVHMk5ZNlQ2Y1NXNkpzYUNPN3JZd3NRTEx0RC1DNXRuUVFWSUczNGV2cHBVQmcwWGNDMjN5Rw?oc=5" target="_blank" rel="noopener" data-src-title="&quot;아프다더니 골프·낚시&quot;…조선·타이어 업종, 산재 승인 10명 중 3명 '1년 이상 장기요양'">
+        <div class="news-num">01</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">산재 장기요양</span>
+            <span class="source-badge">뉴시스 |</span>
+            <span class="news-date">2026.11.05</span>
+          </div>
+          <div class="news-headline">조선·타이어 산재 승인 10명 중 3명 '1년 이상 장기요양'</div>
+          <div class="news-summary">조선·타이어 업종의 산재 승인자 중 1년 이상 장기요양자 비율이 30%에 육박하는 것으로 나타났다. 일부 근로자는 산재 승인 후 골프와 낚시 등 스포츠 활동을 한 것으로 파악됐다. 한국경영자총협회(경총)는 산재근로자 장기요양 실태 및 개선방향 보고서를 발간했다.</div>
+          <div class="accent-line">→ 산재 휴직자의 복귀·관리 기준과 직무 외 활동 확인 절차를 점검할 필요가 있다.</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE8yRERmVmNIdUlEdktUa3FOUWpNVHgyVm5mZ3BXWlp4RnRJdGhReWpLUlVWUnlla1ZRQlI5LW1WemJHd2hsTHR1VXRnbEkzV052Q3N4QWd3?oc=5" target="_blank" rel="noopener" data-src-title="산재 요양연장 신청만 40회…경총 “관리체계 개선 필요”">
+        <div class="news-num">02</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">산재 요양관리</span>
+            <span class="source-badge">헤럴드경제 |</span>
+            <span class="news-date">2026.11.05</span>
+          </div>
+          <div class="news-headline">산재 요양연장 신청만 40회…경총 "관리체계 개선 필요"</div>
+          <div class="news-summary">자문의사가 요양 종료를 검토했음에도 치료기간이 연장된 사례가 있었으며, 요양연장 신청이 40회에 달한 사례도 언급됐다. 한국경영자총협회(경총)는 5일 보고서를 발표하고 산재보험의 요양관리 체계를 강화해야 한다고 주장했다.</div>
+          <div class="accent-line">→ 산재 요양 기간 관리와 복귀 지원 절차를 사내 기준으로 정비할 필요가 있다.</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMicEFVX3lxTFBuMERVQ05hU053NFJFQXpLamtPdldNdTlaQmViSG1LRWY0aTRfWjFNZFh6SmI2aTZaZmdLUFhNQVcycldGUlZrRl9YcXk4VERNS284SHFZVEdZN2F0V2dqYm5DQk1BRFdoUlFaVWxYTWw?oc=5" target="_blank" rel="noopener" data-src-title="서울대병원, “우울 증상 있는 직장인, 결근·업무 효율 저하 뚜렷…연령별 관련 건강 요인 달라”">
+        <div class="news-num">03</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">직장인 우울</span>
+            <span class="source-badge">데일리메디팜 |</span>
+            <span class="news-date">2026.11.05</span>
+          </div>
+          <div class="news-headline">서울대병원 "우울 직장인 결근·업무 효율 저하 뚜렷"</div>
+          <div class="news-summary">서울대병원은 우울 증상이 있는 직장인에게서 결근과 업무 효율 저하가 뚜렷하게 나타난다고 밝혔다. 연령대별로 관련된 건강 요인은 서로 달랐다.</div>
+          <div class="accent-line">→ 직원 우울 증상 조기 발견과 연령대별 맞춤형 마음건강 지원 설계에 참고할 수 있다.</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiYEFVX3lxTE5JUk93SV81aVpYZXBlQnhRQ0o0b09mQmFJdG1VVGdTTGJ1TkRXMzBaWG5YeFNoa3J1UER2ZGFVQmhIQXd3RVRsUEo3T3NmVlhTWVJBR2x5YTBidWhaN0hWa9IBYEFVX3lxTE5JUk93SV81aVpYZXBlQnhRQ0o0b09mQmFJdG1VVGdTTGJ1TkRXMzBaWG5YeFNoa3J1UER2ZGFVQmhIQXd3RVRsUEo3T3NmVlhTWVJBR2x5YTBidWhaN0hWaw?oc=5" target="_blank" rel="noopener" data-src-title="대불산단 산재 사망 2년 새 11명…안전지원은 12개사에 그쳐">
+        <div class="news-num">04</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">산업단지 사망</span>
+            <span class="source-badge">연합뉴스 |</span>
+            <span class="news-date">2026.11.05</span>
+          </div>
+          <div class="news-headline">대불산단 산재 사망 2년 새 11명…안전지원은 12개사에 그쳐</div>
+          <div class="news-summary">영암군 대불국가산업단지에서 지난해 1월부터 올해 9월까지 중대재해로 숨진 노동자는 11명으로 집계됐다. 안전지원은 일부 기업에 그쳤으며, 시는 2024년부터 중소조선연구원을 통해 스마트 안전 장비 지원 사업을 추진했다.</div>
+          <div class="accent-line">→ 협력사·수급사 현장의 안전 관리 책임 범위와 지원 체계를 함께 점검할 필요가 있다.</div>
+        </div>
+      </a>
+  </div></div>
+</div>
+<div class="card c5" id="c5">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Global AI Trend</div>
+      <div class="header-title">최신 AI 이슈</div>
+      <div class="header-sub">생성형AI·에이전트·피지컬AI·HR AI·규제·딥페이크</div>
+    </div>
+    <span class="badge">AI Trend</span>
+  </div>
+  <div class="card-body"><div class="news-list">
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiW0FVX3lxTE9uaFZtMmZULU1SbTRGODh6OXpWaEowZ29tRGdXM2k3amJkcjRMNEdaSFROSmlzZFVpeUk0WHlZb0tSS2RDTzBfMjNERTkwR2g3VEpYQTJSUkVNSWvSAWBBVV95cUxQRlhtYjJDWXNKYjlyZmViR2ZFZDFvcVJiaTd1bFlxNGl6eDZ4MDR4MEFYSWFINUxiMmNKUVpENm01Si1KT3ZkcktPT0NaNmhYVzgyMklIZU5ZdVl4OEJZaEw?oc=5" target="_blank" rel="noopener" data-src-title="AI 규제 공포에 나스닥 5.5%↓…작년 4월 이후 최대 낙폭(종합)">
+        <div class="news-num">01</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">AI규제·증시</span>
+            <span class="source-badge">연합뉴스 |</span>
+            <span class="news-date">2026.11.06</span>
+          </div>
+          <div class="news-headline">AI 규제 공포에 나스닥 5.5%↓…작년 4월 이후 최대 낙폭</div>
+          <div class="news-summary">미국 중간선거에서 민주당이 상·하원을 모두 장악한 이후 AI 산업 규제 강화와 데이터센터 투자에 대한 우려가 커졌다. 이에 5일 뉴욕증시 3대 지수가 AI 관련 기술주를 중심으로 급락했고, 나스닥은 5.5% 하락해 지난해 4월 이후 최대 낙폭을 기록했다. 나스닥은 지난달 사상 최고치 대비 10% 이상 떨어졌다.</div>
+          <div class="accent-line">→ AI 규제 불확실성은 기업의 AI 투자와 도입 계획에 영향을 줄 수 있어 HR의 인력·교육 예산 계획도 함께 점검할 필요가 있다</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE5ubFN6eTVhZWF1ZnAtZ3VxTFRfLUdfa0RvLVdoMFN4NnF3LUxndHdtdHdkNjBpcFJDbkF3RkdzNmd2SXc0Qm9YLVBoOFQ3cjkwY3g4cUZn?oc=5" target="_blank" rel="noopener" data-src-title="국가AI전략위, 하정우 체제 첫 전체회의…AI 행동계획 '실행 궤도' 올릴까">
+        <div class="news-num">02</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">AI정책</span>
+            <span class="source-badge">지디넷코리아 |</span>
+            <span class="news-date">2026.11.06</span>
+          </div>
+          <div class="news-headline">국가AI전략위, 하정우 체제 첫 전체회의…AI 행동계획 실행 궤도 오르나</div>
+          <div class="news-summary">하정우 국가인공지능전략위원회 상근부위원장이 취임 후 첫 전체회의를 연다. 위원회는 AI 행동계획 확정 8개월여 만에 주요 과제를 추진할 조직과 법·제도 정비에 나선다.</div>
+          <div class="accent-line">→ 국가 AI 정책의 실행 방향은 사내 AI 교육과 인재 육성 계획을 세울 때 참고할 기준이 된다</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMicEFVX3lxTE5iSk51VmM0aXo4VU9SNzNRV1dyUFhxclpsVDZGSUQ4RkpmRWZIVmdjSkZnYmVKSXl2V2UzdGx1LVhDaVNHenNmQlpFVmFwSVlNLU9JVmJIcVdyZHF0a0VpbjZNVm5XVDd2dG9WcUJ3M0E?oc=5" target="_blank" rel="noopener" data-src-title="오픈AI, 보안 양날의 검 'GPT-6 사이버' 공개…첫 최고 위험 등급">
+        <div class="news-num">03</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">AI보안·위험</span>
+            <span class="source-badge">연합인포맥스 |</span>
+            <span class="news-date">2026.11.06</span>
+          </div>
+          <div class="news-headline">오픈AI 'GPT-6 사이버' 공개…첫 최고 위험 등급 적용</div>
+          <div class="news-summary">오픈AI가 사이버 공격 대응과 시스템 침투 테스트에 특화된 신규 모델 'GPT-6 사이버'를 공개했다. 이 모델은 실제 시스템의 결함을 찾아 무기화하고 공격까지 전개할 역량을 갖췄으며, 승인된 공격형 보안 파트너 프로그램 '데이브레이크 레드' 사용자에게 API와 코덱스 형태로 우선 공급된다. 오픈AI 자사 제품 중 처음으로 최고 위험 등급이 적용됐다.</div>
+          <div class="accent-line">→ 고성능 AI의 보안 위험이 커지는 만큼 임직원의 AI 도구 사용에 대한 보안 가이드 점검이 필요하다</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMidkFVX3lxTFBqOUpXYV9kN3dvUUt3NGZZSjJJU0FRS3VWeERNVm13WkRseGJlT2JjRlF4dk9aUkhScDFrVnZkdk9kdWN0NGs3M1cwQ1RNSjBkd29ZZEdxX1JfTUUtQ1ZGdnFXaG9FV0lQYTYtWmhlYXlLZGUzVHfSAWZBVV95cUxPbUlDc2VWbC1tUGxEUl9DS3JDdjNOX3NINE1meUJnN09FRTdjdG1rQUxkSDRzc0ZYYmtvX1pweTNYamhCQ1k3MlFzNEJNOTlBWV9PU3EtQy1xTTZCQ2pBdE9fYk14T1E?oc=5" target="_blank" rel="noopener" data-src-title="KAIST “AI가 반도체 설계-검증” 11일 AI에이전트 공개">
+        <div class="news-num">04</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">AI에이전트·설계</span>
+            <span class="source-badge">동아일보 |</span>
+            <span class="news-date">2026.11.06</span>
+          </div>
+          <div class="news-headline">KAIST, AI가 반도체 설계·검증하는 AI 에이전트 11일 공개</div>
+          <div class="news-summary">KAIST 김정호 교수가 이끄는 테라랩은 11일 온라인 행사 '테라 AI 에이전트 데이'를 열고 반도체 설계에 적용 중인 AI 에이전트 생태계를 공개한다고 5일 밝혔다. 이 AI 에이전트는 HBM 같은 차세대 반도체의 신호·전력·열 문제를 함께 따지는 설계와 검증 작업을 돕는 데 쓰인다.</div>
+          <div class="accent-line">→ 전문 설계·검증 업무에 AI 에이전트가 도입되면서 직무 재설계와 역량 교육의 필요성이 커지고 있다</div>
+        </div>
+      </a>
+  </div></div>
+</div>
+<div class="card c6" id="c6">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Global Big Tech</div>
+      <div class="header-title">글로벌 빅테크 뉴스</div>
+      <div class="header-sub">미국 빅테크·반도체·AI기업·CapEx·데이터센터</div>
+    </div>
+    <span class="badge">Big Tech</span>
+  </div>
+  <div class="card-body"><div class="news-list">
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiWkFVX3lxTE83NnVacnM1RE5CSkt3dHRmY0FQdEVfQUZfUjM1b0VGaGgzLXFwYUZBWTZUSThCSzY1MHRmaVJXRnpydzlfWktBa0t4c3FtbmlPcklwZU5NTTNIUQ?oc=5" target="_blank" rel="noopener" data-src-title="엔비디아 H200칩 60만개 홍콩에 적재…中당국 수입승인 또 보류">
+        <div class="news-num">01</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">반도체 수출규제</span>
+            <span class="source-badge">한국경제 |</span>
+            <span class="news-date">2026.11.06</span>
+          </div>
+          <div class="news-headline">엔비디아 H200 60만 개 홍콩 적재…中 수입승인 또 보류</div>
+          <div class="news-summary">로이터에 따르면 중국 당국이 알리바바, 바이트댄스, 텐센트, 딥시크 등 기술 기업들의 수요에도 엔비디아 H200 칩의 수입 승인을 보류했다. 이에 따라 H200 칩 60만 개가 홍콩에 대량 적재된 상태다. 블랙웰 칩 서버는 대당 40억 원에 밀거래되고 있다.</div>
+          <div class="accent-line">→ 미·중 규제 갈등으로 AI 반도체 공급망이 흔들리면 국내 반도체 기업의 수급 계획과 인력 운용에도 영향이 미칠 수 있다.</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxQZ0oyajVQRXpkMlFyMkJ3eTFjSlRsaWMxWTBhUC1CWktmN21kQ2NYVmtQSE1YYjJ5Q0JuTjBfOXlaZ0NSV0tKMFlvZmVwRng0SzhxR1RvbEhBdWFSMHozamdZamhvRG1sUXNaMndxVENCOUFTREo3ZGYzTXpTeGRiUHg0VTN1WUFQ?oc=5" target="_blank" rel="noopener" data-src-title="&quot;엔비디아 랙 하나에 칩 600개&quot;… 대만 메모리 양대 산맥, '이익률 70%' 최대 호황">
+        <div class="news-num">02</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">메모리 호황</span>
+            <span class="source-badge">글로벌이코노믹 |</span>
+            <span class="news-date">2026.11.06</span>
+          </div>
+          <div class="news-headline">엔비디아 랙 1개에 칩 600개…대만 메모리 양사 이익률 70%</div>
+          <div class="news-summary">엔비디아 랙 하나에 칩 600개가 들어간다는 내용이 보도됐다. 대만 메모리 양대 기업이 이익률 70%를 내며 최대 호황을 누리고 있다는 소식이다.</div>
+          <div class="accent-line">→ 반도체 업황 호황이 이어지면 관련 인재 확보 경쟁도 치열해질 수 있어, 핵심 인력 확보 방안을 점검할 필요가 있다.</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMihwFBVV95cUxPSmszQ2UtSjNEZFJ5X3FMSnNLejVlUkVRck1XY3BEMl94c1FrQlN5Qm03Q1RNdElMVWJHeHdBeWI0OVV6d1FWZ21hTzN1RktCUTRxZk9BaTViY1dEeHNBcGROSUdfSjVZNnVNWko5bDJoMFZmbFMybWFZdDQxWnBDVGFwNVliRlE?oc=5" target="_blank" rel="noopener" data-src-title="中 텅스텐 수출통제에 글로벌 반도체 기판 공구 가격 '폭등'">
+        <div class="news-num">03</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">소재 공급망</span>
+            <span class="source-badge">글로벌이코노믹 |</span>
+            <span class="news-date">2026.11.06</span>
+          </div>
+          <div class="news-headline">中 텅스텐 수출통제에 반도체 기판 공구 가격 폭등</div>
+          <div class="news-summary">중국 정부의 텅스텐 수출 제한으로 정밀 가공용 초경합금(텅스텐 카바이드) 원자재 가격이 수배로 뛰었다. 이에 따라 AI 가속기용 인쇄회로기판과 반도체 패키지 기판 제조에 쓰이는 초소형 마이크로 드릴 비트 가격도 급등했다.</div>
+          <div class="accent-line">→ 중국발 소재 통제가 반도체 제조 원가 상승으로 이어질 수 있어, 생산 계획과 인력 배치를 함께 점검할 필요가 있다.</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxNQWJjODlEd0JvRWJydExIQzNTLUlDalB5S2xGajBFR0k2T1BRaUZnWVlKZzUtMjNhazRZLUNsODllQ0xKdTJHT0loUHliSk9QekVqM01kXzlzYTVoVWRSOHozbmhmMlhXX0J1b2MyclQxUkpSa1Q2TDFvSk1TY0ZwVEd6aDJJMTJh?oc=5" target="_blank" rel="noopener" data-src-title="AMD 주가 16% 넘게 급락…사상 최대 실적에도 AI 투자 둔화 우려">
+        <div class="news-num">04</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">AMD 실적 급락</span>
+            <span class="source-badge">글로벌이코노믹 |</span>
+            <span class="news-date">2026.11.06</span>
+          </div>
+          <div class="news-headline">AMD 주가 16% 급락…사상 최대 실적에도 AI 투자 둔화 우려</div>
+          <div class="news-summary">AMD 주가가 16% 넘게 급락했다. 사상 최대 분기 매출을 기록하고 데이터센터 사업 매출이 두 배 가까이 늘었지만, 미국 중간선거 이후 AI 데이터센터 건설이 지연될 수 있다는 우려가 투자심리를 압박했다.</div>
+          <div class="accent-line">→ 빅테크의 AI 데이터센터 투자 흐름이 꺾이면 관련 기업의 채용·투자 계획도 바뀔 수 있어, 인력 계획을 유연하게 가져갈 필요가 있다.</div>
+        </div>
+      </a>
+  </div></div>
+</div>
+<div class="card c7" id="c7">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Display Industry</div>
+      <div class="header-title">디스플레이 기술/산업/경쟁사</div>
+      <div class="header-sub">OLED·MicroLED·기술동향·LGD·BOE·CSOT 등 경쟁사</div>
+    </div>
+    <span class="badge">Display</span>
+  </div>
+  <div class="card-body"><div class="news-list">
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMib0FVX3lxTE5rNVVZUzhNN3RKMzYyZFFWcXNzbVczUXRQUHlibFBEdTAzT2MySmxEbU95Ulp5TkJXUUR1TkIzM05KUlhsYTFrTEw2QTVBZkZOS3ZNZ09ZXzByV2ticWU4UzRTQ0RteWpwUkFlMGsyUdIBb0FVX3lxTE5rNVVZUzhNN3RKMzYyZFFWcXNzbVczUXRQUHlibFBEdTAzT2MySmxEbU95Ulp5TkJXUUR1TkIzM05KUlhsYTFrTEw2QTVBZkZOS3ZNZ09ZXzByV2ticWU4UzRTQ0RteWpwUkFlMGsyUQ?oc=5" target="_blank" rel="noopener" data-src-title="'FMM 탈피' 경쟁 불붙는 OLED…삼성D·LGD·비전옥스 각축전">
+        <div class="news-num">01</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">OLED기술</span>
+            <span class="source-badge">한국아이닷컴 |</span>
+            <span class="news-date">2026.11.05</span>
+          </div>
+          <div class="news-headline">FMM 탈피 경쟁 불붙는 OLED…삼성D·LGD·비전옥스 각축</div>
+          <div class="news-summary">삼성디스플레이, LG디스플레이, 중국 비전옥스가 파인메탈마스크(FMM) 없이 픽셀을 형성하는 OLED 공정 기술 경쟁에 나섰다. 업계에 따르면 삼성디스플레이는 'MPO', LG디스플레이는 '플립(FLiPP)', 비전옥스는 'ViP'라는 명칭으로 해당 기술을 개발하고 있다. 기사는 제품 적용과 양산 수율·생산성 확보가 경쟁력을 가를 변수가 될 것이라고 전했다.</div>
+          <div class="accent-line">→ 삼성디스플레이의 핵심 공정 기술 경쟁 동향으로, 차세대 OLED 기술 인재 확보 전략 수립 시 참고할 필요가 있습니다.</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiXEFVX3lxTE1ZSUZxSjlFbVlyLVBzdzhhdHJLLXpJSW1GVDdTVFRCSGRESzVPZW1JWVpyNTdnT09PQ3NxRF8zTC01ZFVIZm1MdmE2VjJlWktkVHlyM1EzMjJFY2V4?oc=5" target="_blank" rel="noopener" data-src-title="中 전기차, 삼성 OLED 못 구하자 LCD 달고 출고…대체 공급사 없었다">
+        <div class="news-num">02</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">OLED공급</span>
+            <span class="source-badge">뉴스핌 |</span>
+            <span class="news-date">2026.11.05</span>
+          </div>
+          <div class="news-headline">中 전기차, 삼성 OLED 못 구하자 LCD 달고 출고</div>
+          <div class="news-summary">중국 전기차 업체 리오토가 삼성디스플레이의 차량용 OLED 패널 공급 차질로 신차에 LCD를 임시 장착해 출고하고 있다. 다른 업체의 OLED로는 대체하지 못했으며, 내년 3월부터 고객 차량의 화면을 삼성 제품으로 교체할 계획이다.</div>
+          <div class="accent-line">→ 삼성디스플레이의 OLED 공급 차질이 고객사 생산에 직접 영향을 준 사례로, 생산·공급 안정을 위한 현장 인력 운영을 점검할 필요가 있습니다.</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiXEFVX3lxTFBTMXVJTEtBcWJKNTAyZlBuUERlY1owdFFwQUtjT0F5M3V0S3dWYnVLQ0JubVFteWdST2Y2MXJLSVRVRTFWSHdsRkIwREVKOUJNY05vWmRROW9ad2pV?oc=5" target="_blank" rel="noopener" data-src-title="내년 글로벌 디스플레이 장비 투자 49% 급감 전망">
+        <div class="news-num">03</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">장비투자</span>
+            <span class="source-badge">뉴스핌 |</span>
+            <span class="news-date">2026.11.05</span>
+          </div>
+          <div class="news-headline">내년 글로벌 디스플레이 장비 투자 49% 급감 전망</div>
+          <div class="news-summary">카운터포인트리서치에 따르면 글로벌 디스플레이 장비 투자가 올해 급증한 뒤 내년에는 대규모 신규 투자 감소로 49% 줄어들 것으로 분석됐다. 국내 장비업체 선익시스템은 내년 디스플레이 장비 매출 세계 1위에 오를 전망이다.</div>
+          <div class="accent-line">→ 업계 설비투자 위축이 예상되는 만큼, 내년 채용 계획과 인력 재배치 방안을 함께 검토해야 합니다.</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMia0FVX3lxTE1iVjkxVFk1Z1Z4Zmh4dlNtTXRuVDJxTW1MT0dRR1R1MTJJLWp6SUxYc0tkRW02cktyYVJ5aExQREJPTWo0ZUtQMEl6SVk5WklHb09CUUpVVHNqSzBxQ2NrYlphQ29kYUtBUFlB?oc=5" target="_blank" rel="noopener" data-src-title="디스플레이 기술 선점에 3689억원 투입…아산에 국가 연구플랫폼 구축">
+        <div class="news-num">04</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">국가R&D</span>
+            <span class="source-badge">이데일리 |</span>
+            <span class="news-date">2026.11.05</span>
+          </div>
+          <div class="news-headline">디스플레이 기술 선점에 3689억원 투입…아산 연구플랫폼</div>
+          <div class="news-summary">정부는 총사업비 3688억 7000만원 규모의 '첨단 디스플레이 국가연구플랫폼 구축사업'이 예비타당성조사를 최종 통과했다고 밝혔다. 사업 기간은 2027~2033년이며, 국비 2789억원이 투입돼 충남 아산에 패널 설계부터 제작·검증까지 지원하는 개방형 연구시설을 구축한다.</div>
+          <div class="accent-line">→ 국가 차원의 디스플레이 R&D 투자가 확대되는 만큼, 연구인력 수급과 산학협력 인재 육성 방향을 준비할 필요가 있습니다.</div>
+        </div>
+      </a>
+  </div></div>
+</div>
+<div class="card c8" id="c8">
+  <div class="card-header">
+    <div>
+      <div class="header-eyebrow">Korea Hot News</div>
+      <div class="header-title">대한민국 핫뉴스</div>
+      <div class="header-sub">실시간 인기검색어·정치·경제·사회·연예·스포츠·가십</div>
+    </div>
+    <span class="badge">Hot News</span>
+  </div>
+  <div class="card-body"><div class="news-list">
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMieEFVX3lxTFBBZl9EeWZLMzZZZk45STZ3aHZuUWxra3pnUTZfc0RFUzVMNnprOVlwZjdWOFZyWVI0Y1draVI0Szc3RGRoUEhuUGVFOWdRSVdPNG1lQ3FCMFJsUy1Wbk4xS3ozNHpLVWM5ZUwwZ3lhdXF6d1A5N3d2NdIBeEFVX3lxTE5GRFVVUXBUN3JqQnQ1aUY3eGYyUDVGTXZkbVFJckZBd1FUbjJkSDJOVC02bnBhd2JaUWlnQV9QMnp6NmZxQVpQMzh5Mm9WVmJxemN0TFlnV2xwVVZMLVpPckpJM24temRIZzlkQzVfZ3BSdnZSUG43Uw?oc=5" target="_blank" rel="noopener" data-src-title="여당, 오늘 조작기소 특검법 본회의 처리 추진‥야당 필리버스터 예고">
+        <div class="news-num">01</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">국회·특검</span>
+            <span class="source-badge">MBC 뉴스 |</span>
+            <span class="news-date">2026.11.05</span>
+          </div>
+          <div class="news-headline">여당, 오늘 조작기소 특검법 본회의 처리 추진…야당 필리버스터 예고</div>
+          <div class="news-summary">더불어민주당은 오늘 국회 본회의에서 '조작기소 특검법안' 처리를 시도하기로 했다. 이에 국민의힘은 무제한토론(필리버스터)으로 맞서겠다고 예고했다. 민주당은 어젯밤 법제사법위원회 소위 심사를 거쳐 특검법 수정안을 마련했다.</div>
+          <div class="accent-line">→ 여야 대치 속 특검법 본회의 처리 시도</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiaEFVX3lxTE5IV0pRM1VNdWN1SHdjZ1B3WW5DYTMyTHNpc0Ryci1YeGs1Ynoxcm5kcXFwU3NDTmJBdU9TVGJqUFZqY2JwR3FSWlMxcUhVbm5TZTc3c3E4Rks2OXVBeFY5ekNWTE5peHJD0gFuQVVfeXFMT1BORVVuX3NqSDFCYVl5aHdvNTlvczdLVXR1SXlDY01CbkNQeEhwSlFEQ0x5R1ZJT3RwYmdKV256ak1sVHZtYzR0X0lFQUQ0ZThZYlBNVVRRVGdjVjJJNVFxZkFVZE9FZndabDZ0N0E?oc=5" target="_blank" rel="noopener" data-src-title="'블루웨이브'에 급락장…코스피·코스닥 번갈아 매도사이드카 - 머니투데이">
+        <div class="news-num">02</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">증시급락</span>
+            <span class="source-badge">머니투데이 |</span>
+            <span class="news-date">2026.11.06</span>
+          </div>
+          <div class="news-headline">'블루웨이브'에 급락장…코스피·코스닥 번갈아 매도사이드카</div>
+          <div class="news-summary">5일 미국 블루웨이브(민주당 중간선거 압승)발 AI 데이터센터 규제 우려로 국내 증시가 급락했다. 코스피와 코스닥 시장에 매도 사이드카가 번갈아 발동됐다. 이날 오후 2시 27분 코스닥시장에서는 프로그램 매도호가 효력이 5분간 정지됐으며, 코스닥150 선물은 전 거래일 대비 6.07% 하락했다.</div>
+          <div class="accent-line">→ 코스피·코스닥 동시 급락, 매도사이드카 발동</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiZEFVX3lxTE96Q2g3MlpDV05fUG1lLUF6eWlta2dkU0J1TW9ZVjFkU25oejloX1U0YlRXNUV4ZEFFMDQwT1VPODhfQ3p2Y0FwZC13R0pKbENDNGhBOWFBd2E1ZFVyVlNpVjl2ejA?oc=5" target="_blank" rel="noopener" data-src-title="한국시리즈 3차전 선발은? KT 소형준 vs 삼성 후라도">
+        <div class="news-num">03</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">한국시리즈</span>
+            <span class="source-badge">BNT뉴스 |</span>
+            <span class="news-date">2026.11.06</span>
+          </div>
+          <div class="news-headline">한국시리즈 3차전 선발은? KT 소형준 vs 삼성 후라도</div>
+          <div class="news-summary">kt 위즈와 삼성 라이온즈가 한국시리즈 3차전 선발 투수를 확정했다. kt는 소형준, 삼성은 후라도를 내세운다.</div>
+          <div class="accent-line">→ KT 소형준 대 삼성 후라도 선발 대결 주목</div>
+        </div>
+      </a>
+      <a class="news-item" href="https://news.google.com/rss/articles/CBMiW0FVX3lxTE4tX3dKTlVhaDZENmFlX21JbFA3bGR1QmxHcERJN3U3Smt5UzRVeWFlRVZXOEtKSlZ0M3ZmcUMwcjZpVmZmLWk4NHdxVllHR2tnamFyd3hYSmpoUGM?oc=5" target="_blank" rel="noopener" data-src-title="버넘 영국 총리, 내년 G20 정상회의에 “푸틴 초청 안해”">
+        <div class="news-num">04</div>
+        <div class="news-content">
+          <div class="news-tag-row">
+            <span class="tag">G20</span>
+            <span class="source-badge">KBS 뉴스 |</span>
+            <span class="news-date">2026.11.06</span>
+          </div>
+          <div class="news-headline">버넘 영국 총리, 내년 G20 정상회의에 “푸틴 초청 안해”</div>
+          <div class="news-summary">앤디 버넘 영국 총리가 내년 G20 정상회의에 블라디미르 푸틴 러시아 대통령을 초청하지 않겠다고 밝혔다. 버넘 총리는 영국 시사주간지 이코노미스트와의 인터뷰에서 이같이 확인했다.</div>
+          <div class="accent-line">→ 영국 총리, 내년 G20에 푸틴 초청 불가 입장</div>
+        </div>
+      </a>
+  </div></div>
+</div>
+</div>
+
+
+<div class="install-banner" id="installBanner">
+  <span id="installMsg"><b>홈 화면에 앱으로 추가</b>하면 알림 아이콘처럼 바로 열어볼 수 있어요.</span>
+  <button class="install-btn" id="installBtn" style="display:none;">설치하기</button>
+  <button class="install-close" id="installClose" aria-label="닫기">×</button>
+</div>
+
+<div class="page-footer">
+  <span class="footer-note">※ 2026.11.06 07:33 생성 · 수집기간: 2026.11.05 – 11.06<br>내부 정보 공유 목적으로만 활용</span>
+  <span class="footer-tag">Samsung Display · HR People Team</span>
+</div>
+
+
+<script>
+(function(){
+  var banner = document.getElementById('installBanner');
+  var msg = document.getElementById('installMsg');
+  var btn = document.getElementById('installBtn');
+  var closeBtn = document.getElementById('installClose');
+  if (!banner) return;
+
+  var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  var dismissed = false;
+  try { dismissed = localStorage.getItem('installBannerDismissed') === '1'; } catch(e){}
+  if (isStandalone || dismissed) return;
+
+  var ua = window.navigator.userAgent;
+  var isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  var deferredPrompt = null;
+
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    deferredPrompt = e;
+    btn.style.display = 'inline-block';
+    banner.classList.add('show');
+  });
+
+  if (isIOS) {
+    msg.innerHTML = '<b>홈 화면에 앱으로 추가</b>하려면 하단 공유 버튼(⬆️) → \'홈 화면에 추가\'를 눌러주세요.';
+    banner.classList.add('show');
+  }
+
+  btn.addEventListener('click', function(){
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.finally(function(){
+      deferredPrompt = null;
+      banner.classList.remove('show');
+    });
+  });
+
+  closeBtn.addEventListener('click', function(){
+    banner.classList.remove('show');
+    try { localStorage.setItem('installBannerDismissed', '1'); } catch(e){}
+  });
+})();
+</script>
+
+</body>
+</html>
