@@ -11,6 +11,11 @@ on:
         required: false
         default: false
         type: boolean
+      auto:
+        description: '디스패처 자동 실행 (오늘 이미 발송했으면 건너뜀)'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write   # gh-pages push에 필요
@@ -40,7 +45,7 @@ jobs:
         id: check
         run: |
           TODAY=$(TZ='Asia/Seoul' date '+%Y-%m-%d')
-          if [ "${{ github.event_name }}" = "schedule" ] && [ -f "public/archive/$TODAY.html" ]; then
+          if { [ "${{ github.event_name }}" = "schedule" ] || [ "${{ inputs.auto }}" = "true" ]; } && [ -f "public/archive/$TODAY.html" ]; then
             echo "already_sent=true" >> "$GITHUB_OUTPUT"
             echo "오늘($TODAY) 브리핑이 이미 발송되었습니다. 재촉 실행을 건너뜁니다."
           else
