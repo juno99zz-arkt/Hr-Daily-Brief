@@ -2,7 +2,7 @@ name: HR Daily Brief
 
 on:
   schedule:
-    - cron: '30 20 * * 0-4'   # 1차 목표 05:30 KST = UTC 20:30 (기존보다 30분 앞당김)
+    # 1차(05:30)는 Apps Script "GH 디스패처"가 auto=true로 호출 (2026-11-08). 아래 2차는 이중 안전망
     - cron: '0 22 * * 0-4'    # 2차(재촉) 07:00 KST = UTC 22:00 (기존보다 30분 앞당김). 1차가 아직이면 이때 대신 실행
   workflow_dispatch:
     inputs:
